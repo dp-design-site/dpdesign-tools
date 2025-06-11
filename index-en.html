@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DP Design Pilot – Visual Control for Engineering Documentation</title>
+  <link rel="icon" href="img/DP_DWG_32x32.png" />
+  <link rel="stylesheet" href="styles/style.css" />
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init("RNylG-hhPPast_2hi");
+    })();
+  </script>
+  <style>
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 500px;
+      margin: auto;
+    }
+    form input,
+    form select,
+    form textarea {
+      background-color: #2c2c2c;
+      color: #fff;
+      border: 1px solid #555;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    form input::placeholder,
+    form textarea::placeholder {
+      color: #bbb;
+    }
+    form label {
+      font-weight: bold;
+      color: #ccc;
+    }
+    .signup h3 {
+      color: #fff;
+    }
+    .signup p {
+      color: #ddd;
+    }
+    #form-status {
+      margin-top: 10px;
+      color: #90ee90;
+      font-weight: bold;
+    }
+    .privacy-note {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 10px;
+    }
+    .privacy-note input {
+      margin-right: 5px;
+    }
+    .privacy-link {
+      color: #ccc;
+      text-decoration: underline;
+    }
+    .footer a {
+      color: #999;
+      text-decoration: underline;
+      font-size: 0.9rem;
+    }
+    .lang-switch {
+      text-align: right;
+      margin: 10px 20px;
+      font-size: 0.9rem;
+    }
+    .lang-switch a {
+      color: #aaa;
+      text-decoration: none;
+      margin-left: 8px;
+    }
+    .lang-switch a.active {
+      color: #fff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="lang-switch">
+    <a href="index.html">BG</a> | <a href="#" class="active">EN</a>
+  </div>
+
+  <header class="header">
+    <div class="container">
+      <img src="img/DP_DWG_32x32.png" alt="DP Logo" class="logo" />
+      <h1>DP Design Pilot</h1>
+      <p class="subtitle">Visual control for engineering documentation</p>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h2>See your entire project at a glance</h2>
+      <p>
+        No omissions. No chaos. Just full clarity of DWG, PDF, and DXF documentation – with real file previews from your project folders.
+      </p>
+      <a href="#signup" class="cta-button">Apply for early access</a>
+    </div>
+  </section>
+
+  <section class="screenshot">
+    <div class="container">
+      <img src="img/DP_design_pilot.png" alt="DP Design Pilot Screenshot" />
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <h3>What does DP Design Pilot solve?</h3>
+      <ul>
+        <li><strong>📂 Full project structure:</strong> View all parts and assemblies in one place</li>
+        <li><strong>🔍 Auto-check system:</strong> Instantly see where DWG, PDF, DXF files are missing – based on real folder content</li>
+        <li><strong>⚙️ One-click generation:</strong> Missing documents are created directly from Inventor</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="signup" id="signup">
+    <div class="container">
+      <h3>Join the testing group</h3>
+      <p>🎁 Join now and get not just 1, but 2 full months of free access to DP Design Pilot.</p>
+      <p><strong>You risk nothing – fill out the form and help shape a tool made for engineers like you.</strong></p>
+
+      <form id="contact-form">
+        <label for="email">Email:</label>
+        <input type="email" name="email" placeholder="Your email" required />
+
+        <label for="cad_system">Do you use Autodesk Inventor?</label>
+        <select name="cad_system" required>
+          <option value="">-- Select --</option>
+          <option>Yes</option>
+          <option>No</option>
+          <option>I use other CAD software</option>
+        </select>
+
+        <label for="missing_docs">How often is documentation missing (PDF, DWG, DXF)?</label>
+        <select name="missing_docs" required>
+          <option value="">-- Select --</option>
+          <option>Almost always</option>
+          <option>Sometimes</option>
+          <option>Rarely</option>
+          <option>Never</option>
+        </select>
+
+        <label for="willing_to_pay">Would you pay for such a tool?</label>
+        <select name="willing_to_pay" required>
+          <option value="">-- Select --</option>
+          <option>Yes – €5/month</option>
+          <option>Yes – €10/month</option>
+          <option>Yes – €20/month</option>
+          <option>No, I wouldn't</option>
+        </select>
+
+        <label for="suggestion">What else would you like the panel to include?</label>
+        <textarea name="suggestion" rows="3" placeholder="Optional comment"></textarea>
+
+        <label class="privacy-note">
+          <input type="checkbox" required /> I agree to the <a href="privacy-policy-en.html" class="privacy-link" target="_blank">Privacy Policy</a> and the use of my data for feedback purposes.
+        </label>
+
+        <button type="submit">Submit</button>
+      </form>
+      <p id="form-status"></p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 DP Design. All rights reserved. | <a href="privacy-policy-en.html" target="_blank">Privacy Policy</a></p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("contact-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      emailjs.sendForm("service_exwl56d", "template_3huajmr", this)
+        .then(() => {
+          document.getElementById("form-status").innerText = "Thank you! We'll be in touch soon.";
+          this.reset();
+        }, (error) => {
+          document.getElementById("form-status").innerText = "Error occurred. Please try again.";
+          console.error("EmailJS error:", error);
+        });
+    });
+  </script>
+</body>
+</html>
