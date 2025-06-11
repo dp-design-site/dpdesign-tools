@@ -9,7 +9,7 @@
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
     (function(){
-      emailjs.init("YOUR_PUBLIC_KEY_HERE");
+      emailjs.init("RNylG-hhPPast_2hi");
     })();
   </script>
 </head>
@@ -103,7 +103,7 @@
     document.getElementById("contact-form").addEventListener("submit", function (e) {
       e.preventDefault();
 
-      emailjs.sendForm("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", this)
+      emailjs.sendForm("service_exwl56d", "template_3huajmr", this)
         .then(() => {
           document.getElementById("form-status").innerText = "Благодарим! Ще се свържем с теб скоро.";
           this.reset();
