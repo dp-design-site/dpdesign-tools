@@ -219,30 +219,35 @@
 
         <button type="button" class="collapsible" id="expandMore">Искаш ли да ни кажеш повече?</button>
         <div class="collapsible-content">
+
+          <label for="cad_system">Използваш ли Autodesk Inventor?</label>
           <select name="cad_system">
-            <option value="">Използваш ли Inventor?</option>
+            <option value="">-- Избери --</option>
             <option>Да</option>
             <option>Не</option>
             <option>Ползвам друг CAD</option>
           </select>
 
+          <label for="missing_docs">Колко често липсва документация?</label>
           <select name="missing_docs">
-            <option value="">Колко често липсва документация?</option>
+            <option value="">-- Избери --</option>
             <option>Почти винаги</option>
             <option>Понякога</option>
             <option>Рядко</option>
             <option>Никога</option>
           </select>
 
+          <label for="willing_to_pay">Би ли платил за такъв инструмент?</label>
           <select name="willing_to_pay">
-            <option value="">Би ли платил за такъв инструмент?</option>
+            <option value="">-- Избери --</option>
             <option>Да – €5/месец</option>
             <option>Да – €10/месец</option>
             <option>Да – €20/месец</option>
             <option>Не бих</option>
           </select>
 
-          <textarea name="suggestion" rows="3" placeholder="Свободен коментар (по избор)"></textarea>
+          <label for="suggestion">Свободен коментар (по избор):</label>
+          <textarea name="suggestion" rows="3" placeholder="Сподели нещо, ако искаш"></textarea>
         </div>
 
         <label class="privacy-note">
