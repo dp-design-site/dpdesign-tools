@@ -66,73 +66,54 @@
       font-size: 0.9rem;
     }
     .lang-switch {
-      position: relative;
       text-align: right;
       margin: 10px 20px;
       font-size: 0.9rem;
     }
-    .lang-switch button {
-      background-color: transparent;
+    .lang-switch a {
       color: #aaa;
-      border: 1px solid #555;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .lang-switch button img {
-      width: 18px;
-      height: 12px;
-      margin-right: 6px;
-      vertical-align: middle;
-    }
-    .lang-dropdown {
-      position: absolute;
-      right: 0;
-      background-color: #2c2c2c;
-      border: 1px solid #555;
-      border-radius: 4px;
-      display: none;
-      margin-top: 5px;
-      z-index: 999;
-    }
-    .lang-dropdown a {
-      display: block;
-      padding: 6px 12px;
-      color: #ccc;
       text-decoration: none;
-      white-space: nowrap;
+      margin-left: 8px;
     }
-    .lang-dropdown a:hover {
-      background-color: #444;
+    .lang-switch a.active {
+      color: #fff;
+      font-weight: bold;
+    }
+    .fullscreen-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .fullscreen-overlay img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border: 4px solid #444;
+      border-radius: 8px;
+    }
+    .fullscreen-overlay.active {
+      display: flex;
+    }
+    .screenshot img {
+      cursor: zoom-in;
+      transition: transform 0.2s ease;
     }
   </style>
 </head>
 <body>
   <div class="lang-switch">
-    <button onclick="toggleLangMenu()">
-      <img src="img/flag-bg.png" alt="BG"> BG ▾
-    </button>
-    <div class="lang-dropdown" id="lang-menu">
-      <a href="#" class="active"><img src="img/flag-en.png" alt="EN"> EN</a>
-      <a href="index-en.html"><img src="img/flag-bg.png" alt="BG"> BG</a>
-      <a href="index-de.html"><img src="img/flag-de.png" alt="DE"> DE</a>
-      <a href="index-fr.html"><img src="img/flag-fr.png" alt="FR"> FR</a>
-    </div>
+    <a href="index.html">BG</a> | <a href="#" class="active">EN</a> | <a href="index-de.html">DE</a> | <a href="index-fr.html">FR</a>
   </div>
 
-  <script>
-    function toggleLangMenu() {
-      const menu = document.getElementById('lang-menu');
-      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    }
-    document.addEventListener('click', function(e) {
-      const menu = document.getElementById('lang-menu');
-      const button = document.querySelector('.lang-switch button');
-      if (!button.contains(e.target) && !menu.contains(e.target)) {
-        menu.style.display = 'none';
-      }
-    });
-  </script>
+  <div class="fullscreen-overlay" id="imageOverlay">
+    <img src="img/DP_design_pilot.png" alt="DP Screenshot Full" />
+  </div>
 
   <header class="header">
     <div class="container">
@@ -154,7 +135,7 @@
 
   <section class="screenshot">
     <div class="container">
-      <img src="img/DP_design_pilot.png" alt="DP Design Pilot Screenshot" />
+      <img src="img/DP_design_pilot.png" alt="DP Design Pilot Screenshot" id="main-screenshot" />
     </div>
   </section>
 
@@ -236,6 +217,24 @@
           document.getElementById("form-status").innerText = "Error occurred. Please try again.";
           console.error("EmailJS error:", error);
         });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const screenshot = document.getElementById("main-screenshot");
+      const overlay = document.getElementById("imageOverlay");
+      if (screenshot && overlay) {
+        screenshot.addEventListener("click", () => {
+          overlay.classList.add("active");
+        });
+        overlay.addEventListener("click", () => {
+          overlay.classList.remove("active");
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            overlay.classList.remove("active");
+          }
+        });
+      }
     });
   </script>
 </body>
