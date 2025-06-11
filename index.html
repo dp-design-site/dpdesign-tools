@@ -90,9 +90,29 @@
       cursor: zoom-in;
       transition: transform 0.2s ease;
     }
+    <style>
+    .lang-switch {
+      text-align: right;
+      margin: 10px 20px;
+      font-size: 0.9rem;
+    }
+    .lang-switch a {
+      color: #aaa;
+      text-decoration: none;
+      margin-left: 8px;
+    }
+    .lang-switch a.active {
+      color: #fff;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
+  <body>
+  <div class="lang-switch">
+    <a href="#" class="active">BG</a> | <a href="index-en.html">EN</a> | <a href="index-de.html">DE</a> | <a href="index-fr.html">FR</a>
+  </div>
+
   <header class="header">
     <div class="container">
       <img src="img/DP_DWG_32x32.png" alt="DP Logo" class="logo" />
