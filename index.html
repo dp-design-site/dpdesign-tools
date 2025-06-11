@@ -126,18 +126,33 @@
     width: 100%;
     margin-bottom: 12px;
   }
+      .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+  }
+  
+  .top-logo {
+    width: 120px;
+    height: auto;
+  }
+
   </style>
 </head>
 <body>
-  <div class="lang-switch">
-    <button onclick="toggleLangMenu()">
-      <img src="img/flag-bg.png" alt="BG"> BG ▾
-    </button>
-    <div class="lang-dropdown" id="lang-menu">
-      <a href="#" class="active"><img src="img/flag-bg.png" alt="BG"> BG</a>
-      <a href="index-en.html"><img src="img/flag-en.png" alt="EN"> EN</a>
-      <a href="index-de.html"><img src="img/flag-de.png" alt="DE"> DE</a>
-      <a href="index-fr.html"><img src="img/flag-fr.png" alt="FR"> FR</a>
+  <div class="top-bar">
+    <img src="img/DP_DWG_32x32.png" alt="DP Logo" class="top-logo" />
+    <div class="lang-switch">
+      <button onclick="toggleLangMenu()">
+        <img src="img/flag-bg.png" alt="BG"> BG ▾
+      </button>
+      <div class="lang-dropdown" id="lang-menu">
+        <a href="#" class="active"><img src="img/flag-bg.png" alt="BG"> BG</a>
+        <a href="index-en.html"><img src="img/flag-en.png" alt="EN"> EN</a>
+        <a href="index-de.html"><img src="img/flag-de.png" alt="DE"> DE</a>
+        <a href="index-fr.html"><img src="img/flag-fr.png" alt="FR"> FR</a>
+      </div>
     </div>
   </div>
 
