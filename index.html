@@ -12,6 +12,43 @@
       emailjs.init("RNylG-hhPPast_2hi");
     })();
   </script>
+  <style>
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 500px;
+      margin: auto;
+    }
+    form input,
+    form select,
+    form textarea {
+      background-color: #2c2c2c;
+      color: #fff;
+      border: 1px solid #555;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    form input::placeholder,
+    form textarea::placeholder {
+      color: #bbb;
+    }
+    form label {
+      font-weight: bold;
+      color: #ccc;
+    }
+    .signup h3 {
+      color: #fff;
+    }
+    .signup p {
+      color: #ddd;
+    }
+    #form-status {
+      margin-top: 10px;
+      color: #90ee90;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <header class="header">
@@ -28,7 +65,7 @@
       <p>
         Без пропуски. Без хаос. Само пълна яснота за DWG, PDF и DXF документацията.
       </p>
-      <a href="#signup" class="cta-button">Абонирай се за ранен достъп</a>
+      <a href="#signup" class="cta-button">Попълни анкетата за ранен достъп</a>
     </div>
   </section>
 
@@ -56,9 +93,10 @@
       <p>Попълни кратката анкета и стани част от инженери, които ще тестват и ще повлияят на крайния продукт.</p>
 
       <form id="contact-form">
+        <label for="email">Email:</label>
         <input type="email" name="email" placeholder="Твоят имейл" required />
 
-        <label>Използваш ли Autodesk Inventor?</label>
+        <label for="cad_system">Използваш ли Autodesk Inventor?</label>
         <select name="cad_system" required>
           <option value="">-- Избери --</option>
           <option>Да</option>
@@ -66,7 +104,7 @@
           <option>Ползвам друг CAD софтуер</option>
         </select>
 
-        <label>Колко често липсва документация (PDF, DWG, DXF)?</label>
+        <label for="missing_docs">Колко често липсва документация (PDF, DWG, DXF)?</label>
         <select name="missing_docs" required>
           <option value="">-- Избери --</option>
           <option>Почти винаги</option>
@@ -75,7 +113,7 @@
           <option>Никога</option>
         </select>
 
-        <label>Би ли платил за такъв инструмент?</label>
+        <label for="willing_to_pay">Би ли платил за такъв инструмент?</label>
         <select name="willing_to_pay" required>
           <option value="">-- Избери --</option>
           <option>Да – €5/мес</option>
@@ -84,7 +122,7 @@
           <option>Не бих платил</option>
         </select>
 
-        <label>Какво друго би искал да включва този панел?</label>
+        <label for="suggestion">Какво друго би искал да включва този панел?</label>
         <textarea name="suggestion" rows="3" placeholder="Свободен коментар (по избор)"></textarea>
 
         <button type="submit">Изпрати</button>
