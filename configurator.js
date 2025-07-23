@@ -1,4 +1,4 @@
-// Конфигурационен скрипт – Етап 2: зареждане на изображения и PDF
+// Конфигурационен скрипт – Етап 2: зареждане на изображения и PDF с Lightbox и скрол
 
 function generateConfig() {
   const length = document.getElementById('length').value;
@@ -32,7 +32,6 @@ function generateConfig() {
 }
 
 function enableLightbox() {
-  // Премахване на съществуващ модален прозорец ако има
   const existing = document.getElementById('lightbox-modal');
   if (existing) existing.remove();
 
@@ -56,6 +55,17 @@ function enableLightbox() {
   img.style.borderRadius = '8px';
   modal.appendChild(img);
 
+  const imageList = [];
+  let currentIndex = 0;
+
+  const showImage = (index) => {
+    if (index >= 0 && index < imageList.length) {
+      currentIndex = index;
+      img.src = imageList[index];
+      modal.style.display = 'flex';
+    }
+  };
+
   modal.addEventListener('click', () => {
     modal.style.display = 'none';
   });
@@ -65,15 +75,20 @@ function enableLightbox() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       modal.style.display = 'none';
+    } else if (e.key === 'ArrowRight') {
+      showImage(currentIndex + 1);
+    } else if (e.key === 'ArrowLeft') {
+      showImage(currentIndex - 1);
     }
   });
 
-  document.querySelectorAll('.lightbox-trigger').forEach(el => {
+  const triggers = document.querySelectorAll('.lightbox-trigger');
+  triggers.forEach((el, i) => {
+    const src = el.getAttribute('data-src');
+    imageList.push(src);
     el.addEventListener('click', (e) => {
       e.preventDefault();
-      const src = el.getAttribute('data-src');
-      img.src = src;
-      modal.style.display = 'flex';
+      showImage(i);
     });
   });
 }
