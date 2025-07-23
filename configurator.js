@@ -42,23 +42,26 @@ function load3DModel(modelUrl) {
   const container = document.getElementById("modelContainer");
   container.innerHTML = `<p style="color: #ccc;">Зареждане на 3D модел...</p>`;
 
-  const script = document.createElement('script');
-  script.type = 'module';
-  script.innerHTML = `
-    import '@google/model-viewer';
-    const modelViewer = document.createElement('model-viewer');
-    modelViewer.src = '${modelUrl}';
-    modelViewer.alt = '3D визуализация';
-    modelViewer.style.width = '100%';
-    modelViewer.style.height = '500px';
-    modelViewer.setAttribute('camera-controls', '');
-    modelViewer.setAttribute('auto-rotate', '');
-    modelViewer.setAttribute('background-color', '#1e1e2f');
-    document.getElementById("modelContainer").innerHTML = '';
-    document.getElementById("modelContainer").appendChild(modelViewer);
-  `;
+  const modelViewer = document.createElement('model-viewer');
+  modelViewer.src = modelUrl;
+  modelViewer.alt = '3D визуализация';
+  modelViewer.style.width = '100%';
+  modelViewer.style.height = '500px';
+  modelViewer.setAttribute('camera-controls', '');
+  modelViewer.setAttribute('auto-rotate', '');
+  modelViewer.setAttribute('background-color', '#1e1e2f');
+  modelViewer.setAttribute('ar', '');
 
-  document.body.appendChild(script);
+  container.innerHTML = '';
+  container.appendChild(modelViewer);
+
+  // Зареждане на модул само при нужда (ако не е вече наличен)
+  if (!window.customElements.get('model-viewer')) {
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.src = 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js';
+    document.head.appendChild(script);
+  }
 }
 
 function enableLightbox() {
