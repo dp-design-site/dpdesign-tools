@@ -57,19 +57,13 @@
       font-size: 16px;
     }
     .json-output {
-      background: #111;
-      padding: 10px;
-      margin-top: 20px;
-      border-radius: 6px;
-      font-family: monospace;
-      white-space: pre-wrap;
+      display: none;
     }
     .pdf-viewer {
       width: 100%;
-      height: 600px;
-      border: none;
+      max-width: 100%;
+      height: auto;
       border-radius: 8px;
-      box-shadow: 0 0 10px #000;
       margin-bottom: 20px;
     }
     .thumbnail-row {
@@ -88,14 +82,40 @@
     .thumbnail:hover {
       transform: scale(1.05);
     }
-    @media (min-width: 768px) {
+    .accordion-toggle {
+      display: none;
+    }
+    .accordion-label {
+      display: none;
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-bottom: 5px;
+    }
+    .accordion-content {
+      display: block;
+    }
+    @media (max-width: 767px) {
       .flex-row {
-        display: flex;
-        gap: 20px;
+        display: block;
       }
-      .flex-row > fieldset {
-        flex: 1;
+      fieldset {
+        display: none;
       }
+      .accordion-toggle:checked + .accordion-label + fieldset {
+        display: block;
+      }
+      .accordion-label {
+        display: block;
+      }
+    }
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: #888;
     }
   </style>
 </head>
@@ -118,6 +138,7 @@
     </select>
 
     <div class="flex-row">
+      <input type="checkbox" class="accordion-toggle" id="t1"><label for="t1" class="accordion-label">Дъно</label>
       <fieldset>
         <legend>Дъно</legend>
         <label>Вид ламарина дъно</label>
@@ -133,6 +154,7 @@
         <input type="text" value="Стоманени" class="readonly" readonly>
       </fieldset>
 
+      <input type="checkbox" class="accordion-toggle" id="t2"><label for="t2" class="accordion-label">Челна стена</label>
       <fieldset>
         <legend>Челна стена</legend>
         <label>Скосена челна стена</label>
@@ -148,6 +170,7 @@
         <input type="text" value="Да" class="readonly" readonly>
       </fieldset>
 
+      <input type="checkbox" class="accordion-toggle" id="t3"><label for="t3" class="accordion-label">Халки за укрепване</label>
       <fieldset>
         <legend>Халки за укрепване на товара</legend>
         <label>Халки 7000 кг</label>
@@ -165,6 +188,12 @@
 
     <div class="json-output" id="output"></div>
     <div id="preview" style="margin-top: 30px;"></div>
+
+    <button onclick="document.getElementById('preview').innerHTML += '<p>Благодарим за направената поръчка. Наш колега ще се свърже с вас за потвърждение.</p>'">Поръчай</button>
+
+    <footer>
+      © dp-design.tools – всички права запазени
+    </footer>
   </div>
 
   <script src="configurator.js"></script>
