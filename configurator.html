@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Конфигуратор - Abroll On/Off Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       background-color: #1e1e2f;
@@ -11,7 +12,7 @@
       padding: 20px;
     }
     .container {
-      max-width: 800px;
+      max-width: 960px;
       margin: 0 auto;
       background: #2b2b3c;
       padding: 20px;
@@ -20,6 +21,16 @@
     h2 {
       text-align: center;
       margin-bottom: 20px;
+    }
+    fieldset {
+      border: 1px solid #555;
+      margin-bottom: 16px;
+      padding: 16px;
+      border-radius: 6px;
+    }
+    legend {
+      font-weight: bold;
+      padding: 0 8px;
     }
     label {
       display: block;
@@ -32,6 +43,10 @@
       border: none;
       border-radius: 4px;
     }
+    .readonly {
+      background-color: #444;
+      color: #999;
+    }
     button {
       background-color: #007acc;
       color: white;
@@ -41,10 +56,6 @@
       cursor: pointer;
       font-size: 16px;
     }
-    .readonly {
-      background-color: #444;
-      color: #999;
-    }
     .json-output {
       background: #111;
       padding: 10px;
@@ -53,31 +64,78 @@
       font-family: monospace;
       white-space: pre-wrap;
     }
+    @media (min-width: 768px) {
+      .flex-row {
+        display: flex;
+        gap: 20px;
+      }
+      .flex-row > fieldset {
+        flex: 1;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Конфигуратор на платформа</h2>
 
-    <label for="length">Дължина (mm)</label>
-    <input type="number" id="length" value="5000">
+    <label for="length">Дължина</label>
+    <select id="length">
+      <option value="5500">5500 mm</option>
+      <option value="6000">6000 mm</option>
+      <option value="7000">7000 mm</option>
+    </select>
 
     <label for="color">Цвят</label>
     <select id="color">
       <option value="RAL3000_Flame_red">RAL3000 Flame Red</option>
-      <option value="RAL7016_Anthracite">RAL7016 Anthracite</option>
-      <option value="RAL9005_Black">RAL9005 Black</option>
+      <option value="RAL1026_Luminous_yellow">RAL1026 Luminous Yellow</option>
+      <option value="RAL5012_Light_blue">RAL5012 Light Blue</option>
     </select>
 
-    <!-- Неактивни полета -->
-    <label for="width">Широчина (неактивно)</label>
-    <input type="text" id="width" value="2450 mm" class="readonly" readonly>
+    <div class="flex-row">
+      <fieldset>
+        <legend>Дъно</legend>
+        <label>Вид ламарина дъно</label>
+        <input type="text" value="Гладка S2" class="readonly" readonly>
 
-    <label for="floor">Вид ламарина дъно (неактивно)</label>
-    <input type="text" value="Гладка S2" class="readonly" readonly>
+        <label>Дебелина ламарина</label>
+        <input type="text" value="5 mm" class="readonly" readonly>
 
-    <label for="hooks">Брой халки (неактивно)</label>
-    <input type="text" value="8" class="readonly" readonly>
+        <label>C-заключване</label>
+        <input type="text" value="Да" class="readonly" readonly>
+
+        <label>Вид ролки</label>
+        <input type="text" value="Стоманени" class="readonly" readonly>
+      </fieldset>
+
+      <fieldset>
+        <legend>Челна стена</legend>
+        <label>Скосена челна стена</label>
+        <input type="text" value="Не" class="readonly" readonly>
+
+        <label>Височина</label>
+        <input type="text" value="1500 mm" class="readonly" readonly>
+
+        <label>Дебелина ламарина CS</label>
+        <input type="text" value="3 mm" class="readonly" readonly>
+
+        <label>Укрепване към дъното</label>
+        <input type="text" value="Да" class="readonly" readonly>
+      </fieldset>
+
+      <fieldset>
+        <legend>Халки за укрепване на товара</legend>
+        <label>Халки 7000 кг</label>
+        <input type="text" value="Да" class="readonly" readonly>
+
+        <label>Отстояние първа халка</label>
+        <input type="text" value="500 mm" class="readonly" readonly>
+
+        <label>Брой халки на страна</label>
+        <input type="text" value="10" class="readonly" readonly>
+      </fieldset>
+    </div>
 
     <button onclick="generateConfig()">Генерирай</button>
 
@@ -86,13 +144,20 @@
 
   <script>
     function generateConfig() {
+      const length = document.getElementById('length').value;
+      const color = document.getElementById('color').value;
+      const configID = `${length}_${color}`;
+
       const config = {
-        length: document.getElementById('length').value,
-        color: document.getElementById('color').value,
+        length: length,
+        color: color,
+        configID: configID,
         timestamp: new Date().toISOString()
       };
 
       document.getElementById('output').innerText = JSON.stringify(config, null, 2);
+
+      // Тук по-късно ще зареждаме изображения и PDF
     }
   </script>
 </body>
