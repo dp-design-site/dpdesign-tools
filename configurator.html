@@ -80,6 +80,8 @@
       gap: 10px;
       justify-content: center;
       margin-bottom: 30px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .thumbnail {
       width: 150px;
@@ -87,9 +89,26 @@
       cursor: pointer;
       box-shadow: 0 0 5px #222;
       transition: transform 0.2s;
+      flex: 0 0 auto;
     }
     .thumbnail:hover {
       transform: scale(1.05);
+    }
+    .thumbnail-row::-webkit-scrollbar {
+      height: 6px;
+    }
+    .thumbnail-row::-webkit-scrollbar-thumb {
+      background-color: #666;
+      border-radius: 3px;
+    }
+    .arrow {
+      font-size: 24px;
+      color: #ccc;
+      cursor: pointer;
+      user-select: none;
+      margin: 0 10px;
+      display: flex;
+      align-items: center;
     }
     .accordion-toggle {
       display: none;
@@ -137,7 +156,6 @@
       font-size: 14px;
       color: #888;
     }
-
     .lightbox {
       position: fixed;
       top: 0;
