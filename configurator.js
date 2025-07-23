@@ -12,26 +12,68 @@ function generateConfig() {
     timestamp: new Date().toISOString()
   };
 
-  // Път до изображенията и PDF файла
   const basePath = `img/${configID}`;
 
   const previewHTML = `
     <h3>Преглед на чертеж:</h3>
     <div class="gallery">
-      <a href="${basePath}/drawing.pdf" target="_blank">
-        <img src="${basePath}/preview_drawing.png" class="drawing-preview responsive-preview">
-      </a>
+      <img src="${basePath}/preview_drawing.png" class="drawing-preview responsive-preview lightbox-trigger" data-src="${basePath}/preview_drawing.png">
       <div class="thumbnail-row">
-        <a href="${basePath}/view1.png" target="_blank">
-          <img src="${basePath}/view1.png" class="thumbnail">
-        </a>
-        <a href="${basePath}/view2.png" target="_blank">
-          <img src="${basePath}/view2.png" class="thumbnail">
-        </a>
+        <img src="${basePath}/view1.png" class="thumbnail lightbox-trigger" data-src="${basePath}/view1.png">
+        <img src="${basePath}/view2.png" class="thumbnail lightbox-trigger" data-src="${basePath}/view2.png">
       </div>
     </div>
   `;
 
   document.getElementById('preview').innerHTML = previewHTML;
   document.getElementById('output').style.display = 'none';
+
+  enableLightbox();
+}
+
+function enableLightbox() {
+  // Премахване на съществуващ модален прозорец ако има
+  const existing = document.getElementById('lightbox-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'lightbox-modal';
+  modal.style.position = 'fixed';
+  modal.style.top = 0;
+  modal.style.left = 0;
+  modal.style.width = '100vw';
+  modal.style.height = '100vh';
+  modal.style.background = 'rgba(0,0,0,0.9)';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = 1000;
+  modal.style.display = 'none';
+
+  const img = document.createElement('img');
+  img.style.maxWidth = '90vw';
+  img.style.maxHeight = '90vh';
+  img.style.borderRadius = '8px';
+  modal.appendChild(img);
+
+  modal.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  document.body.appendChild(modal);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      modal.style.display = 'none';
+    }
+  });
+
+  document.querySelectorAll('.lightbox-trigger').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      const src = el.getAttribute('data-src');
+      img.src = src;
+      modal.style.display = 'flex';
+    });
+  });
 }
