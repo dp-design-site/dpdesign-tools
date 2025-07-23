@@ -27,7 +27,7 @@
       margin-bottom: 20px;
     }
     .logo img {
-      height: 100px;
+      height: 50px;
     }
     fieldset {
       border: 1px solid #555;
@@ -73,6 +73,7 @@
       border-radius: 8px;
       margin-bottom: 20px;
       box-shadow: 0 0 8px #111;
+      object-fit: contain;
     }
     .thumbnail-row {
       display: flex;
@@ -135,6 +136,25 @@
       text-align: center;
       font-size: 14px;
       color: #888;
+    }
+
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #000;
     }
   </style>
 </head>
@@ -211,13 +231,6 @@
 
     <div class="json-output" id="output"></div>
     <div id="preview" style="margin-top: 30px;"></div>
-
-  <button onclick="document.getElementById('preview').innerHTML += '<p>Благодарим за направената поръчка. Наш колега ще се свърже с вас за потвърждение.</p>'">Поръчай</button>
-
-    <footer>
-      © dp-design.tools – всички права запазени
-    </footer>
-    
   </div>
 
   <script src="configurator.js"></script>
