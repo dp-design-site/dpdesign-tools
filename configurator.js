@@ -30,24 +30,8 @@ function generateConfig() {
         </a>
       </div>
     </div>
-    <button id="orderButton" class="order-button">Поръчай</button>
-    <div id="orderConfirmation" class="order-confirmation"></div>
-    <footer class="footer">© dp-design.tools – всички права запазени</footer>
   `;
 
   document.getElementById('preview').innerHTML = previewHTML;
   document.getElementById('output').style.display = 'none';
-
-  // Добавяме обработка за бутона Поръчай
-  setTimeout(() => {
-    const btn = document.getElementById('orderButton');
-    if (btn) {
-      btn.addEventListener('click', () => {
-        document.getElementById('orderConfirmation').innerText =
-          'Благодарим за направената поръчка. Наш колега ще се свърже с вас за потвърждение.';
-      });
-    }
-  }, 50);
-}
-
-// Стиловете ще се добавят към основния HTML или CSS файл
+} // Край на generateConfig
