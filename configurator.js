@@ -17,10 +17,12 @@ function generateConfig() {
   const previewHTML = `
     <h3>Преглед на чертеж:</h3>
     <div class="gallery">
-      <img src="${basePath}/preview_drawing.png" class="drawing-preview responsive-preview lightbox-trigger" data-src="${basePath}/preview_drawing.png">
+      <div class="drawing-preview-container">
+        <img src="${basePath}/preview_drawing.png" class="drawing-preview responsive-preview lightbox-trigger" data-type="pdf" data-src="${basePath}/drawing.pdf">
+      </div>
       <div class="thumbnail-row">
-        <img src="${basePath}/view1.png" class="thumbnail lightbox-trigger" data-src="${basePath}/view1.png">
-        <img src="${basePath}/view2.png" class="thumbnail lightbox-trigger" data-src="${basePath}/view2.png">
+        <img src="${basePath}/view1.png" class="thumbnail lightbox-trigger" data-type="image" data-src="${basePath}/view1.png">
+        <img src="${basePath}/view2.png" class="thumbnail lightbox-trigger" data-type="image" data-src="${basePath}/view2.png">
       </div>
     </div>
   `;
@@ -50,11 +52,18 @@ function enableLightbox() {
   modal.style.display = 'none';
   modal.style.flexDirection = 'column';
 
-  const img = document.createElement('img');
-  img.style.maxWidth = '90vw';
-  img.style.maxHeight = '80vh';
-  img.style.borderRadius = '8px';
-  modal.appendChild(img);
+  const contentContainer = document.createElement('div');
+  contentContainer.style.maxWidth = '90vw';
+  contentContainer.style.maxHeight = '80vh';
+  contentContainer.style.borderRadius = '8px';
+  contentContainer.style.boxShadow = '0 0 10px #000';
+  contentContainer.style.background = '#fff';
+  contentContainer.style.display = 'flex';
+  contentContainer.style.alignItems = 'center';
+  contentContainer.style.justifyContent = 'center';
+  contentContainer.style.overflow = 'hidden';
+
+  modal.appendChild(contentContainer);
 
   const nav = document.createElement('div');
   nav.style.marginTop = '10px';
@@ -81,12 +90,30 @@ function enableLightbox() {
   modal.appendChild(nav);
 
   const imageList = [];
+  const typeList = [];
   let currentIndex = 0;
 
   const showImage = (index) => {
     if (index >= 0 && index < imageList.length) {
       currentIndex = index;
-      img.src = imageList[index];
+      contentContainer.innerHTML = '';
+      const src = imageList[index];
+      const type = typeList[index];
+      if (type === 'pdf') {
+        const iframe = document.createElement('iframe');
+        iframe.src = src;
+        iframe.style.width = '90vw';
+        iframe.style.height = '80vh';
+        iframe.style.border = 'none';
+        contentContainer.appendChild(iframe);
+      } else {
+        const img = document.createElement('img');
+        img.src = src;
+        img.style.maxWidth = '90vw';
+        img.style.maxHeight = '80vh';
+        img.style.borderRadius = '8px';
+        contentContainer.appendChild(img);
+      }
       modal.style.display = 'flex';
     }
   };
@@ -122,7 +149,9 @@ function enableLightbox() {
   const triggers = document.querySelectorAll('.lightbox-trigger');
   triggers.forEach((el, i) => {
     const src = el.getAttribute('data-src');
+    const type = el.getAttribute('data-type') || 'image';
     imageList.push(src);
+    typeList.push(type);
     el.addEventListener('click', (e) => {
       e.preventDefault();
       showImage(i);
