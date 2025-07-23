@@ -22,6 +22,13 @@
       text-align: center;
       margin-bottom: 20px;
     }
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo img {
+      height: 50px;
+    }
     fieldset {
       border: 1px solid #555;
       margin-bottom: 16px;
@@ -59,12 +66,13 @@
     .json-output {
       display: none;
     }
-    .pdf-viewer {
+    .drawing-preview {
       width: 100%;
       max-width: 100%;
       height: auto;
       border-radius: 8px;
       margin-bottom: 20px;
+      box-shadow: 0 0 8px #111;
     }
     .thumbnail-row {
       display: flex;
@@ -94,8 +102,19 @@
       border-radius: 4px;
       margin-bottom: 5px;
     }
+    .accordion-label::after {
+      content: ' ⯆';
+      float: right;
+    }
+    .accordion-toggle:checked + .accordion-label::after {
+      content: ' ⯅';
+    }
     .accordion-content {
       display: block;
+    }
+    .flex-row {
+      display: flex;
+      gap: 16px;
     }
     @media (max-width: 767px) {
       .flex-row {
@@ -121,6 +140,10 @@
 </head>
 <body>
   <div class="container">
+    <div class="logo">
+      <img src="img/realmet-logo.png" alt="Realmet Logo">
+    </div>
+
     <h2>Конфигуратор на платформа</h2>
 
     <label for="length">Дължина</label>
@@ -188,12 +211,6 @@
 
     <div class="json-output" id="output"></div>
     <div id="preview" style="margin-top: 30px;"></div>
-
-    <button onclick="document.getElementById('preview').innerHTML += '<p>Благодарим за направената поръчка. Наш колега ще се свърже с вас за потвърждение.</p>'">Поръчай</button>
-
-    <footer>
-      © dp-design.tools – всички права запазени
-    </footer>
   </div>
 
   <script src="configurator.js"></script>
