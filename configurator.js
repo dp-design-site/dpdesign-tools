@@ -18,9 +18,13 @@ function generateConfig() {
     <h3>Преглед на чертеж:</h3>
     <div class="gallery">
       <img src="${basePath}/preview_drawing.png" class="drawing-preview responsive-preview lightbox-trigger" data-src="${basePath}/preview_drawing.png">
-      <div class="thumbnail-row">
-        <img src="${basePath}/view1.png" class="thumbnail lightbox-trigger" data-src="${basePath}/view1.png">
-        <img src="${basePath}/view2.png" class="thumbnail lightbox-trigger" data-src="${basePath}/view2.png">
+      <div class="thumbnail-row-container">
+        <span class="arrow" id="left-arrow">⯇</span>
+        <div class="thumbnail-row" id="thumbnail-strip">
+          <img src="${basePath}/view1.png" class="thumbnail lightbox-trigger" data-src="${basePath}/view1.png">
+          <img src="${basePath}/view2.png" class="thumbnail lightbox-trigger" data-src="${basePath}/view2.png">
+        </div>
+        <span class="arrow" id="right-arrow">⯈</span>
       </div>
     </div>
   `;
@@ -29,6 +33,7 @@ function generateConfig() {
   document.getElementById('output').style.display = 'none';
 
   enableLightbox();
+  enableArrowScroll();
 }
 
 function enableLightbox() {
@@ -143,6 +148,30 @@ function enableLightbox() {
       showImage((currentIndex + 1) % imageList.length);
     } else if (touchEndX > touchStartX + 50) {
       showImage((currentIndex - 1 + imageList.length) % imageList.length);
+    }
+  });
+}
+
+function enableArrowScroll() {
+  const row = document.getElementById('thumbnail-strip');
+  const left = document.getElementById('left-arrow');
+  const right = document.getElementById('right-arrow');
+  if (!row || !left || !right) return;
+
+  left.addEventListener('click', () => {
+    row.scrollBy({ left: -200, behavior: 'smooth' });
+  });
+
+  right.addEventListener('click', () => {
+    row.scrollBy({ left: 200, behavior: 'smooth' });
+  });
+
+  // Infinite loop logic
+  row.addEventListener('scroll', () => {
+    if (row.scrollLeft + row.clientWidth >= row.scrollWidth - 1) {
+      row.scrollTo({ left: 0, behavior: 'smooth' });
+    } else if (row.scrollLeft === 0) {
+      row.scrollTo({ left: row.scrollWidth, behavior: 'smooth' });
     }
   });
 }
