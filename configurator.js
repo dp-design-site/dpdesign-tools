@@ -20,20 +20,13 @@ function generateConfig() {
   const previewHTML = `
     <h3>Преглед на чертеж:</h3>
     <div class="gallery">
-      <a href="${basePath}/main.png" target="_blank">
-        <img src="${basePath}/main.png" class="main-image">
-      </a>
+      <iframe src="${basePath}/drawing.pdf" class="pdf-viewer"></iframe>
       <div class="thumbnail-row">
         <a href="${basePath}/view1.png" target="_blank">
           <img src="${basePath}/view1.png" class="thumbnail">
         </a>
         <a href="${basePath}/view2.png" target="_blank">
           <img src="${basePath}/view2.png" class="thumbnail">
-        </a>
-      </div>
-      <div style="margin-top: 16px">
-        <a href="${basePath}/drawing.pdf" target="_blank">
-          <button>Отвори PDF чертеж</button>
         </a>
       </div>
     </div>
