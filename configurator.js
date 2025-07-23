@@ -19,7 +19,7 @@ function generateConfig() {
     <h3>Преглед на чертеж:</h3>
     <div class="gallery">
       <a href="${basePath}/drawing.pdf" target="_blank">
-        <img src="${basePath}/preview_drawing.png" class="drawing-preview">
+        <img src="${basePath}/preview_drawing.png" class="drawing-preview responsive-preview">
       </a>
       <div class="thumbnail-row">
         <a href="${basePath}/view1.png" target="_blank">
@@ -34,4 +34,4 @@ function generateConfig() {
 
   document.getElementById('preview').innerHTML = previewHTML;
   document.getElementById('output').style.display = 'none';
-} // Край на generateConfig
+}
