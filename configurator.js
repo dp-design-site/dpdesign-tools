@@ -57,7 +57,7 @@ function enableLightbox() {
   contentContainer.style.maxHeight = '80vh';
   contentContainer.style.borderRadius = '8px';
   contentContainer.style.boxShadow = '0 0 10px #000';
-  contentContainer.style.background = '#fff';
+  contentContainer.style.background = 'transparent';
   contentContainer.style.display = 'flex';
   contentContainer.style.alignItems = 'center';
   contentContainer.style.justifyContent = 'center';
