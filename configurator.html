@@ -64,6 +64,30 @@
       font-family: monospace;
       white-space: pre-wrap;
     }
+    .pdf-viewer {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #000;
+      margin-bottom: 20px;
+    }
+    .thumbnail-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    .thumbnail {
+      width: 150px;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 0 5px #222;
+      transition: transform 0.2s;
+    }
+    .thumbnail:hover {
+      transform: scale(1.05);
+    }
     @media (min-width: 768px) {
       .flex-row {
         display: flex;
@@ -140,25 +164,9 @@
     <button onclick="generateConfig()">Генерирай</button>
 
     <div class="json-output" id="output"></div>
+    <div id="preview" style="margin-top: 30px;"></div>
   </div>
 
-  <script>
-    function generateConfig() {
-      const length = document.getElementById('length').value;
-      const color = document.getElementById('color').value;
-      const configID = `${length}_${color}`;
-
-      const config = {
-        length: length,
-        color: color,
-        configID: configID,
-        timestamp: new Date().toISOString()
-      };
-
-      document.getElementById('output').innerText = JSON.stringify(config, null, 2);
-
-      // Тук по-късно ще зареждаме изображения и PDF
-    }
-  </script>
+  <script src="configurator.js"></script>
 </body>
 </html>
