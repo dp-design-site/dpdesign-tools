@@ -1,4 +1,4 @@
-// Конфигурационен скрипт – Етап 2: зареждане на изображения и PDF с Lightbox и скрол
+// Конфигурационен скрипт – Етап 2: зареждане на изображения и PDF с Lightbox и скрол + 3D визуализация
 
 function generateConfig() {
   const length = document.getElementById('length').value;
@@ -25,12 +25,40 @@ function generateConfig() {
         <img src="${basePath}/view2.png" class="thumbnail lightbox-trigger" data-type="image" data-src="${basePath}/view2.png">
       </div>
     </div>
+
+    <div style="margin-top: 40px;">
+      <button onclick="load3DModel('${basePath}/model.glb')">Зареди 3D визуализация</button>
+      <div id="modelContainer" style="margin-top: 20px;"></div>
+    </div>
   `;
 
   document.getElementById('preview').innerHTML = previewHTML;
   document.getElementById('output').style.display = 'none';
 
   enableLightbox();
+}
+
+function load3DModel(modelUrl) {
+  const container = document.getElementById("modelContainer");
+  container.innerHTML = `<p style="color: #ccc;">Зареждане на 3D модел...</p>`;
+
+  const script = document.createElement('script');
+  script.type = 'module';
+  script.innerHTML = `
+    import '@google/model-viewer';
+    const modelViewer = document.createElement('model-viewer');
+    modelViewer.src = '${modelUrl}';
+    modelViewer.alt = '3D визуализация';
+    modelViewer.style.width = '100%';
+    modelViewer.style.height = '500px';
+    modelViewer.setAttribute('camera-controls', '');
+    modelViewer.setAttribute('auto-rotate', '');
+    modelViewer.setAttribute('background-color', '#1e1e2f');
+    document.getElementById("modelContainer").innerHTML = '';
+    document.getElementById("modelContainer").appendChild(modelViewer);
+  `;
+
+  document.body.appendChild(script);
 }
 
 function enableLightbox() {
