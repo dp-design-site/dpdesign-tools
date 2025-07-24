@@ -15,13 +15,10 @@ function generateConfig() {
 
   // ⏳ Симулирано забавяне за маркетингов ефект
   /* SIMULATED DELAY START */
-  const generateBtn = document.getElementById("generateBtn");
-  generateBtn.disabled = true;
-  generateBtn.innerText = "Генериране...";
+    
 
   setTimeout(() => {
-    generateBtn.disabled = false;
-    generateBtn.innerText = "Генерирай";
+    generateBtn.innerText = "Генериране...";
     markAsGenerated();
   }, 1500);
   /* SIMULATED DELAY END */
