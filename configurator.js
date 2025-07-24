@@ -26,21 +26,21 @@ function generateConfig() {
       </div>
     </div>
 
-    <div style="margin-top: 40px;">
-      <button onclick="load3DModel('${basePath}/model.glb')">Зареди 3D визуализация</button>
-      <div id="modelContainer" style="margin-top: 20px;"></div>
+    <div style="margin-top: 40px; text-align:center">
+      <button id="load3DButton" onclick="load3DModel('${basePath}/model.glb')">Зареди 3D визуализация</button>
+      <div id="modelContainer" style="margin-top: 20px; border: 1px solid #ccc; border-radius: 10px;"></div>
     </div>
   `;
 
   document.getElementById('preview').innerHTML = previewHTML;
   document.getElementById('output').style.display = 'none';
 
-  const orderBtn = document.getElementById("orderBtn");
-  orderBtn.style.display = "none";
-
   const generateBtn = document.getElementById("generateBtn");
-  generateBtn.classList.add("active-generate");
-  generateBtn.classList.remove("generated");
+  generateBtn.classList.add("generated");
+  generateBtn.classList.remove("active-generate");
+
+  const orderBtn = document.getElementById("orderBtn");
+  orderBtn.style.display = "inline-block";
 
   enableLightbox();
 }
@@ -77,6 +77,8 @@ function load3DModel(modelUrl) {
   modelViewer.alt = '3D визуализация';
   modelViewer.style.width = '100%';
   modelViewer.style.height = '500px';
+  modelViewer.style.border = '1px solid #ccc';
+  modelViewer.style.borderRadius = '10px';
   modelViewer.setAttribute('camera-controls', '');
   modelViewer.setAttribute('auto-rotate', '');
   modelViewer.setAttribute('background-color', '#1e1e2f');
@@ -85,7 +87,6 @@ function load3DModel(modelUrl) {
   container.innerHTML = '';
   container.appendChild(modelViewer);
 
-  // Зареждане на модул само при нужда (ако не е вече наличен)
   if (!window.customElements.get('model-viewer')) {
     const script = document.createElement('script');
     script.type = 'module';
@@ -221,7 +222,6 @@ function enableLightbox() {
     });
   });
 
-  // Touch swipe for mobile
   let touchStartX = 0;
   let touchEndX = 0;
 
@@ -247,7 +247,6 @@ function closeModal() {
   document.getElementById("orderModal").style.display = "none";
 }
 
-// Затваряне при клик извън модалния прозорец
 window.onclick = function(event) {
   const modal = document.getElementById("orderModal");
   if (event.target === modal) {
