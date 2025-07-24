@@ -123,9 +123,28 @@ function load3DModel(modelUrl) {
         modelViewer.setAttribute('auto-rotate', '');
         modelViewer.setAttribute('background-color', '#1e1e2f');
         modelViewer.setAttribute('ar', '');
+        modelViewer.id = 'interactiveModel';
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.textContent = '⛶ На цял екран';
+        fullscreenBtn.style.marginTop = '10px';
+        fullscreenBtn.style.padding = '6px 12px';
+        fullscreenBtn.style.fontSize = '14px';
+        fullscreenBtn.style.cursor = 'pointer';
+        fullscreenBtn.onclick = () => {
+            const modelEl = document.getElementById('interactiveModel');
+            if (modelEl.requestFullscreen) {
+                modelEl.requestFullscreen();
+            } else if (modelEl.webkitRequestFullscreen) {
+                modelEl.webkitRequestFullscreen();
+            } else if (modelEl.msRequestFullscreen) {
+                modelEl.msRequestFullscreen();
+            }
+        };
 
         container.innerHTML = '';
         container.appendChild(modelViewer);
+        container.appendChild(fullscreenBtn);
 
         if (!window.customElements.get('model-viewer')) {
             const script = document.createElement('script');
@@ -135,6 +154,7 @@ function load3DModel(modelUrl) {
         }
     }, 2000);
 }
+
 
 function enableLightbox() {
   const existing = document.getElementById('lightbox-modal');
