@@ -2,13 +2,6 @@
 
 function generateConfig() {
   
-  setTimeout(() => {
-    generateBtn.disabled = false;
-    generateBtn.innerText = "Генерирай";
-    markAsGenerated();
-  }, 1500);
-  /* SIMULATED DELAY END */
-  
   const length = document.getElementById('length').value;
   const color = document.getElementById('color').value;
   const configID = `${length}_${color}`;
@@ -19,6 +12,19 @@ function generateConfig() {
     configID: configID,
     timestamp: new Date().toISOString()
   };
+
+  // ⏳ Симулирано забавяне за маркетингов ефект
+  /* SIMULATED DELAY START */
+  const generateBtn = document.getElementById("generateBtn");
+  generateBtn.disabled = true;
+  generateBtn.innerText = "Генериране...";
+
+  setTimeout(() => {
+    generateBtn.disabled = false;
+    generateBtn.innerText = "Генерирай";
+    markAsGenerated();
+  }, 1500);
+  /* SIMULATED DELAY END */
 
   const basePath = `img/${configID}`;
 
@@ -45,18 +51,6 @@ function generateConfig() {
 
   enableLightbox();
 
-  // ⏳ Симулирано забавяне за маркетингов ефект
-  /* SIMULATED DELAY START */
-  const generateBtn = document.getElementById("generateBtn");
-  generateBtn.disabled = true;
-  generateBtn.innerText = "Генериране...";
-
-  setTimeout(() => {
-    generateBtn.disabled = false;
-    generateBtn.innerText = "Генерирай";
-    markAsGenerated();
-  }, 1500);
-  /* SIMULATED DELAY END */
 }
 
 
