@@ -20,13 +20,23 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        model-viewer::part(default) {
-            background-color: rgba(30, 30, 47, 0.85) !important;
-        }
         `;
         document.head.appendChild(style);
     }
 })();
+
+// Задаваме фон на model-viewer при fullscreen, ако е активен
+document.addEventListener('fullscreenchange', () => {
+    const el = document.fullscreenElement;
+    if (el && el.tagName === 'MODEL-VIEWER') {
+        el.style.backgroundColor = 'rgba(30,30,47,0.85)';
+    }
+
+    const modelEl = document.getElementById('interactiveModel');
+    if (!document.fullscreenElement && modelEl) {
+        modelEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+});
 
 function generateConfig() {
     const length = document.getElementById('length').value;
@@ -104,13 +114,6 @@ function trackChanges() {
 }
 
 document.addEventListener('DOMContentLoaded', trackChanges);
-
-document.addEventListener('fullscreenchange', () => {
-    const modelEl = document.getElementById('interactiveModel');
-    if (!document.fullscreenElement && modelEl) {
-        modelEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-});
 
 function load3DModel(modelUrl) {
     const container = document.getElementById("modelContainer");
@@ -190,6 +193,7 @@ function load3DModel(modelUrl) {
         }
     }, 2000);
 }
+
 
 function enableLightbox() {
   const existing = document.getElementById('lightbox-modal');
