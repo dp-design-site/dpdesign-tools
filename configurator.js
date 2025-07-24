@@ -39,7 +39,19 @@ function generateConfig() {
     const basePath = `img/${configID}`;
 
     const previewContainer = document.getElementById('preview');
-    previewContainer.innerHTML = `<div class="spinner"></div><p style="color: #ccc; text-align: center;">Генериране на конфигурацията...</p>`;
+    previewContainer.innerHTML = `
+        <div class="spinner"></div>
+        <p id="loading-text" style="color: #ccc; text-align: center;">Въвеждане на входните параметри…</p>`;
+
+    setTimeout(() => {
+        const loadingText = document.getElementById('loading-text');
+        if (loadingText) loadingText.textContent = 'Изчисляване на чертежа…';
+    }, 2000);
+
+    setTimeout(() => {
+        const loadingText = document.getElementById('loading-text');
+        if (loadingText) loadingText.textContent = 'Зареждане…';
+    }, 4000);
 
     setTimeout(() => {
         const previewHTML = `
@@ -64,7 +76,7 @@ function generateConfig() {
         document.getElementById('output').style.display = 'none';
 
         enableLightbox();
-    }, 4000);
+    }, 6000);
 }
 
 function markAsGenerated() {
@@ -92,7 +104,14 @@ document.addEventListener('DOMContentLoaded', trackChanges);
 
 function load3DModel(modelUrl) {
     const container = document.getElementById("modelContainer");
-    container.innerHTML = `<div class="spinner"></div><p style="color: #ccc; text-align: center;">Зареждане на 3D модел...</p>`;
+    container.innerHTML = `
+        <div class="spinner"></div>
+        <p id="loading-3d" style="color: #ccc; text-align: center;">Генериране на 3D модел…</p>`;
+
+    setTimeout(() => {
+        const loading3d = document.getElementById('loading-3d');
+        if (loading3d) loading3d.textContent = 'Зареждане…';
+    }, 1000);
 
     setTimeout(() => {
         const modelViewer = document.createElement('model-viewer');
@@ -114,7 +133,7 @@ function load3DModel(modelUrl) {
             script.src = 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js';
             document.head.appendChild(script);
         }
-    }, 3000);
+    }, 2000);
 }
 
 function enableLightbox() {
