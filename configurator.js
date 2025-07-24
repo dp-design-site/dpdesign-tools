@@ -1,12 +1,9 @@
 // Конфигурационен скрипт – Етап 2: зареждане на изображения и PDF с Lightbox и скрол + 3D визуализация
 
-let currentConfigID = null;
-
 function generateConfig() {
   const length = document.getElementById('length').value;
   const color = document.getElementById('color').value;
   const configID = `${length}_${color}`;
-  currentConfigID = configID;
 
   const config = {
     length: length,
@@ -29,47 +26,17 @@ function generateConfig() {
       </div>
     </div>
 
-    <div style="margin-top: 40px; text-align: center;">
-      <button onclick="load3DModel('${basePath}/model.glb')" id="btn3D">Зареди 3D визуализация</button>
+    <div style="margin-top: 40px;">
+      <button onclick="load3DModel('${basePath}/model.glb')">Зареди 3D визуализация</button>
+      <div id="modelContainer" style="margin-top: 20px;"></div>
     </div>
-    <div id="modelContainer" style="margin-top: 20px;"></div>
   `;
 
   document.getElementById('preview').innerHTML = previewHTML;
   document.getElementById('output').style.display = 'none';
 
-  const orderBtn = document.getElementById("orderBtn");
-  orderBtn.style.display = "none";
-
-  const generateBtn = document.getElementById("generateBtn");
-  generateBtn.classList.add("active-generate");
-  generateBtn.classList.remove("generated");
-
   enableLightbox();
 }
-
-function markAsGenerated() {
-  const generateBtn = document.getElementById("generateBtn");
-  const orderBtn = document.getElementById("orderBtn");
-  generateBtn.classList.remove("active-generate");
-  generateBtn.classList.add("generated");
-  orderBtn.style.display = "inline-block";
-}
-
-function trackChanges() {
-  const inputs = document.querySelectorAll("#length, #color");
-  inputs.forEach(input => {
-    input.addEventListener('change', () => {
-      const generateBtn = document.getElementById("generateBtn");
-      generateBtn.classList.add("active-generate");
-      generateBtn.classList.remove("generated");
-      document.getElementById('preview').innerHTML = '';
-      document.getElementById("orderBtn").style.display = "none";
-    });
-  });
-}
-
-document.addEventListener('DOMContentLoaded', trackChanges);
 
 function load3DModel(modelUrl) {
   const container = document.getElementById("modelContainer");
@@ -88,6 +55,7 @@ function load3DModel(modelUrl) {
   container.innerHTML = '';
   container.appendChild(modelViewer);
 
+  // Зареждане на модул само при нужда (ако не е вече наличен)
   if (!window.customElements.get('model-viewer')) {
     const script = document.createElement('script');
     script.type = 'module';
