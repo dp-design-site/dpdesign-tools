@@ -20,6 +20,9 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        model-viewer::part(default) {
+            background-color: rgba(30, 30, 47, 0.85) !important;
+        }
         `;
         document.head.appendChild(style);
     }
@@ -102,6 +105,13 @@ function trackChanges() {
 
 document.addEventListener('DOMContentLoaded', trackChanges);
 
+document.addEventListener('fullscreenchange', () => {
+    const modelEl = document.getElementById('interactiveModel');
+    if (!document.fullscreenElement && modelEl) {
+        modelEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+});
+
 function load3DModel(modelUrl) {
     const container = document.getElementById("modelContainer");
     container.innerHTML = `
@@ -121,7 +131,7 @@ function load3DModel(modelUrl) {
         modelViewer.style.height = '500px';
         modelViewer.setAttribute('camera-controls', '');
         modelViewer.setAttribute('auto-rotate', '');
-        modelViewer.setAttribute('background-color', '#1e1e2f');
+        modelViewer.setAttribute('background-color', 'rgba(30,30,47,0.85)');
         modelViewer.setAttribute('ar', '');
         modelViewer.id = 'interactiveModel';
 
@@ -142,9 +152,35 @@ function load3DModel(modelUrl) {
             }
         };
 
+        const exitBtn = document.createElement('button');
+        exitBtn.textContent = '⤺ Изход от цял екран';
+        exitBtn.style.position = 'absolute';
+        exitBtn.style.top = '12px';
+        exitBtn.style.right = '12px';
+        exitBtn.style.zIndex = '9999';
+        exitBtn.style.padding = '6px 10px';
+        exitBtn.style.fontSize = '13px';
+        exitBtn.style.display = 'none';
+        exitBtn.style.backgroundColor = '#007acc';
+        exitBtn.style.color = 'white';
+        exitBtn.style.border = 'none';
+        exitBtn.style.borderRadius = '4px';
+        exitBtn.style.cursor = 'pointer';
+
+        exitBtn.onclick = () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        };
+
+        modelViewer.addEventListener('fullscreenchange', () => {
+            exitBtn.style.display = document.fullscreenElement ? 'block' : 'none';
+        });
+
         container.innerHTML = '';
         container.appendChild(modelViewer);
         container.appendChild(fullscreenBtn);
+        modelViewer.appendChild(exitBtn);
 
         if (!window.customElements.get('model-viewer')) {
             const script = document.createElement('script');
@@ -154,7 +190,6 @@ function load3DModel(modelUrl) {
         }
     }, 2000);
 }
-
 
 function enableLightbox() {
   const existing = document.getElementById('lightbox-modal');
