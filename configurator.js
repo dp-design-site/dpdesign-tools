@@ -35,6 +35,13 @@ function generateConfig() {
   document.getElementById('preview').innerHTML = previewHTML;
   document.getElementById('output').style.display = 'none';
 
+  const orderBtn = document.getElementById("orderBtn");
+  orderBtn.style.display = "none";
+
+  const generateBtn = document.getElementById("generateBtn");
+  generateBtn.classList.add("active-generate");
+  generateBtn.classList.remove("generated");
+
   enableLightbox();
 }
 
