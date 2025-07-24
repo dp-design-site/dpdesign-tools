@@ -1,5 +1,30 @@
 // Конфигурационен скрипт – Етап 2: зареждане на изображения и PDF с Lightbox и скрол + 3D визуализация
 
+// Добавяме CSS спинър в <head> през JS ако още не е наличен
+(function injectSpinnerStyle() {
+    const styleId = 'spinner-style';
+    if (!document.getElementById(styleId)) {
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+        .spinner {
+            border: 4px solid #444;
+            border-top: 4px solid #00aaff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        `;
+        document.head.appendChild(style);
+    }
+})();
+
 function generateConfig() {
     const length = document.getElementById('length').value;
     const color = document.getElementById('color').value;
@@ -14,7 +39,7 @@ function generateConfig() {
     const basePath = `img/${configID}`;
 
     const previewContainer = document.getElementById('preview');
-    previewContainer.innerHTML = `<p style="color: #ccc;">Генериране на конфигурацията...</p>`;
+    previewContainer.innerHTML = `<div class="spinner"></div><p style="color: #ccc; text-align: center;">Генериране на конфигурацията...</p>`;
 
     setTimeout(() => {
         const previewHTML = `
@@ -67,7 +92,7 @@ document.addEventListener('DOMContentLoaded', trackChanges);
 
 function load3DModel(modelUrl) {
     const container = document.getElementById("modelContainer");
-    container.innerHTML = `<p style="color: #ccc;">Зареждане на 3D модел...</p>`;
+    container.innerHTML = `<div class="spinner"></div><p style="color: #ccc; text-align: center;">Зареждане на 3D модел...</p>`;
 
     setTimeout(() => {
         const modelViewer = document.createElement('model-viewer');
