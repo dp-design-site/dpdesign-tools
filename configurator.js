@@ -36,7 +36,21 @@ function generateConfig() {
   document.getElementById('output').style.display = 'none';
 
   enableLightbox();
+
+  // ⏳ Симулирано забавяне за маркетингов ефект
+  /* SIMULATED DELAY START */
+  const generateBtn = document.getElementById("generateBtn");
+  generateBtn.disabled = true;
+  generateBtn.innerText = "Генериране...";
+
+  setTimeout(() => {
+    generateBtn.disabled = false;
+    generateBtn.innerText = "Генерирай";
+    markAsGenerated();
+  }, 1500);
+  /* SIMULATED DELAY END */
 }
+
 
 function markAsGenerated() {
   const generateBtn = document.getElementById("generateBtn");
