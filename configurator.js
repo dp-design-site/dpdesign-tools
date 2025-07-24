@@ -39,7 +39,7 @@ function generateConfig() {
         document.getElementById('output').style.display = 'none';
 
         enableLightbox();
-    }, 2000);
+    }, 3000);
 }
 
 function markAsGenerated() {
@@ -89,7 +89,7 @@ function load3DModel(modelUrl) {
             script.src = 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js';
             document.head.appendChild(script);
         }
-    }, 2000);
+    }, 3000);
 }
 
 function enableLightbox() {
