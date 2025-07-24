@@ -225,6 +225,101 @@
   </style>
 </head>
 <body>
-  <!-- ... останалата част остава непроменена ... -->
+  <div class="container">
+    <div class="logo">
+      <img src="img/realmet-logo.png" alt="Realmet Logo">
+    </div>
+
+    <h2>Конфигуратор на платформа</h2>
+
+    <div class="platform-sketch">
+      <img src="img/platform_dimensions.png" alt="Основни размери на платформата">
+    </div>
+
+
+    <label for="length">Дължина (A)</label>
+    <select id="length">
+      <option value="5500">5500 mm</option>
+      <option value="6000">6000 mm</option>
+      <option value="7000">7000 mm</option>
+    </select>
+
+    <label for="color">Цвят</label>
+    <select id="color">
+      <option value="RAL3000_Flame_red">RAL3000 Flame Red</option>
+      <option value="RAL1026_Luminous_yellow">RAL1026 Luminous Yellow</option>
+      <option value="RAL5012_Light_blue">RAL5012 Light Blue</option>
+    </select>
+
+    <div class="flex-row">
+      <input type="checkbox" class="accordion-toggle" id="t1"><label for="t1" class="accordion-label">Дъно</label>
+      <fieldset>
+        <legend>Дъно</legend>
+        <label>Вид ламарина дъно</label>
+        <input type="text" value="Гладка S2" class="readonly" readonly>
+
+        <label>Дебелина ламарина</label>
+        <input type="text" value="5 mm" class="readonly" readonly>
+
+        <label>C-заключване</label>
+        <input type="text" value="Да" class="readonly" readonly>
+
+        <label>Вид ролки</label>
+        <input type="text" value="Стоманени" class="readonly" readonly>
+      </fieldset>
+
+      <input type="checkbox" class="accordion-toggle" id="t2"><label for="t2" class="accordion-label">Челна стена</label>
+      <fieldset>
+        <legend>Челна стена</legend>
+        <label>Скосена челна стена</label>
+        <input type="text" value="Не" class="readonly" readonly>
+
+        <label>Височина</label>
+        <input type="text" value="1500 mm" class="readonly" readonly>
+
+        <label>Дебелина ламарина CS</label>
+        <input type="text" value="3 mm" class="readonly" readonly>
+
+        <label>Укрепване към дъното</label>
+        <input type="text" value="Да" class="readonly" readonly>
+      </fieldset>
+
+      <input type="checkbox" class="accordion-toggle" id="t3"><label for="t3" class="accordion-label">Халки за укрепване</label>
+      <fieldset>
+        <legend>Халки за укрепване на товара</legend>
+        <label>Халки 7000 кг</label>
+        <input type="text" value="Да" class="readonly" readonly>
+
+        <label>Отстояние първа халка</label>
+        <input type="text" value="500 mm" class="readonly" readonly>
+
+        <label>Брой халки на страна</label>
+        <input type="text" value="10" class="readonly" readonly>
+      </fieldset>
+    </div>
+
+    <button onclick="generateConfig()">Генерирай</button>
+
+    <div class="json-output" id="output"></div>
+    <div id="preview" style="margin-top: 30px;"></div>
+
+    <button onclick="showOrderModal()">Поръчай</button>
+
+    <div id="orderModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button" onclick="closeModal()">&times;</span>
+    <h3>Благодарим за направената поръчка!</h3>
+    <p>Наш колега ще се свърже с вас за потвърждение.</p>
+  </div>
+</div>
+
+
+    <footer>
+      © dp-design.tools – всички права запазени
+    </footer>
+    
+  </div>
+
+  <script src="configurator.js"></script>
 </body>
 </html>
