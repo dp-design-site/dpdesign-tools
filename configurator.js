@@ -1,6 +1,14 @@
 // Конфигурационен скрипт – Етап 2: зареждане на изображения и PDF с Lightbox и скрол + 3D визуализация
 
 function generateConfig() {
+  
+  setTimeout(() => {
+    generateBtn.disabled = false;
+    generateBtn.innerText = "Генерирай";
+    markAsGenerated();
+  }, 1500);
+  /* SIMULATED DELAY END */
+  
   const length = document.getElementById('length').value;
   const color = document.getElementById('color').value;
   const configID = `${length}_${color}`;
