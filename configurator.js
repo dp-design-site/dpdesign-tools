@@ -64,7 +64,7 @@ function generateConfig() {
         document.getElementById('output').style.display = 'none';
 
         enableLightbox();
-    }, 3000);
+    }, 4000);
 }
 
 function markAsGenerated() {
