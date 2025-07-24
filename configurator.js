@@ -1,92 +1,95 @@
 // Конфигурационен скрипт – Етап 2: зареждане на изображения и PDF с Lightbox и скрол + 3D визуализация
 
 function generateConfig() {
-  
-  const length = document.getElementById('length').value;
-  const color = document.getElementById('color').value;
-  const configID = `${length}_${color}`;
+    const length = document.getElementById('length').value;
+    const color = document.getElementById('color').value;
+    const configID = `${length}_${color}`;
 
-  const config = {
-    length: length,
-    color: color,
-    configID: configID,
-    timestamp: new Date().toISOString()
-  };
-  const basePath = `img/${configID}`;
+    const config = {
+        length: length,
+        color: color,
+        configID: configID,
+        timestamp: new Date().toISOString()
+    };
+    const basePath = `img/${configID}`;
 
-  const previewHTML = `
-    <h3>Преглед на чертеж:</h3>
-    <div class="gallery">
-      <div class="drawing-preview-container">
-        <img src="${basePath}/preview_drawing.png" class="drawing-preview responsive-preview lightbox-trigger" data-type="pdf" data-src="${basePath}/drawing.pdf" style="background-color: transparent;">
-      </div>
-      <div class="thumbnail-row">
-        <img src="${basePath}/view1.png" class="thumbnail lightbox-trigger" data-type="image" data-src="${basePath}/view1.png">
-        <img src="${basePath}/view2.png" class="thumbnail lightbox-trigger" data-type="image" data-src="${basePath}/view2.png">
-      </div>
-    </div>
+    const previewContainer = document.getElementById('preview');
+    previewContainer.innerHTML = `<p style="color: #ccc;">Генериране на конфигурацията...</p>`;
 
-    <div style="margin-top: 40px;">
-      <button onclick="load3DModel('${basePath}/model.glb')">Зареди 3D визуализация</button>
-      <div id="modelContainer" style="margin-top: 20px;"></div>
-    </div>
-  `;
+    setTimeout(() => {
+        const previewHTML = `
+        <h3>Преглед на чертеж:</h3>
+        <div class="gallery">
+          <div class="drawing-preview-container">
+            <img src="${basePath}/preview_drawing.png" class="drawing-preview responsive-preview lightbox-trigger" data-type="pdf" data-src="${basePath}/drawing.pdf" style="background-color: transparent;">
+          </div>
+          <div class="thumbnail-row">
+            <img src="${basePath}/view1.png" class="thumbnail lightbox-trigger" data-type="image" data-src="${basePath}/view1.png">
+            <img src="${basePath}/view2.png" class="thumbnail lightbox-trigger" data-type="image" data-src="${basePath}/view2.png">
+          </div>
+        </div>
 
-  document.getElementById('preview').innerHTML = previewHTML;
-  document.getElementById('output').style.display = 'none';
+        <div style="margin-top: 40px;">
+          <button onclick="load3DModel('${basePath}/model.glb')">Зареди 3D визуализация</button>
+          <div id="modelContainer" style="margin-top: 20px;"></div>
+        </div>
+        `;
 
-  enableLightbox();
+        previewContainer.innerHTML = previewHTML;
+        document.getElementById('output').style.display = 'none';
 
+        enableLightbox();
+    }, 2000);
 }
 
-
 function markAsGenerated() {
-  const generateBtn = document.getElementById("generateBtn");
-  const orderBtn = document.getElementById("orderBtn");
-  generateBtn.classList.remove("active-generate");
-  generateBtn.classList.add("generated");
-  orderBtn.style.display = "inline-block";
+    const generateBtn = document.getElementById("generateBtn");
+    const orderBtn = document.getElementById("orderBtn");
+    generateBtn.classList.remove("active-generate");
+    generateBtn.classList.add("generated");
+    orderBtn.style.display = "inline-block";
 }
 
 function trackChanges() {
-  const inputs = document.querySelectorAll("#length, #color");
-  inputs.forEach(input => {
-    input.addEventListener('change', () => {
-      const generateBtn = document.getElementById("generateBtn");
-      generateBtn.classList.add("active-generate");
-      generateBtn.classList.remove("generated");
-      document.getElementById('preview').innerHTML = '';
-      document.getElementById("orderBtn").style.display = "none";
+    const inputs = document.querySelectorAll("#length, #color");
+    inputs.forEach(input => {
+        input.addEventListener('change', () => {
+            const generateBtn = document.getElementById("generateBtn");
+            generateBtn.classList.add("active-generate");
+            generateBtn.classList.remove("generated");
+            document.getElementById('preview').innerHTML = '';
+            document.getElementById("orderBtn").style.display = "none";
+        });
     });
-  });
 }
 
 document.addEventListener('DOMContentLoaded', trackChanges);
 
 function load3DModel(modelUrl) {
-  const container = document.getElementById("modelContainer");
-  container.innerHTML = `<p style="color: #ccc;">Зареждане на 3D модел...</p>`;
+    const container = document.getElementById("modelContainer");
+    container.innerHTML = `<p style="color: #ccc;">Зареждане на 3D модел...</p>`;
 
-  const modelViewer = document.createElement('model-viewer');
-  modelViewer.src = modelUrl;
-  modelViewer.alt = '3D визуализация';
-  modelViewer.style.width = '100%';
-  modelViewer.style.height = '500px';
-  modelViewer.setAttribute('camera-controls', '');
-  modelViewer.setAttribute('auto-rotate', '');
-  modelViewer.setAttribute('background-color', '#1e1e2f');
-  modelViewer.setAttribute('ar', '');
+    setTimeout(() => {
+        const modelViewer = document.createElement('model-viewer');
+        modelViewer.src = modelUrl;
+        modelViewer.alt = '3D визуализация';
+        modelViewer.style.width = '100%';
+        modelViewer.style.height = '500px';
+        modelViewer.setAttribute('camera-controls', '');
+        modelViewer.setAttribute('auto-rotate', '');
+        modelViewer.setAttribute('background-color', '#1e1e2f');
+        modelViewer.setAttribute('ar', '');
 
-  container.innerHTML = '';
-  container.appendChild(modelViewer);
+        container.innerHTML = '';
+        container.appendChild(modelViewer);
 
-  // Зареждане на модул само при нужда (ако не е вече наличен)
-  if (!window.customElements.get('model-viewer')) {
-    const script = document.createElement('script');
-    script.type = 'module';
-    script.src = 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js';
-    document.head.appendChild(script);
-  }
+        if (!window.customElements.get('model-viewer')) {
+            const script = document.createElement('script');
+            script.type = 'module';
+            script.src = 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js';
+            document.head.appendChild(script);
+        }
+    }, 2000);
 }
 
 function enableLightbox() {
