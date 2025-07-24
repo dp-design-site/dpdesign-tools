@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <style>
+    /* Стилизиране на тялото и основната кутия */
     body {
       background-color: #1e1e2f;
       color: #eee;
@@ -79,14 +80,13 @@
       box-shadow: 0 0 8px #111;
       object-fit: contain;
       max-height: 600px;
-      /*border: 1px solid #888;*/
     }
     .thumbnail-row {
       display: flex;
       gap: 10px;
       justify-content: center;
       margin-bottom: 30px;
-      overflow-x: visible; /* вместо auto */
+      overflow-x: visible;
       -webkit-overflow-scrolling: touch;
     }
     .thumbnail {
@@ -129,13 +129,22 @@
       cursor: pointer;
       border-radius: 4px;
       margin-bottom: 5px;
+      position: relative;
     }
     .accordion-label::after {
-      content: ' ⯆';
+      content: '';
+      display: inline-block;
+      margin-left: 8px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      padding: 4px;
+      transform: rotate(45deg);
+      transition: transform 0.3s ease;
       float: right;
+      margin-top: 4px;
     }
     .accordion-toggle:checked + .accordion-label::after {
-      content: ' ⯅';
+      transform: rotate(-135deg);
     }
     .accordion-content {
       display: block;
@@ -183,8 +192,7 @@
       border-radius: 8px;
       box-shadow: 0 0 10px #000;
     }
-    
-        .modal {
+    .modal {
       display: none;
       position: fixed;
       z-index: 9999;
@@ -194,9 +202,8 @@
       height: 100%;
       overflow: auto;
       background-color: rgba(0,0,0,0.7);
-          border: 1px solid #888;
+      border: 1px solid #888;
     }
-    
     .modal-content {
       background-color: #2b2b3c;
       margin: 10% auto;
@@ -210,7 +217,6 @@
       box-shadow: 0 0 10px #000;
       position: relative;
     }
-    
     .close-button {
       position: absolute;
       top: 8px;
@@ -219,7 +225,6 @@
       font-size: 24px;
       cursor: pointer;
     }
-
     model-viewer {
       width: 100%;
       height: 500px;
@@ -229,16 +234,13 @@
       border-radius: 10px;
       box-shadow: 0 0 10px #111;
     }
-
     .platform-sketch img {
       width: 85%;
       height: auto;
       display: block;
       margin-bottom: 20px;
-      margin: 0 auto 20px auto; /* Центрирано + отстояние отдолу */
+      margin: 0 auto 20px auto;
     }
-
-
   </style>
 </head>
 <body>
