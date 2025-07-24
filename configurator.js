@@ -38,6 +38,29 @@ function generateConfig() {
   enableLightbox();
 }
 
+function markAsGenerated() {
+  const generateBtn = document.getElementById("generateBtn");
+  const orderBtn = document.getElementById("orderBtn");
+  generateBtn.classList.remove("active-generate");
+  generateBtn.classList.add("generated");
+  orderBtn.style.display = "inline-block";
+}
+
+function trackChanges() {
+  const inputs = document.querySelectorAll("#length, #color");
+  inputs.forEach(input => {
+    input.addEventListener('change', () => {
+      const generateBtn = document.getElementById("generateBtn");
+      generateBtn.classList.add("active-generate");
+      generateBtn.classList.remove("generated");
+      document.getElementById('preview').innerHTML = '';
+      document.getElementById("orderBtn").style.display = "none";
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', trackChanges);
+
 function load3DModel(modelUrl) {
   const container = document.getElementById("modelContainer");
   container.innerHTML = `<p style="color: #ccc;">Зареждане на 3D модел...</p>`;
