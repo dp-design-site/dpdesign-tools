@@ -12,17 +12,6 @@ function generateConfig() {
     configID: configID,
     timestamp: new Date().toISOString()
   };
-
-  // ⏳ Симулирано забавяне за маркетингов ефект
-  /* SIMULATED DELAY START */
-    
-
-  setTimeout(() => {
-    generateBtn.innerText = "Генериране...";
-    markAsGenerated();
-  }, 1500);
-  /* SIMULATED DELAY END */
-
   const basePath = `img/${configID}`;
 
   const previewHTML = `
