@@ -56,6 +56,46 @@
 <link rel="alternate" hreflang="en-UK" href="https://www.realmet.com/products/roll-on-off-container/roll-on-off-platform">
 <link rel="alternate" hreflang="fr" href="https://www.realmet.com/fr/produits/conteneurs-multilift/plateforme">
 <link rel="alternate" hreflang="x-default" href="https://www.realmet.bg/produkti/multilift-konteineri/platforma">
+
+<style>
+  /* общи фиксове */
+  html, body { max-width: 100%; overflow-x: hidden; }
+  img, video, iframe { max-width: 100%; height: auto; }
+
+  /* на малки екрани: принудително „един под друг“ + вътрешно отстояние */
+  @media (max-width: 768px) {
+    /* Bootstrap подобно поведение без да разчитаме на оригиналния CSS */
+    .container, .container-fluid { padding-left: 12px; padding-right: 12px; }
+    .row { display: block !important; margin-left: 0; margin-right: 0; }
+    [class*="col-"], .col, .col-6, .col-md-6, .col-lg-6, .col-sm-6,
+    .col-4, .col-8, .col-md-4, .col-md-8, .col-lg-4, .col-lg-8 {
+      width: 100% !important; max-width: 100% !important; flex: none !important;
+      padding-left: 0 !important; padding-right: 0 !important;
+    }
+
+    /* галерия/миниатюри – да се свиват правилно */
+    .slick-track, .slick-list { width: 100% !important; }
+    .slick-slide { float: none !important; display: inline-block; vertical-align: top; }
+
+    /* таблици/спецификации – хор. скрол само вътре */
+    table { display: block; width: 100% !important; overflow-x: auto; }
+    .table { display: block; width: 100% !important; overflow-x: auto; }
+
+    /* твоята секция */
+    #dp-config { margin: 12px 0; }
+    #configurator .dp-embed { border-radius: 10px; }
+  }
+
+  /* мини-фонтове, да не „раздуват“ реда */
+  @media (max-width: 420px) {
+    h1 { font-size: 1.35rem !important; }
+    h2 { font-size: 1.15rem !important; }
+    p, li, a, button { font-size: 0.98rem !important; }
+  }
+</style>
+
+
+	
 </head>
 <body>
 
