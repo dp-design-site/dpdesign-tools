@@ -4315,4 +4315,33 @@ We use cookies and other tracking technologies to personalize and improve your e
 </button>
 
     </div>
-</div></div></body></html>
+</div></div>
+
+	<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    // 1) Изключи srcset (да остане локалният src="./Realmet_files/..."):
+    document.querySelectorAll('img[srcset], source[srcset]').forEach(el => {
+      el.removeAttribute('srcset');
+      el.removeAttribute('sizes');
+    });
+
+    // 2) Поправи абсолютните пътища към реалния сайт за всеки елемент:
+    const fixAttr = (el, attr) => {
+      const v = el.getAttribute(attr);
+      if (v && v.startsWith('/fileadmin/')) {
+        el.setAttribute(attr, 'https://www.realmet.bg' + v);
+      }
+    };
+    document.querySelectorAll('img, link[rel="preload"], source, video').forEach(el => {
+      ['src', 'href', 'poster'].forEach(a => fixAttr(el, a));
+    });
+
+    // 3) Ако има lazy-load със data-src → сложи го в src:
+    document.querySelectorAll('img[data-src]').forEach(img => {
+      if (!img.getAttribute('src')) img.src = img.getAttribute('data-src');
+    });
+  });
+</script>
+
+
+</body></html>
