@@ -471,6 +471,95 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 								
 							</ol>
 						</nav>
+
+						<!-- START: Конфигуратор бутон и контейнер -->
+					<style>
+					  /* запазваме хедър/футър видими; скриваме основното съдържание при отворен конфигуратор */
+					  body.config-open .slick-section .row { display: none !important; }
+					  body.config-open #configurator { display: block !important; }
+					
+					  /* съвпадение със стила (жълтият акцент на Realmet) */
+					  #config-menu .btn-warning {
+					    background-color: var(--dp-cookie-palette-button-background, #E9CF00);
+					    border-color: var(--dp-cookie-palette-button-background, #E9CF00);
+					    color: var(--dp-cookie-palette-button-text, #292929);
+					  }
+					  #config-menu .btn-warning:hover { filter: brightness(0.95); }
+					</style>
+					
+					<div id="config-menu" class="d-flex align-items-center mb-3">
+					  <div class="dropdown ml-auto">
+					    <button class="btn btn-warning dropdown-toggle" id="configDropdown"
+					            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					      Конфигуратор
+					    </button>
+					    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="configDropdown">
+					      <h6 class="dropdown-header">Избери тип платформа</h6>
+					      <a class="dropdown-item" href="#" data-config="platforma">Платформа</a>
+					      <div class="dropdown-divider"></div>
+					      <!-- тези три са информативни / линкове – не отварят конфигуратора -->
+					      <a class="dropdown-item" href="https://www.realmet.bg/produkti/multilift-konteineri/platforma-1">
+					        Скосена платформа
+					      </a>
+					      <a class="dropdown-item" href="https://www.realmet.bg/produkti/multilift-konteineri/platforma-1">
+					        Скосена платформа с&nbsp;вдлъбнатини
+					      </a>
+					      <a class="dropdown-item" href="https://www.realmet.bg/produkti/multilift-konteineri/platforma-1">
+					        Платформа с&nbsp;twistlock
+					      </a>
+					    </div>
+					  </div>
+					
+					  <button id="configClose" class="btn btn-outline-secondary ml-2 d-none">
+					    Затвори конфигуратора
+					  </button>
+					</div>
+					
+					<!-- Контейнерът на конфигуратора (първоначално скрит) -->
+					<div id="configurator" class="container d-none">
+					  <div class="embed-responsive embed-responsive-21by9" style="min-height: 70vh;">
+					    <iframe id="configIframe" class="embed-responsive-item"
+					            src="" loading="lazy" allow="fullscreen"></iframe>
+					  </div>
+					</div>
+					
+					<script>
+					(function () {
+					  // TODO: смени с реалния URL на твоя конфигуратор
+					  var CONFIG_URL = 'https://your-domain.example/your-repo/configurator/?theme=realmet';
+					
+					  function openConfigurator() {
+					    document.body.classList.add('config-open');
+					    document.getElementById('configIframe').src = CONFIG_URL;
+					    document.getElementById('configClose').classList.remove('d-none');
+					    window.scrollTo({ top: 0, behavior: 'smooth' });
+					  }
+					
+					  function closeConfigurator() {
+					    document.body.classList.remove('config-open');
+					    document.getElementById('configClose').classList.add('d-none');
+					    // изчистваме src, за да спрем конфигуратора при затваряне
+					    document.getElementById('configIframe').src = '';
+					  }
+					
+					  // отваряне при избор "Платформа"
+					  document.addEventListener('click', function (e) {
+					    var item = e.target.closest('[data-config]');
+					    if (item && item.getAttribute('data-config') === 'platforma') {
+					      e.preventDefault();
+					      openConfigurator();
+					    }
+					  });
+					
+					  // бутон "Затвори конфигуратора"
+					  document.getElementById('configClose').addEventListener('click', function (e) {
+					    e.preventDefault();
+					    closeConfigurator();
+					  });
+					})();
+					</script>
+					<!-- END: Конфигуратор бутон и контейнер -->
+
 						
 					</div>				
                     <div class="col-lg-7 col-md-7 col-sm-12 ">
