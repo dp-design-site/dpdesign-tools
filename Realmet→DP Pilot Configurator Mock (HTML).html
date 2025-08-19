@@ -3,130 +3,197 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Симулация: Отваряне на конфигуратора от страница на Realmet</title>
+  <title>Realmet – Мултилифт платформа (демо с конфигуратор)</title>
   <style>
     :root{
-      --bg:#12151b; --card:#1c212b; --accent:#36d399; --text:#e6edf3; --muted:#9aa4b2;
+      --bg:#0f1217; --card:#171b22; --muted:#9aa4b2; --text:#e6edf3; --accent:#e11d48; --accent-2:#36d399;
+      --border:#222938;
     }
-    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif}
-    .wrap{max-width:1100px;margin:24px auto;padding:16px}
-    .header{display:flex;gap:16px;align-items:center}
-    .logo{width:44px;height:44px;border-radius:10px;background:#b91c1c;display:grid;place-items:center;font-weight:800}
-    .shot{border-radius:14px;overflow:hidden;border:1px solid #2a3240}
-    .shot img{width:100%;display:block}
-    .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
-    .btn{appearance:none;border:0;border-radius:999px;padding:10px 16px;font-weight:600;cursor:pointer;background:var(--accent);color:#0b1320;}
-    .btn.secondary{background:#2a3240;color:var(--text)}
-    .hint{color:var(--muted);font-size:.92rem}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    a{color:#8ab4ff;text-decoration:none}
+    .wrap{max-width:1200px;margin:0 auto;padding:16px}
 
-    /* Modal */
-    .modal{position:fixed;inset:0;display:none;}
+    /* header */
+    .header{display:flex;align-items:center;gap:16px;padding:12px 0}
+    .logo{display:flex;align-items:center;gap:10px}
+    .logo-badge{width:36px;height:36px;border-radius:8px;background:#b91c1c;display:grid;place-items:center;font-weight:800}
+    .nav{margin-left:auto;display:flex;gap:16px}
+    .pill{background:#1e2431;border:1px solid var(--border);padding:8px 12px;border-radius:999px;color:var(--text)}
+
+    .breadcrumbs{color:var(--muted);font-size:.9rem;margin:10px 0}
+
+    /* layout */
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+    .p16{padding:16px}
+    .title{font-size:1.9rem;margin:0 0 6px 0}
+    .subtitle{color:var(--muted);margin:0 0 12px 0}
+
+    /* gallery */
+    .gallery{display:grid;gap:10px}
+    .hero{aspect-ratio:16/9;background:#0b1320;border:1px solid var(--border);border-radius:12px;overflow:hidden;display:grid;place-items:center}
+    .hero img{width:100%;height:100%;object-fit:cover}
+    .thumbs{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+    .thumb{height:64px;background:#0b1320;border:1px solid var(--border);border-radius:10px}
+
+    /* specs & CTA */
+    .specs li{margin:6px 0;color:#c7d0dc}
+    .cta-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .btn{appearance:none;border:0;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer}
+    .btn.primary{background:var(--accent);color:white}
+    .btn.secondary{background:#243046;color:#dbe4f3}
+
+    /* right column card */
+    .quality{display:flex;align-items:center;gap:12px;margin:8px 0 16px 0;color:#cbd5e1}
+    .form label{display:block;font-size:.85rem;margin:10px 0 6px 0;color:var(--muted)}
+    .input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:#0b1320;color:var(--text)}
+
+    /* sections */
+    h3{margin:10px 0}
+    .section{margin-top:16px}
+
+    /* modal configurator */
+    .modal{position:fixed;inset:0;display:none}
     .modal.active{display:block}
-    .backdrop{position:absolute;inset:0;background:rgba(9,12,19,.72);backdrop-filter:blur(4px);}
-    .panel{position:absolute;inset:4%;background:var(--card);border:1px solid #2a3240;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-    .panel header{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-bottom:1px solid #2a3240}
-    .panel header .title{display:flex;align-items:center;gap:8px}
-    .panel header .title small{color:var(--muted)}
-    .panel header .controls{display:flex;gap:8px}
-    .panel header button{background:#2a3240;color:var(--text);border:0;border-radius:8px;padding:8px 10px;cursor:pointer}
-    .stage{position:relative;flex:1;background:#0b1320}
+    .backdrop{position:absolute;inset:0;background:rgba(10,13,20,.7);backdrop-filter:blur(3px)}
+    .panel{position:absolute;inset:4%;background:#0b1320;border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;overflow:hidden}
+    .panel header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border)}
+    .panel header .left{display:flex;align-items:center;gap:10px}
+    .panel header small{color:var(--muted)}
+    .panel header button{background:#1e2431;border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:10px;cursor:pointer}
+    .stage{position:relative;flex:1}
     iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-
-    /* Spinner */
     .spinner{position:absolute;inset:0;display:grid;place-items:center}
     .spinner.hide{display:none}
-    .lds{width:60px;height:60px;border-radius:50%;border:6px solid #2a3240;border-top-color:var(--accent);animation:s 1s linear infinite}
+    .lds{width:60px;height:60px;border-radius:50%;border:6px solid #2a3240;border-top-color:var(--accent-2);animation:s 1s linear infinite}
     @keyframes s{to{transform:rotate(360deg)}}
-
-    @media (max-width:700px){.panel{inset:0;border-radius:0}}
+    @media (max-width:900px){.panel{inset:0;border-radius:0}}
   </style>
 </head>
 <body>
   <div class="wrap">
+    <!-- Header mimic -->
     <div class="header">
-      <div class="logo">RM</div>
-      <div>
-        <h1 style="margin:0">Симулация: бутон „Възможни опции / Конфигуратор“</h1>
-        <div class="hint">Кликни бутона, за да отвориш <strong>DP Pilot конфигуратора</strong> в модален прозорец (iframe). Ако домейнът забранява вграждане, ще се отвори в нов таб.</div>
+      <div class="logo"><div class="logo-badge">RM</div><strong>Realmet MEC</strong></div>
+      <nav class="nav">
+        <span class="pill">Начало</span>
+        <span class="pill">Продукти</span>
+        <span class="pill">Бластиране</span>
+        <span class="pill">За нас</span>
+        <span class="pill">Контакти</span>
+      </nav>
+    </div>
+
+    <div class="breadcrumbs">Продукти / Мултилифт контейнери / <strong>Платформа</strong></div>
+
+    <div class="grid">
+      <!-- Left column: gallery & specs -->
+      <div class="card p16">
+        <h1 class="title">Мултилифт платформа</h1>
+        <p class="subtitle">Гъвкаво решение за разнообразни транспортни нужди</p>
+        <div class="gallery">
+          <div class="hero"><img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1600&auto=format&fit=crop" alt="Product"/></div>
+          <div class="thumbs">
+            <div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div>
+            <div class="thumb"></div><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Спецификации и допълнителни опции</h3>
+          <ul class="specs">
+            <li>Дължини: 10 варианта</li>
+            <li>Дъно: 3 вида ламарини</li>
+            <li>Челна стена: 3 варианта</li>
+            <li>Халки: 6 конфигурации</li>
+            <li>Ролки: 2 вида</li>
+            <li>Цвят: 30+ RAL</li>
+          </ul>
+          <div class="cta-row">
+            <button class="btn primary" id="openCfg">ВЪЗМОЖНИ ОПЦИИ / КОНФИГУРАТОР</button>
+            <button class="btn secondary" id="openNew">Отвори в нов таб</button>
+          </div>
+          <p style="color:var(--muted);margin-top:8px">Примерен линк: <code id="demoUrl">https://dp-design.tools/configurator?product=multilift-platform&color=ral3003</code></p>
+        </div>
+      </div>
+
+      <!-- Right column: trust + form -->
+      <div class="card p16">
+        <div class="quality">✅ Качество по BDS, EN и DIN стандарти</div>
+        <form class="form">
+          <div class="grid" style="grid-template-columns:1fr 1fr;gap:12px">
+            <div><label>Име</label><input class="input" placeholder="Иван Иванов"/></div>
+            <div><label>Компания</label><input class="input" placeholder="Realmet"/></div>
+            <div><label>Email</label><input class="input" placeholder="name@email.com"/></div>
+            <div><label>Телефон</label><input class="input" placeholder="+359..."/></div>
+            <div style="grid-column:1/-1"><label>Съобщение</label><textarea class="input" rows="5" placeholder="Кратко описание на нуждите ви..."></textarea></div>
+            <div style="grid-column:1/-1;display:flex;gap:10px;align-items:center">
+              <input id="agree" type="checkbox"/>
+              <label for="agree" style="margin:0;color:var(--muted)">Съгласен съм с условията</label>
+            </div>
+            <div style="grid-column:1/-1;display:flex;justify-content:flex-end">
+              <button class="btn primary" type="button">ИЗПРАТИ</button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
 
-    <div class="shot">
-      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA+gAAAJyCAYAAACv8m1/AAABGklEQVR4nO3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4m5v6AAG1zv9vAAAAAElFTkSuQmCC" alt="Mock screenshot placeholder"/>
+    <!-- more text -->
+    <div class="card p16 section">
+      <h3>Описание</h3>
+      <p style="color:#c7d0dc">Мултилифт платформите са проектирани за тежки условия и съвместими с DGUV 114-010 и DIN 30722. 
+      Конфигураторът дава възможност за избор на параметри, визуализация и автоматично генериране на документация.</p>
     </div>
-
-    <div class="toolbar">
-      <button class="btn" id="openCfg">Отвори конфигуратора</button>
-      <button class="btn secondary" id="openNew">Отвори в нов таб</button>
-    </div>
-
-    <p class="hint">Пример за линк с параметри: <code>https://dp-design.tools/configurator?product=multilift-platform&color=ral3003</code>
-    – в реалната интеграция ще подаваме ID на продукт, език, потребител и др.</p>
   </div>
 
   <!-- Modal with iframe -->
   <div class="modal" id="modal">
     <div class="backdrop" aria-hidden="true"></div>
-    <div class="panel" role="dialog" aria-modal="true" aria-label="DP Pilot конфигуратор">
+    <div class="panel" role="dialog" aria-modal="true">
       <header>
-        <div class="title">
-          <strong>DP Pilot – конфигуратор</strong>
-          <small id="targetUrl"></small>
-        </div>
-        <div class="controls">
-          <button id="goFull">Цял екран</button>
-          <button id="closeModal">Затвори</button>
+        <div class="left"><strong>DP Pilot – Конфигуратор</strong> <small id="targetUrl"></small></div>
+        <div class="right">
+          <button id="full">Цял екран</button>
+          <button id="close">Затвори</button>
         </div>
       </header>
       <div class="stage">
         <div class="spinner" id="spin"><div class="lds"></div></div>
-        <iframe id="cfgFrame" referrerpolicy="no-referrer" allow="fullscreen; xr-spatial-tracking"></iframe>
+        <iframe id="cfg" allow="fullscreen; xr-spatial-tracking"></iframe>
       </div>
     </div>
   </div>
 
 <script>
-  // === Конфиг ===
-  const CONFIG_URL = "https://dp-design.tools/configurator?product=multilift-platform&color=ral3003";
-
+  const URL_CFG = 'https://dp-design.tools/configurator?product=multilift-platform&color=ral3003';
   const modal = document.getElementById('modal');
-  const frame = document.getElementById('cfgFrame');
+  const frame = document.getElementById('cfg');
   const spin  = document.getElementById('spin');
   const target = document.getElementById('targetUrl');
+  document.getElementById('demoUrl').textContent = URL_CFG;
 
   function openModal(){
-    target.textContent = CONFIG_URL;
     modal.classList.add('active');
+    target.textContent = URL_CFG;
     spin.classList.remove('hide');
-
-    // Опит за вграждане
-    try {
-      frame.src = CONFIG_URL;
-      let loaded = false;
-      const t = setTimeout(()=>{ if(!loaded){ /* ако е блокирано от X-Frame-Options */
-        window.open(CONFIG_URL,'_blank');
-        closeModal();
-      }}, 3500);
-      frame.onload = ()=>{ loaded = true; spin.classList.add('hide'); };
-    } catch(e){
-      window.open(CONFIG_URL,'_blank');
-      closeModal();
-    }
+    let loaded=false;
+    frame.src = URL_CFG;
+    const t = setTimeout(()=>{ if(!loaded){ window.open(URL_CFG,'_blank'); closeModal(); } }, 3500);
+    frame.onload = ()=>{ loaded=true; spin.classList.add('hide'); };
   }
   function closeModal(){ modal.classList.remove('active'); frame.src='about:blank'; }
-
   document.getElementById('openCfg').onclick = openModal;
-  document.getElementById('openNew').onclick = ()=>window.open(CONFIG_URL,'_blank');
-  document.getElementById('closeModal').onclick = closeModal;
-
-  // Fullscreen
-  document.getElementById('goFull').onclick = ()=>{
-    const el = document.querySelector('.panel');
-    if(el.requestFullscreen){ el.requestFullscreen(); }
-  };
-
-  // Затваряне при клик на фона
+  document.getElementById('openNew').onclick = ()=>window.open(URL_CFG,'_blank');
+  document.getElementById('close').onclick = closeModal;
   document.querySelector('.backdrop').onclick = closeModal;
+  document.getElementById('full').onclick = ()=>{
+    const el = document.querySelector('.panel');
+    if(el.requestFullscreen) el.requestFullscreen();
+  };
 </script>
 </body>
 </html>
