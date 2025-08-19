@@ -56,7 +56,6 @@
 <link rel="alternate" hreflang="en-UK" href="https://www.realmet.com/products/roll-on-off-container/roll-on-off-platform">
 <link rel="alternate" hreflang="fr" href="https://www.realmet.com/fr/produits/conteneurs-multilift/plateforme">
 <link rel="alternate" hreflang="x-default" href="https://www.realmet.bg/produkti/multilift-konteineri/platforma">
-	
 </head>
 <body>
 
@@ -477,7 +476,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   СЕКЦИЯ: Конфигуратор за Realmet – бутон с меню + вграждане в iframe на същата страница
   Вмъкни целия блок веднага след breadcrumb-ите на продуктова страница.
 
-  ▸ CONFIG_URL е попълнен с https://dp-design.tools/configurator
+  ▸ Попълни CONFIG_URL с адреса на конфигуратора.
   ▸ За автоматична височина без вътрешен скрол добави "Child" скрипта и в страницата на конфигуратора (описан е в края).
 -->
 
@@ -504,32 +503,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   .dp-item:hover,.dp-link:hover{background:#f6f6f6}
   .dp-sep{height:1px;background:#eee;margin:.3rem 0}
 
- /* конфигураторът: скрит по начало; когато е отворен – над всичко и с бял фон */
-#configurator{display:none!important;height:0!important;margin:0!important;padding:0!important}
-#configurator.dp-open{
-  display:block!important;
-  margin:12px 0!important;
-  position:relative;           /* за z-index */
-  z-index:999;                 /* над плаващи елементи от шаблона */
-  background:#fff;             /* да не прозират отдолу */
-  border-radius:12px;
-  box-shadow:0 10px 30px rgba(0,0,0,.15);
-}
-#configurator .dp-embed{width:100%;height:100%;border:0;border-radius:12px}
-
-/* Силно „прибиране“ на секциите, които скриваме */
-.dp-hidden{
-  display:none !important;
-  visibility:hidden !important;
-  height:0 !important;
-  margin:0 !important;
-  padding:0 !important;
-  overflow:hidden !important;
-  position:relative !important;
-  z-index:0 !important;
-}
-
-
+  /* Контейнер за конфигуратора – височината се подава от JS */
+  #configurator{display:none;height:0}
+  #configurator .dp-embed{width:100%;height:100%;border:0;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15)}
 
   /* Скриваме основното продуктово съдържание, но НЕ хедър/футър */
   .dp-hidden{display:none !important}
@@ -559,8 +535,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script>
 (function(){
-  // ▶▶ URL на конфигуратора
-  var CONFIG_URL = 'https://dp-design.tools/configurator?theme=realmet';
+  // ▶▶ ПОПЪЛНИ: URL на конфигуратора
+  var CONFIG_URL = 'https://dp-design.tools/configurator';
   var TARGET_ORIGIN = new URL(CONFIG_URL).origin; // за сигурност при postMessage
 
   var btn       = document.getElementById('dpConfigBtn');
@@ -569,112 +545,41 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   var iframe    = document.getElementById('configIframe');
   var confWrap  = document.getElementById('configurator');
   var rowTop    = document.getElementById('dp-config');
-  var firstSizeReceived = false; // показваме панела едва след реална височина
 
   // Отваряне/затваряне на менюто
   btn.addEventListener('click', function(e){ e.preventDefault(); menu.classList.toggle('open'); });
   document.addEventListener('click', function(e){ if(!menu.contains(e.target) && e.target!==btn) menu.classList.remove('open'); });
 
-  // премести панела веднага след реда с бутоните (за сигурност)
-(function ensureOrder(){
-  var parent = document.getElementById('dp-config').parentElement;
-  var conf   = document.getElementById('configurator');
-  if (conf.previousElementSibling !== document.getElementById('dp-config')) {
-    parent.insertBefore(conf, document.getElementById('dp-config').nextElementSibling);
+  function hideMainContent(){
+    var parent = rowTop.parentElement;
+    Array.from(parent.children).forEach(function(el){
+      if(el.id !== 'dp-config' && el.id !== 'configurator'){ el.classList.add('dp-hidden'); }
+    });
   }
-})();
-
-// скрий всички елементи СЛЕД dp-config до самия конфигуратор
-function hideMainContent(){
-  var p   = document.getElementById('dp-config').parentElement;
-  var cur = document.getElementById('dp-config').nextElementSibling;
-  while (cur && cur.id !== 'configurator') {
-    cur.classList.add('dp-hidden');
-    cur = cur.nextElementSibling;
-  }
-
-  // бекап: ако темплейтът има вътрешни редове/колони, скрий типичните контейнери
-  document.querySelectorAll(
-    '.slick-section, .content, .product-content, .tx_container, .row.slick-row'
-  ).forEach(el => el.classList.add('dp-hidden'));
-}
   function showMainContent(){
-  var p   = document.getElementById('dp-config').parentElement;
-  var cur = document.getElementById('dp-config').nextElementSibling;
-  while (cur && cur.id !== 'configurator') {
-    cur.classList.remove('dp-hidden');
-    cur = cur.nextElementSibling;
+    var parent = rowTop.parentElement;
+    Array.from(parent.children).forEach(function(el){ el.classList.remove('dp-hidden'); });
   }
-  document.querySelectorAll(
-    '.slick-section, .content, .product-content, .tx_container, .row.slick-row'
-  ).forEach(el => el.classList.remove('dp-hidden'));
-}
 
   function setIFrameHeight(px){
     var h = Math.max(320, +px||0); // минимална разумна височина
-    if(!firstSizeReceived){
-      firstSizeReceived = true;
-      confWrap.classList.add('dp-open'); // показваме контейнера чак сега
-    }
-    confWrap.style.height = h + 'px';
-    iframe.style.height   = h + 'px';
+    confWrap.style.display = 'block';
+    confWrap.style.height  = h + 'px';
+    iframe.style.height    = h + 'px';
   }
 
-  // помощна: "видима" височина по екрана (докато чакаме child)
-function viewportHeightFallback() {
-  var header = document.querySelector('header, .header, .site-header, .navbar, #header');
-  var footer = document.querySelector('footer, .footer, #footer');
-  var headerH = header ? header.offsetHeight : 0;
-  var footerH = footer ? footer.offsetHeight : 0;
-  var barH    = document.getElementById('dp-config').offsetHeight;
-  var h = window.innerHeight - headerH - footerH - barH - 16;
-  return Math.max(360, h);
-}
-
-function setIFrameHeight(px){
-  var h = Math.max(320, +px||0);
-  if(!firstSizeReceived){
-    firstSizeReceived = true;
-    confWrap.classList.add('dp-open'); // показваме контейнера чак сега
+  function openConfigurator(){
+    hideMainContent();
+    // Добавяме флаг embed=1 (по желание, за да тематираш вътре)
+    var url = CONFIG_URL + (CONFIG_URL.includes('?') ? '&' : '?') + 'embed=1';
+    iframe.src = url;
+    closeBtn.style.display = 'inline-block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-  confWrap.style.height = h + 'px';
-  iframe.style.height   = h + 'px';
-}
-
-function openConfigurator(){
-  hideMainContent();
-  firstSizeReceived = false;
-  confWrap.classList.remove('dp-open');
-  confWrap.style.height = '0px';
-
-  // показваме веднага със „скелетна“ височина и бутаме съдържанието надолу
-  setIFrameHeight(viewportHeightFallback());
-
-  iframe.src = CONFIG_URL + (CONFIG_URL.includes('?')?'&':'?') + 'embed=1';
-  closeBtn.style.display = 'inline-block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// приемаме височина от child (ако дойде) – коригираме панела
-window.addEventListener('message', function(e){
-  if(e.origin !== TARGET_ORIGIN) return;
-  var d = e.data || {};
-  if(d.type === 'dp-config-size' && typeof d.height === 'number'){
-    setIFrameHeight(d.height);
-  }
-});
-
-// ако child НЕ прати нищо, поддържаме панела с viewport височина при resize
-window.addEventListener('resize', function(){
-  if(confWrap.classList.contains('dp-open') && !firstSizeReceived){
-    setIFrameHeight(viewportHeightFallback());
-  }
-});
-
 
   function closeConfigurator(){
     iframe.src = '';
-    confWrap.classList.remove('dp-open');
+    confWrap.style.display = 'none';
     confWrap.style.height  = '0px';
     closeBtn.style.display = 'none';
     showMainContent();
@@ -714,7 +619,7 @@ window.addEventListener('resize', function(){
 
   // При resize казваме на child да преизпрати височината (ако поддържа това)
   window.addEventListener('resize', function(){
-    if(confWrap.classList.contains('dp-open')){
+    if(confWrap.style.display === 'block'){
       try{ iframe.contentWindow.postMessage({type:'dp-parent-resized'}, TARGET_ORIGIN); }catch(_){}
     }
   });
@@ -733,19 +638,17 @@ window.addEventListener('resize', function(){
 (function(){
   try{ var s=document.createElement('style'); s.textContent='html,body{overflow:hidden!important}'; document.head.appendChild(s);}catch(e){}
   var parentOrigin='*'; try{ parentOrigin = new URL(document.referrer).origin; }catch(e){}
-  var sendHeight=(function(){ var t; return function(){ clearTimeout(t); t=setTimeout(function(){
-    var h=Math.max(document.documentElement.scrollHeight, document.body?document.body.scrollHeight:0);
+  function sendHeight(){
+    var h = Math.max(document.documentElement.scrollHeight, document.body?document.body.scrollHeight:0);
     parent.postMessage({type:'dp-config-size', height:h}, parentOrigin);
-  },50); };})();
+  }
   window.addEventListener('load', sendHeight);
   window.addEventListener('resize', sendHeight);
-  var ro=new ResizeObserver(sendHeight); ro.observe(document.documentElement);
-  var mo=new MutationObserver(sendHeight); mo.observe(document.documentElement,{subtree:true, childList:true, attributes:true});
+  var ro = new ResizeObserver(sendHeight); ro.observe(document.documentElement);
   window.addEventListener('message', function(e){ if(e.data && (e.data.type==='dp-parent-ready'||e.data.type==='dp-parent-resized')) sendHeight(); });
 })();
 </script>
 -->
-
 
 
 						
