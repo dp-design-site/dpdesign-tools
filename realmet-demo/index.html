@@ -503,10 +503,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   .dp-item:hover,.dp-link:hover{background:#f6f6f6}
   .dp-sep{height:1px;background:#eee;margin:.3rem 0}
 
-  /* Контейнер за конфигуратора – без резервирано място; височината идва от JS */
-  #configurator{display:none;height:0;margin:0;padding:0}
-  #configurator.dp-open{display:block;margin:12px 0}
-  #configurator .dp-embed{width:100%;height:100%;border:0;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+  /* Контейнер за конфигуратора – форсирано скрит до отваряне */
+	#configurator{display:none!important;height:0!important;margin:0!important;padding:0!important}
+	#configurator.dp-open{display:block!important;margin:12px 0!important}
+	#configurator .dp-embed{width:100%;height:100%;border:0;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+
 
   /* Скриваме основното продуктово съдържание, но НЕ хедър/футър */
   .dp-hidden{display:none !important}
@@ -573,17 +574,58 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     iframe.style.height   = h + 'px';
   }
 
-  function openConfigurator(){
-    hideMainContent();
-    firstSizeReceived = false;
-    confWrap.classList.remove('dp-open');
-    confWrap.style.height = '0px';
+  // помощна: "видима" височина по екрана (докато чакаме child)
+function viewportHeightFallback() {
+  var header = document.querySelector('header, .header, .site-header, .navbar, #header');
+  var footer = document.querySelector('footer, .footer, #footer');
+  var headerH = header ? header.offsetHeight : 0;
+  var footerH = footer ? footer.offsetHeight : 0;
+  var topBarH = rowTop.offsetHeight;
+  var pad = 16;
+  var h = window.innerHeight - headerH - footerH - topBarH - pad;
+  return Math.max(360, h);
+}
 
-    var url = CONFIG_URL + (CONFIG_URL.includes('?') ? '&' : '?') + 'embed=1';
-    iframe.src = url;
-    closeBtn.style.display = 'inline-block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+function setIFrameHeight(px){
+  var h = Math.max(320, +px||0);
+  if(!firstSizeReceived){
+    firstSizeReceived = true;
+    confWrap.classList.add('dp-open'); // показваме контейнера чак сега
   }
+  confWrap.style.height = h + 'px';
+  iframe.style.height   = h + 'px';
+}
+
+function openConfigurator(){
+  hideMainContent();
+  firstSizeReceived = false;
+  confWrap.classList.remove('dp-open');
+  confWrap.style.height = '0px';
+
+  // Показваме веднага със "скелетна" височина, без да чакаме child
+  setIFrameHeight(viewportHeightFallback());
+
+  iframe.src = CONFIG_URL + (CONFIG_URL.includes('?') ? '&' : '?') + 'embed=1';
+  closeBtn.style.display = 'inline-block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// приемаме височина от child (ако дойде) – коригираме панела
+window.addEventListener('message', function(e){
+  if(e.origin !== TARGET_ORIGIN) return;
+  var d = e.data || {};
+  if(d.type === 'dp-config-size' && typeof d.height === 'number'){
+    setIFrameHeight(d.height);
+  }
+});
+
+// ако child НЕ прати нищо, поддържаме панела с viewport височина при resize
+window.addEventListener('resize', function(){
+  if(confWrap.classList.contains('dp-open') && !firstSizeReceived){
+    setIFrameHeight(viewportHeightFallback());
+  }
+});
+
 
   function closeConfigurator(){
     iframe.src = '';
