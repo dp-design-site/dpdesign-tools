@@ -4523,19 +4523,5 @@ We use cookies and other tracking technologies to personalize and improve your e
   });
 </script>
 
-	<script>
-(function(){
-  try{ var s=document.createElement('style'); s.textContent='html,body{overflow:hidden!important}'; document.head.appendChild(s);}catch(e){}
-  var parentOrigin='*'; try{ parentOrigin = new URL(document.referrer).origin; }catch(e){}
-  function sendHeight(){
-    var h = Math.max(document.documentElement.scrollHeight, document.body?document.body.scrollHeight:0);
-    parent.postMessage({type:'dp-config-size', height:h}, parentOrigin);
-  }
-  window.addEventListener('load', sendHeight);
-  window.addEventListener('resize', sendHeight);
-  var ro = new ResizeObserver(sendHeight); ro.observe(document.documentElement);
-  window.addEventListener('message', function(e){ if(e.data && (e.data.type==='dp-parent-ready'||e.data.type==='dp-parent-resized')) sendHeight(); });
-})();
-</script>
 
 </body></html>
