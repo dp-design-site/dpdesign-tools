@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Симулация: Отваряне на конфигуратора от страница на Realmet</title>
+  <style>
+    :root{
+      --bg:#12151b; --card:#1c212b; --accent:#36d399; --text:#e6edf3; --muted:#9aa4b2;
+    }
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif}
+    .wrap{max-width:1100px;margin:24px auto;padding:16px}
+    .header{display:flex;gap:16px;align-items:center}
+    .logo{width:44px;height:44px;border-radius:10px;background:#b91c1c;display:grid;place-items:center;font-weight:800}
+    .shot{border-radius:14px;overflow:hidden;border:1px solid #2a3240}
+    .shot img{width:100%;display:block}
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+    .btn{appearance:none;border:0;border-radius:999px;padding:10px 16px;font-weight:600;cursor:pointer;background:var(--accent);color:#0b1320;}
+    .btn.secondary{background:#2a3240;color:var(--text)}
+    .hint{color:var(--muted);font-size:.92rem}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;display:none;}
+    .modal.active{display:block}
+    .backdrop{position:absolute;inset:0;background:rgba(9,12,19,.72);backdrop-filter:blur(4px);}
+    .panel{position:absolute;inset:4%;background:var(--card);border:1px solid #2a3240;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+    .panel header{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-bottom:1px solid #2a3240}
+    .panel header .title{display:flex;align-items:center;gap:8px}
+    .panel header .title small{color:var(--muted)}
+    .panel header .controls{display:flex;gap:8px}
+    .panel header button{background:#2a3240;color:var(--text);border:0;border-radius:8px;padding:8px 10px;cursor:pointer}
+    .stage{position:relative;flex:1;background:#0b1320}
+    iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+    /* Spinner */
+    .spinner{position:absolute;inset:0;display:grid;place-items:center}
+    .spinner.hide{display:none}
+    .lds{width:60px;height:60px;border-radius:50%;border:6px solid #2a3240;border-top-color:var(--accent);animation:s 1s linear infinite}
+    @keyframes s{to{transform:rotate(360deg)}}
+
+    @media (max-width:700px){.panel{inset:0;border-radius:0}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="logo">RM</div>
+      <div>
+        <h1 style="margin:0">Симулация: бутон „Възможни опции / Конфигуратор“</h1>
+        <div class="hint">Кликни бутона, за да отвориш <strong>DP Pilot конфигуратора</strong> в модален прозорец (iframe). Ако домейнът забранява вграждане, ще се отвори в нов таб.</div>
+      </div>
+    </div>
+
+    <div class="shot">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA+gAAAJyCAYAAACv8m1/AAABGklEQVR4nO3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4m5v6AAG1zv9vAAAAAElFTkSuQmCC" alt="Mock screenshot placeholder"/>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn" id="openCfg">Отвори конфигуратора</button>
+      <button class="btn secondary" id="openNew">Отвори в нов таб</button>
+    </div>
+
+    <p class="hint">Пример за линк с параметри: <code>https://dp-design.tools/configurator?product=multilift-platform&color=ral3003</code>
+    – в реалната интеграция ще подаваме ID на продукт, език, потребител и др.</p>
+  </div>
+
+  <!-- Modal with iframe -->
+  <div class="modal" id="modal">
+    <div class="backdrop" aria-hidden="true"></div>
+    <div class="panel" role="dialog" aria-modal="true" aria-label="DP Pilot конфигуратор">
+      <header>
+        <div class="title">
+          <strong>DP Pilot – конфигуратор</strong>
+          <small id="targetUrl"></small>
+        </div>
+        <div class="controls">
+          <button id="goFull">Цял екран</button>
+          <button id="closeModal">Затвори</button>
+        </div>
+      </header>
+      <div class="stage">
+        <div class="spinner" id="spin"><div class="lds"></div></div>
+        <iframe id="cfgFrame" referrerpolicy="no-referrer" allow="fullscreen; xr-spatial-tracking"></iframe>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // === Конфиг ===
+  const CONFIG_URL = "https://dp-design.tools/configurator?product=multilift-platform&color=ral3003";
+
+  const modal = document.getElementById('modal');
+  const frame = document.getElementById('cfgFrame');
+  const spin  = document.getElementById('spin');
+  const target = document.getElementById('targetUrl');
+
+  function openModal(){
+    target.textContent = CONFIG_URL;
+    modal.classList.add('active');
+    spin.classList.remove('hide');
+
+    // Опит за вграждане
+    try {
+      frame.src = CONFIG_URL;
+      let loaded = false;
+      const t = setTimeout(()=>{ if(!loaded){ /* ако е блокирано от X-Frame-Options */
+        window.open(CONFIG_URL,'_blank');
+        closeModal();
+      }}, 3500);
+      frame.onload = ()=>{ loaded = true; spin.classList.add('hide'); };
+    } catch(e){
+      window.open(CONFIG_URL,'_blank');
+      closeModal();
+    }
+  }
+  function closeModal(){ modal.classList.remove('active'); frame.src='about:blank'; }
+
+  document.getElementById('openCfg').onclick = openModal;
+  document.getElementById('openNew').onclick = ()=>window.open(CONFIG_URL,'_blank');
+  document.getElementById('closeModal').onclick = closeModal;
+
+  // Fullscreen
+  document.getElementById('goFull').onclick = ()=>{
+    const el = document.querySelector('.panel');
+    if(el.requestFullscreen){ el.requestFullscreen(); }
+  };
+
+  // Затваряне при клик на фона
+  document.querySelector('.backdrop').onclick = closeModal;
+</script>
+</body>
+</html>
