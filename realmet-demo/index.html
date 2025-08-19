@@ -473,91 +473,121 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 						</nav>
 
 						<!-- START: Конфигуратор бутон и контейнер -->
-					<style>
-					  /* запазваме хедър/футър видими; скриваме основното съдържание при отворен конфигуратор */
-					  body.config-open .slick-section .row { display: none !important; }
-					  body.config-open #configurator { display: block !important; }
-					
-					  /* съвпадение със стила (жълтият акцент на Realmet) */
-					  #config-menu .btn-warning {
-					    background-color: var(--dp-cookie-palette-button-background, #E9CF00);
-					    border-color: var(--dp-cookie-palette-button-background, #E9CF00);
-					    color: var(--dp-cookie-palette-button-text, #292929);
-					  }
-					  #config-menu .btn-warning:hover { filter: brightness(0.95); }
-					</style>
-					
-					<div id="config-menu" class="d-flex align-items-center mb-3">
-					  <div class="dropdown ml-auto">
-					    <button class="btn btn-warning dropdown-toggle" id="configDropdown"
-					            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					      Конфигуратор
-					    </button>
-					    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="configDropdown">
-					      <h6 class="dropdown-header">Избери тип платформа</h6>
-					      <a class="dropdown-item" href="#" data-config="platforma">Платформа</a>
-					      <div class="dropdown-divider"></div>
-					      <!-- тези три са информативни / линкове – не отварят конфигуратора -->
-					      <a class="dropdown-item" href="https://www.realmet.bg/produkti/multilift-konteineri/platforma-1">
-					        Скосена платформа
-					      </a>
-					      <a class="dropdown-item" href="https://www.realmet.bg/produkti/multilift-konteineri/platforma-1">
-					        Скосена платформа с&nbsp;вдлъбнатини
-					      </a>
-					      <a class="dropdown-item" href="https://www.realmet.bg/produkti/multilift-konteineri/platforma-1">
-					        Платформа с&nbsp;twistlock
-					      </a>
-					    </div>
-					  </div>
-					
-					  <button id="configClose" class="btn btn-outline-secondary ml-2 d-none">
-					    Затвори конфигуратора
-					  </button>
-					</div>
-					
-					<!-- Контейнерът на конфигуратора (първоначално скрит) -->
-					<div id="configurator" class="container d-none">
-					  <div class="embed-responsive embed-responsive-21by9" style="min-height: 70vh;">
-					    <iframe id="configIframe" class="embed-responsive-item"
-					            src="" loading="lazy" allow="fullscreen"></iframe>
-					  </div>
-					</div>
-					
-					<script>
-					(function () {
-					  // TODO: смени с реалния URL на твоя конфигуратор
-					  var CONFIG_URL = 'https://your-domain.example/your-repo/configurator/?theme=realmet';
-					
-					  function openConfigurator() {
-					    document.body.classList.add('config-open');
-					    document.getElementById('configIframe').src = CONFIG_URL;
-					    document.getElementById('configClose').classList.remove('d-none');
-					    window.scrollTo({ top: 0, behavior: 'smooth' });
-					  }
-					
-					  function closeConfigurator() {
-					    document.body.classList.remove('config-open');
-					    document.getElementById('configClose').classList.add('d-none');
-					    // изчистваме src, за да спрем конфигуратора при затваряне
-					    document.getElementById('configIframe').src = '';
-					  }
-					
-					  // отваряне при избор "Платформа"
-					  document.addEventListener('click', function (e) {
-					    var item = e.target.closest('[data-config]');
-					    if (item && item.getAttribute('data-config') === 'platforma') {
-					      e.preventDefault();
-					      openConfigurator();
-					    }
-					  });
-					
-					  // бутон "Затвори конфигуратора"
-					  document.getElementById('configClose').addEventListener('click', function (e) {
-					    e.preventDefault();
-					    closeConfigurator();
-					  });
-					})();
-					</script>
+					<!-- === DP CONFIG: меню + контейнер (без Bootstrap/Popper) === -->
+						<style>
+						  /* Визия на бутона в стила на Realmet */
+						  .dp-btn{padding:.6rem 1rem;border-radius:10px;border:0;cursor:pointer;font:600 14px/1 system-ui}
+						  .dp-btn-yellow{background:#E9CF00;color:#292929}
+						  .dp-btn-yellow:hover{filter:brightness(.95)}
+						  .dp-btn-outline{background:transparent;border:1px solid #bbb;color:#333}
+						
+						  /* Контейнер за менюто */
+						  #dp-config{position:relative;display:flex;gap:.5rem;align-items:center;margin:.75rem 0}
+						  /* Падащо меню */
+						  .dp-menu{position:absolute;top:100%;right:0;margin-top:.5rem;min-width:240px;background:#fff;
+						           border:1px solid #e5e5e5;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.12);
+						           padding:.4rem;display:none;z-index:9999}
+						  .dp-menu.open{display:block}
+						  .dp-menu h6{font:700 12px/1.1 system-ui;margin:.3rem .6rem .2rem;color:#666;text-transform:uppercase}
+						  .dp-item,.dp-link{display:block;width:100%;text-align:left;background:#fff;border:0;padding:.6rem .8rem;
+						                    border-radius:8px;cursor:pointer;text-decoration:none;color:#222}
+						  .dp-item:hover,.dp-link:hover{background:#f6f6f6}
+						  .dp-sep{height:1px;background:#eee;margin:.3rem 0}
+						
+						  /* Контейнер за iframe (скрит по начало) */
+						  #configurator{display:none}
+						  #configurator .dp-embed{width:100%;height:min(80vh,900px);border:0;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+						
+						  /* Скриваме основното съдържание под менюто, но НЕ хедъра/футъра */
+						  .dp-hidden{display:none !important}
+						</style>
+						
+						<div id="dp-config">
+						  <button id="dpConfigBtn" class="dp-btn dp-btn-yellow">Конфигуратор ▾</button>
+						  <div id="dpConfigMenu" class="dp-menu" aria-hidden="true">
+						    <h6>Избери тип платформа</h6>
+						    <button class="dp-item" data-config="platforma">Платформа</button>
+						    <div class="dp-sep"></div>
+						    <!-- Информативни линкове (не отварят нашия конфигуратор) -->
+						    <a class="dp-link" href="https://www.realmet.bg/produkti/multilift-konteineri/platforma-1">Скосена платформа</a>
+						    <a class="dp-link" href="https://www.realmet.bg/produkti/multilift-konteineri/platforma-1">Скосена платформа с вдлъбнатини</a>
+						    <a class="dp-link" href="https://www.realmet.bg/produkti/multilift-konteineri/platforma-1">Платформа с twistlock</a>
+						  </div>
+						  <button id="dpConfigClose" class="dp-btn dp-btn-outline" style="display:none">Затвори конфигуратора</button>
+						</div>
+						
+						<!-- Контейнерът на конфигуратора (в същата страница) -->
+						<div id="configurator">
+						  <iframe id="configIframe" class="dp-embed" src="" loading="lazy" allow="fullscreen"></iframe>
+						</div>
+						
+						<script>
+						(function(){
+						  // TODO: смени с истинския URL на конфигуратора ти
+						  var CONFIG_URL = 'https://dp-design.tools/configurator';
+						
+						  var btn = document.getElementById('dpConfigBtn');
+						  var menu = document.getElementById('dpConfigMenu');
+						  var closeBtn = document.getElementById('dpConfigClose');
+						  var iframe = document.getElementById('configIframe');
+						  var configurator = document.getElementById('configurator');
+						
+						  // отваряне/затваряне на падащото меню (без Bootstrap/Popper)
+						  btn.addEventListener('click', function(e){
+						    e.preventDefault();
+						    menu.classList.toggle('open');
+						  });
+						  document.addEventListener('click', function(e){
+						    if(!menu.contains(e.target) && e.target !== btn) menu.classList.remove('open');
+						  });
+						
+						  function hideMainContent(){
+						    // Скриваме всички "съседни" секции под менюто, освен самия конфигуратор и менюто
+						    var parent = document.getElementById('dp-config').parentElement;
+						    Array.from(parent.children).forEach(function(el){
+						      if(el.id !== 'dp-config' && el.id !== 'configurator'){ el.classList.add('dp-hidden'); }
+						    });
+						  }
+						  function showMainContent(){
+						    var parent = document.getElementById('dp-config').parentElement;
+						    Array.from(parent.children).forEach(function(el){ el.classList.remove('dp-hidden'); });
+						  }
+						
+						  function openConfigurator(){
+						    hideMainContent();
+						    configurator.style.display = 'block';
+						    closeBtn.style.display = 'inline-block';
+						    iframe.src = CONFIG_URL;
+						    window.scrollTo({ top: 0, behavior: 'smooth' });
+						  }
+						
+						  function closeConfigurator(){
+						    iframe.src = '';
+						    configurator.style.display = 'none';
+						    closeBtn.style.display = 'none';
+						    showMainContent();
+						  }
+						
+						  // избор от менюто
+						  menu.addEventListener('click', function(e){
+						    var item = e.target.closest('[data-config]');
+						    if(!item) return;
+						    e.preventDefault();
+						    if(item.dataset.config === 'platforma'){
+						      menu.classList.remove('open');
+						      openConfigurator();
+						    }
+						  });
+						
+						  // бутон за затваряне
+						  closeBtn.addEventListener('click', function(e){
+						    e.preventDefault();
+						    closeConfigurator();
+						  });
+						})();
+						</script>
+						<!-- === /DP CONFIG === -->
+
 					<!-- END: Конфигуратор бутон и контейнер -->
 
 						
