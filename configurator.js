@@ -1,22 +1,19 @@
-// Конфигурационен скрипт – Етап 7: UI подобрения, адаптивност и прецизност
+// Конфигурационен скрипт – Етап 8: подобрения на визуализацията и структурата
 
 (function injectRuntimeStyles(){
   const id='runtime-styles';
   if(document.getElementById(id)) return;
   const s=document.createElement('style'); s.id=id;
   s.textContent=`
-    .spinner{border:4px solid #222;border-top:4px solid #cc0000;border-radius:50%;width:44px;height:44px;animation:spin 1s linear infinite;margin:12px auto}
+    .spinner{border:4px solid #444;border-top:4px solid #cc0000;border-radius:50%;width:44px;height:44px;animation:spin 1s linear infinite;margin:12px auto}
     @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
     .fade-out{opacity:.35;filter:grayscale(.15);transition:opacity .35s ease,filter .35s ease}
     .fade-in{opacity:1;filter:none;transition:opacity .35s ease,filter .35s ease}
     .viewer-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,.35);backdrop-filter:blur(1px);z-index:5}
     .viewer-overlay .stage{color:#ccc;margin-top:8px;font-size:14px}
-    .thumb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:4;display:none}
-    @media (max-width: 768px) {
-      .main-container { grid-template-columns: 1fr !important; }
-      .preview-panel { order: 2; }
-      .config-panel { order: 1; }
-      .thumbnail-row { flex-wrap: wrap; justify-content: center; }
+    @media (max-width: 768px){
+      .main-container{grid-template-columns: 1fr !important;}
+      .config-panel, .preview-panel{height:auto !important;}
     }
   `; document.head.appendChild(s);
 })();
@@ -27,6 +24,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   initTabs();
   initAutoReload();
   generateConfig(true);
+  insertTitleFromDocument();
+  injectRealmetTitle();
 });
 
 function normalizePreviewDOM(){
@@ -55,29 +54,12 @@ function normalizePreviewDOM(){
     overlay.innerHTML=`<div class="spinner"></div><div class="stage" id="viewerStage">Подготовка…</div>`;
     wrap.appendChild(overlay);
   }
-
-  let thumbs=document.querySelector('.thumbnail-row');
-  if(thumbs){
-    thumbs.id='thumbRow';
-    thumbs.style.position='relative';
-    let existing=document.getElementById('thumbOverlay');
-    if(!existing){
-      const thumbOverlay=document.createElement('div');
-      thumbOverlay.className='thumb-overlay';
-      thumbOverlay.id='thumbOverlay';
-      thumbs.appendChild(thumbOverlay);
-    }
-  }
 }
 
 function normalizeLayoutDimensions(){
-  const configPanel=document.querySelector('.config-panel');
-  const previewPanel=document.querySelector('.preview-panel');
-  if(configPanel && previewPanel){
-    configPanel.style.flex='0 0 45%';
-    previewPanel.style.flex='0 0 55%';
-    configPanel.style.minWidth='0';
-    previewPanel.style.minWidth='0';
+  const mainContainer=document.querySelector('.main-container');
+  if(mainContainer){
+    mainContainer.style.gridTemplateColumns='0.9fr 1.1fr';
   }
 }
 
@@ -155,8 +137,6 @@ function stageOverlay(text,delay){
 function toggleOverlay(show){
   const overlay=document.getElementById('viewerOverlay');
   if(overlay) overlay.style.display=show?'flex':'none';
-  const thumbs=document.getElementById('thumbOverlay');
-  if(thumbs) thumbs.style.display='none';
 }
 
 function generateConfig(initial){
@@ -167,7 +147,7 @@ function generateConfig(initial){
 
   const mv=document.getElementById('interactiveModel');
   const wrap=document.getElementById('viewerWrap') || mv?.parentElement;
-  const thumbRow=document.getElementById('thumbRow') || document.querySelector('.thumbnail-row');
+  const thumbRow=document.querySelector('.thumbnail-row');
   if(!mv||!wrap||!thumbRow) return;
 
   mv.classList.add('fade-out');
@@ -194,8 +174,57 @@ function generateConfig(initial){
     });
 }
 
-// Lightbox остава непроменен
-function enableLightbox(){ /* ... (без промяна) */ }
+function insertTitleFromDocument(){
+  const pageTitle=document.title;
+  const existing=document.getElementById('pageTitleInsert');
+  if(!existing){
+    const h1=document.createElement('h1');
+    h1.id='pageTitleInsert';
+    h1.textContent=pageTitle;
+    h1.className='page-title';
+    document.querySelector('.main-container')?.insertAdjacentElement('beforebegin',h1);
+  }
+}
+
+function injectRealmetTitle(){
+  const logo=document.querySelector('header img');
+  if(logo && !document.getElementById('realmetTitle')){
+    const span=document.createElement('span');
+    span.id='realmetTitle';
+    span.textContent='REALMET';
+    span.style.color='#cc0000';
+    span.style.fontWeight='bold';
+    span.style.fontSize='20px';
+    span.style.marginLeft='12px';
+    logo.insertAdjacentElement('afterend',span);
+  }
+}
+
+function enableLightbox(){
+  const triggers=document.querySelectorAll('.lightbox-trigger');
+  triggers.forEach(el=>{
+    el.addEventListener('click',()=>{
+      const src=el.dataset.src;
+      const type=el.dataset.type;
+      const modal=document.createElement('div');
+      modal.className='lightbox-modal';
+      modal.style.position='fixed';
+      modal.style.top='0';
+      modal.style.left='0';
+      modal.style.width='100vw';
+      modal.style.height='100vh';
+      modal.style.background='rgba(0,0,0,0.85)';
+      modal.style.display='flex';
+      modal.style.alignItems='center';
+      modal.style.justifyContent='center';
+      modal.style.zIndex='9999';
+      modal.innerHTML=`<div style="max-width:90%;max-height:90%;">${type==='pdf'?`<iframe src="${src}" style="width:100%;height:100%;border:none;"></iframe>`:`<img src="${src}" style="max-width:100%;max-height:100%">`}</div>`;
+      modal.addEventListener('click',()=>modal.remove());
+      document.body.appendChild(modal);
+    });
+  });
+}
+
 function showOrderModal(){ const m=document.getElementById('orderModal'); if(m) m.style.display='block'; }
 function closeModal(){ const m=document.getElementById('orderModal'); if(m) m.style.display='none'; }
 window.onclick=function(e){ const m=document.getElementById('orderModal'); if(e.target===m) closeModal(); }
