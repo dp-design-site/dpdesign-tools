@@ -29,8 +29,20 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
 
-    header img {
+    header .logo-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header .logo-wrapper img {
       height: 40px;
+    }
+
+    header .logo-wrapper span {
+      color: #cc0000;
+      font-weight: bold;
+      font-size: 20px;
     }
 
     .nav-menu {
@@ -84,9 +96,9 @@
 
     .main-container {
       display: grid;
-      grid-template-columns: 1fr 1.25fr;
+      grid-template-columns: 0.9fr 1.1fr;
       gap: 20px;
-      padding: 120px 5% 40px;
+      padding: 160px 5% 40px;
       max-width: 1600px;
       margin: 0 auto;
     }
@@ -157,11 +169,6 @@
       color: #ccc;
     }
 
-    .order-btn-wrapper {
-      position: relative;
-      margin-top: 20px;
-    }
-
     button.action {
       width: 100%;
       padding: 12px;
@@ -204,6 +211,7 @@
 
     .thumbnail-row {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
       overflow-x: auto;
@@ -221,12 +229,21 @@
     .thumbnail-row img:hover {
       transform: scale(1.1);
     }
+
+    h1.page-title {
+      color: #eee;
+      text-align: center;
+      margin-top: 80px;
+      font-size: 26px;
+    }
   </style>
 </head>
 <body>
   <header>
-    <img src="img/realmet-logo.png" alt="Realmet">
- 
+    <div class="logo-wrapper">
+      <img src="img/realmet-logo.png" alt="Realmet">
+      <span>REALMET</span>
+    </div>
     <div class="nav-menu">
       <a href="#">Начало</a>
       <a href="#">Продукти</a>
@@ -240,6 +257,8 @@
     </div>
   </header>
 
+  <h1 class="page-title">Конфигуратор - Abroll On/Off Platform</h1>
+
   <div class="main-container">
     <div class="config-panel">
       <div class="tab-labels">
@@ -251,9 +270,6 @@
       <div style="flex: 1; display: flex; flex-direction: column;">
         <div id="tab-content" class="tab-content">
           <!-- Content injected by JS -->
-        </div>
-        <div class="order-btn-wrapper">
-          <button class="action" onclick="showOrderModal()">Поръчай</button>
         </div>
       </div>
     </div>
@@ -268,6 +284,10 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="order-btn-wrapper" style="max-width: 400px; margin: 30px auto 60px auto;">
+    <button class="action" onclick="showOrderModal()">Поръчай</button>
   </div>
 
   <div id="orderModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center;">
