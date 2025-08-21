@@ -1,0 +1,57 @@
+
+let opt = document.querySelectorAll(".pl");
+if (opt.length > 1)
+{opt[1].style.display = "none";}
+
+var favourites = [];
+
+let x = document.querySelectorAll(".frame-type-form_formframework form"); 
+let zaj = x[0].id; 
+country = zaj+"-singleselect-1";
+let phone = zaj+"-text-4";
+let activities = document.getElementById(country);
+activities.addEventListener("change", function() {
+    document.getElementById(phone).value = this.value;
+});
+
+//function newchange (title,diva){
+////    var x = document.querySelectorAll(".frame-type-form_formframework form"); 
+////    var zaj = x[0].id; 
+//    var zajavka = zaj+"-hidden-1";
+//    if (!favourites.includes(title))
+//    {
+//    favourites.push(title);
+//    document.getElementById(zajavka).value = favourites;
+//    var x = document.getElementById(diva);
+//    x.parentElement.parentElement.style.backgroundColor = "#B6322A";
+// 	x.parentElement.parentElement.style.borderColor = "#B6322A";
+//    x.nextElementSibling.innerHTML = "<span style='color:#fff;'>ПРЕМАХНИ КАТО ИЗБРАНА</span>";
+//	}
+//    else {    
+//    var index = favourites.indexOf(title);
+//	if (index >= 0) {
+// 	favourites.splice( index, 1 );
+//    document.getElementById(zajavka).value = favourites;
+//	}
+//    var y = document.getElementById(diva);
+//    y.parentElement.parentElement.style.backgroundColor = "#fff";
+//    y.parentElement.parentElement.style.borderColor = "#fff";
+//    y.nextElementSibling.innerHTML = "<span style='color:#000;'>маркирай като желана</span>";   
+//	}     
+//}
+
+function opcii (){
+  var element = document.getElementById("optbut");
+  console.log(element);
+ if (opt[1].style.display != "flex") {
+    opt[1].style.display = "flex";
+    element.classList.add("myopenstyle");
+ } else {
+    opt[1].style.display = "none";
+    element.classList.remove("myopenstyle");
+ }
+}
+
+$(document).ready(function(){
+    $("#realmetModal").modal('show');
+}); 

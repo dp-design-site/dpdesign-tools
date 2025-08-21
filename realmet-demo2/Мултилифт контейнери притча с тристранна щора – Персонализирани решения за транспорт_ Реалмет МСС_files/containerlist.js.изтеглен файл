@@ -1,0 +1,68 @@
+
+function change() {
+
+
+        let results = Array.from(document.querySelectorAll('.result > div')),
+            modelsChecked = document.querySelectorAll('.filter input.models:checked');
+        //alert(document.querySelectorAll('.filter input.models').length);
+        // Hide all results
+        results.forEach(function(result) {
+            result.style.display = 'none';
+        });
+		// show everything if nothing is selected
+		let broika = document.querySelectorAll('.filter input.models:checked');
+		if(broika.length < 1)
+        { 
+	     results.forEach(function(result) {
+            result.style.display = 'block';
+        });
+		}			
+        // Filter results to only those that meet ALL requirements:        
+
+        filterModels(modelsChecked);
+        
+        //if (processorsChecked.length != 0) {
+        //    filterModelsOrProcessors(processorsChecked);
+        //}
+
+        function filterModels(modelsChecked) {
+            results = Array.from(modelsChecked).reduce(function(sum, input) {
+                const attrib = input.getAttribute('value');
+                return sum.concat(results.filter(function(result) {
+                    return result.classList.contains(attrib);
+                }));
+            }, []);
+        }
+        // Show those filtered results:
+        results.forEach(function(result) {
+            result.style.display = 'block';
+        });
+    }
+//change();
+
+
+//function filterFunction() {
+//  var input,conblock, filter, ul, li, a, i;
+//  input = document.getElementById("containerselect").value;
+//  conblock = document.getElementsByClassName("containerblock");
+//  console.log (input);
+////  console.log (conblock);
+//  for (i = 0; i < conblock.length; i++) {
+//    txtValue = conblock[i].getAttribute("id");
+//	console.log (txtValue);
+ //   if (txtValue == input || input == "alle") {
+ //    conblock[i].style.display = "flex";
+//    } else {
+//     conblock[i].style.display = "none";
+//    }
+//  }
+//  
+//}
+
+function enterForm(code) {
+  var elmnt = document.getElementById("verfuegbarkeitanfragen-584-text-3");
+  var pyrvopole = document.getElementById("verfuegbarkeitanfragen-584-text-1"); 
+  elmnt.value = code;
+  elmnt.disabled = true;
+  pyrvopole.scrollIntoView();
+}

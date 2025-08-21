@@ -1,0 +1,16 @@
+.slick-list .slick-slide .marking{
+##	display: none;
+}
+.slick-slider .slick-slide img {
+  filter: gray;
+  -webkit-filter: grayscale(1);
+  filter: grayscale(1);
+  mix-blend-mode: luminosity;
+  opacity: 0.5; }
+.slick-slider .slick-slide img {
+  filter: unset;
+  -webkit-filter: unset;
+  filter: unset;
+  mix-blend-mode: unset;
+  opacity: 1; }
+
