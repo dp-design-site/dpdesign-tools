@@ -7,349 +7,167 @@
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <link rel="icon" type="image/png" href="img/favicon.png">
   <style>
-    /* Стилизиране на тялото и основната кутия */
-    body {
-      background-color: #fff;
-      color: #eee;
-      font-family: Arial, sans-serif;
-      padding: 5px;
+    :root {
+      --bg-dark: #000000;
+      --fg-light: #ffffff;
+      --accent: #00c3ff;
+      --hover-bg: rgba(255,255,255,0.05);
     }
+
     html, body {
-      height: 100%;
       margin: 0;
-      }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: #fff;
-      border: 1px solid #555;
-      padding: 10px;
-      border-radius: 8px;
-      overflow-x: hidden;
-      min-height: 100%;
-      box-sizing: border-box;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .logo {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .logo img {
-      height: 200px;
-    }
-    fieldset {
-      border: 1px solid #555;
-      margin-bottom: 16px;
-      padding: 16px;
-      border-radius: 6px;
-    }
-    legend {
-      font-weight: bold;
-      padding: 0 8px;
-    }
-    label {
-      display: block;
-      margin: 12px 0 4px;
-    }
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 12px;
-      border: none;
-      border-radius: 4px;
-      border: 1px solid #888;
-      background-color: #444;
-      color: #fff;
-    }
-    .readonly {
-      background-color: #444;
-      color: #999;
-    }
-    button {
-      background-color: #007acc;
-      color: white;
-      padding: 10px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-      margin: 8px auto;
-      display: block;
-    }
-    .json-output {
-      display: none;
-    }
-    .drawing-preview {
-      width: 100%;
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 8px #111;
-      object-fit: contain;
-      max-height: 600px;
-    }
-    .thumbnail-row {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 30px;
-      overflow-x: visible;
-      -webkit-overflow-scrolling: touch;
-    }
-    .thumbnail {
-      width: 150px;
-      border-radius: 4px;
-      cursor: pointer;
-      box-shadow: 0 0 5px #222;
-      transition: transform 0.2s;
-      flex: 0 0 auto;
-      border: 1px solid #888;
-    }
-    .thumbnail:hover {
-      transform: scale(1.1);
-      z-index: 1;
-    }
-    .thumbnail-row::-webkit-scrollbar {
-      height: 6px;
-    }
-    .thumbnail-row::-webkit-scrollbar-thumb {
-      background-color: #666;
-      border-radius: 3px;
-    }
-    .arrow {
-      font-size: 24px;
-      color: #ccc;
-      cursor: pointer;
-      user-select: none;
-      margin: 0 10px;
-      display: flex;
-      align-items: center;
-    }
-    .accordion-toggle {
-      display: none;
-    }
-    .accordion-label {
-      display: none;
-      background-color: #333;
-      color: #fff;
-      padding: 10px;
-      cursor: pointer;
-      border-radius: 4px;
-      margin-bottom: 5px;
-      position: relative;
-    }
-    .accordion-label::after {
-      content: '';
-      display: inline-block;
-      margin-left: 8px;
-      border: solid white;
-      border-width: 0 2px 2px 0;
-      padding: 4px;
-      transform: rotate(45deg);
-      transition: transform 0.3s ease;
-      float: right;
-      margin-top: 4px;
-    }
-    .accordion-toggle:checked + .accordion-label::after {
-      transform: rotate(-135deg);
-    }
-    .accordion-content {
-      display: block;
-    }
-    .flex-row {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    @media (max-width: 767px) {
-      .flex-row {
-        display: block;
-      }
-      fieldset {
-        display: none;
-      }
-      .accordion-toggle:checked + .accordion-label + fieldset {
-        display: block;
-      }
-      .accordion-label {
-        display: block;
-      }
-    }
-    footer {
-      margin-top: 40px;
-      text-align: center;
-      font-size: 14px;
-      color: #888;
-    }
-    .lightbox {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.85);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    .lightbox img {
-      max-width: 90vw;
-      max-height: 90vh;
-      border-radius: 8px;
-      box-shadow: 0 0 10px #000;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
+      padding: 0;
       height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.7);
-      border: 1px solid #888;
+      background-color: var(--bg-dark);
+      color: var(--fg-light);
+      font-family: 'Segoe UI', sans-serif;
+      scroll-behavior: smooth;
+      background-image: url("img/bg-layer.jpg");
+      background-attachment: fixed;
+      background-size: cover;
     }
-    .modal-content {
-      background-color: #2b2b3c;
-      margin: 10% auto;
-      padding: 25px;
-      border: 1px solid #888;
-      width: 80%;
-      max-width: 400px;
-      border-radius: 10px;
-      color: #eee;
-      text-align: center;
-      box-shadow: 0 0 10px #000;
-      position: relative;
+
+    .layout {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
     }
-    .close-button {
-      position: absolute;
-      top: 8px;
-      right: 12px;
-      color: #fff;
-      font-size: 24px;
-      cursor: pointer;
+
+    .config-panel, .model-panel {
+      flex: 1;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
     }
+
+    .config-panel:hover, .model-panel:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+    }
+
     model-viewer {
       width: 100%;
       height: 500px;
-      margin-top: 20px;
-      margin-bottom: 20px;
-      border: 1px solid #aaa;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #111;
+      background: #111;
+      border-radius: 8px;
     }
-    .platform-sketch img {
-      width: 85%;
-      height: auto;
-      display: block;
-      margin-bottom: 20px;
-      margin: 0 auto 20px auto;
+
+    h2 {
+      margin-top: 0;
+      color: var(--accent);
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: none;
+      background: #222;
+      color: white;
+    }
+
+    button {
+      background-color: var(--accent);
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #009fcf;
+    }
+
+    .color-palette {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .color-swatch {
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border 0.3s;
+    }
+
+    .color-swatch:hover {
+      border: 2px solid var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="logo">
-      <img src="img/realmet-logo.png" alt="Realmet Logo">
+  <div class="layout">
+    <div class="config-panel">
+      <h2>Настройки</h2>
+      <select id="material">
+        <option value="RAL1026">RAL1026 Luminous Yellow</option>
+        <option value="RAL3000">RAL3000 Flame Red</option>
+        <option value="RAL5015">RAL5015 Sky Blue</option>
+        <option value="RAL9005">RAL9005 Jet Black</option>
+      </select>
+
+      <button onclick="applyColor()">Генерирай</button>
+
+      <div class="color-palette">
+        <div class="color-swatch" style="background-color:#FFFF00" onclick="selectColor('#FFFF00')"></div>
+        <div class="color-swatch" style="background-color:#FF0000" onclick="selectColor('#FF0000')"></div>
+        <div class="color-swatch" style="background-color:#0000FF" onclick="selectColor('#0000FF')"></div>
+        <div class="color-swatch" style="background-color:#00FF00" onclick="selectColor('#00FF00')"></div>
+        <div class="color-swatch" style="background-color:#FF00FF" onclick="selectColor('#FF00FF')"></div>
+        <!-- още цветове по желание -->
+      </div>
     </div>
 
-    <h2>Конфигуратор на платформа</h2>
-
-    <div class="platform-sketch">
-      <img src="img/platform_dimensions.png" alt="Основни размери на платформата">
+    <div class="model-panel">
+      <h2>3D Визуализация</h2>
+      <model-viewer id="viewer"
+                    src="models/default.glb"
+                    ar
+                    auto-rotate
+                    camera-controls
+                    environment-image="neutral"
+                    exposure="1.1">
+      </model-viewer>
     </div>
-
-
-    <label for="length">Дължина (A)</label>
-    <select id="length">
-      <option value="5500">5500 mm</option>
-      <option value="6000">6000 mm</option>
-      <option value="7000">7000 mm</option>
-    </select>
-
-    <label for="color">Цвят</label>
-    <select id="color">
-      <option value="RAL1026_Luminous_yellow">RAL1026 Luminous Yellow</option>
-      <option value="RAL3000_Flame_red">RAL3000 Flame Red</option>
-      <option value="RAL5012_Light_blue">RAL5012 Light Blue</option>
-    </select>
-
-    <div class="flex-row">
-      <input type="checkbox" class="accordion-toggle" id="t1"><label for="t1" class="accordion-label">Дъно</label>
-      <fieldset>
-        <legend>Дъно</legend>
-        <label>Вид ламарина дъно</label>
-        <input type="text" value="Гладка S235" class="readonly" readonly>
-
-        <label>Дебелина ламарина</label>
-        <input type="text" value="5 mm" class="readonly" readonly>
-
-        <label>C-заключване</label>
-        <input type="text" value="Да" class="readonly" readonly>
-
-        <label>Вид ролки</label>
-        <input type="text" value="Стоманени" class="readonly" readonly>
-      </fieldset>
-
-      <input type="checkbox" class="accordion-toggle" id="t2"><label for="t2" class="accordion-label">Челна стена</label>
-      <fieldset>
-        <legend>Челна стена</legend>
-        <label>Скосена челна стена</label>
-        <input type="text" value="Не" class="readonly" readonly>
-
-        <label>Височина</label>
-        <input type="text" value="1500 mm" class="readonly" readonly>
-
-        <label>Дебелина ламарина CS</label>
-        <input type="text" value="3 mm" class="readonly" readonly>
-
-        <label>Укрепване към дъното</label>
-        <input type="text" value="Да" class="readonly" readonly>
-      </fieldset>
-
-      <input type="checkbox" class="accordion-toggle" id="t3"><label for="t3" class="accordion-label">Халки за укрепване</label>
-      <fieldset>
-        <legend>Халки за укрепване на товара</legend>
-        <label>Халки 7000 кг</label>
-        <input type="text" value="Да" class="readonly" readonly>
-
-        <label>Отстояние първа халка</label>
-        <input type="text" value="500 mm" class="readonly" readonly>
-
-        <label>Брой халки на страна</label>
-        <input type="text" value="10" class="readonly" readonly>
-      </fieldset>
-    </div>
-
-    <button onclick="generateConfig()">Генерирай</button>
-
-    <div class="json-output" id="output"></div>
-    <div id="preview" style="margin-top: 30px;"></div>
-
-    <button onclick="showOrderModal()">Поръчай</button>
-
-    <div id="orderModal" class="modal">
-  <div class="modal-content">
-    <span class="close-button" onclick="closeModal()">&times;</span>
-    <h3>Благодарим за направената поръчка!</h3>
-    <p>Наш колега ще се свърже с вас за потвърждение.</p>
-  </div>
-</div>
-
-
-    <footer>
-      © dp-design.tools – всички права запазени
-    </footer>
-    
   </div>
 
-  <script src="configurator.js"></script>
+  <script>
+    let selectedColor = '#FFFF00';
+
+    function selectColor(color) {
+      selectedColor = color;
+    }
+
+    function applyColor() {
+      const viewer = document.getElementById('viewer');
+      const materialJSON = {
+        materials: [{pbrMetallicRoughness: { baseColorFactor: hexToRGBA(selectedColor) }}]
+      };
+      viewer.updateMaterials(materialJSON);
+    }
+
+    function hexToRGBA(hex) {
+      const bigint = parseInt(hex.replace("#", ""), 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return [r / 255, g / 255, b / 255, 1.0];
+    }
+  </script>
 </body>
 </html>
