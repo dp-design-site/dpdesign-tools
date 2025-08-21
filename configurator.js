@@ -1,17 +1,23 @@
-// Конфигурационен скрипт – Етап 6: червен спинър, без колелце за тумбнейли, равни контейнери
+// Конфигурационен скрипт – Етап 7: UI подобрения, адаптивност и прецизност
 
 (function injectRuntimeStyles(){
   const id='runtime-styles';
   if(document.getElementById(id)) return;
   const s=document.createElement('style'); s.id=id;
   s.textContent=`
-    .spinner{border:4px solid #444;border-top:4px solid #ff2b2b;border-radius:50%;width:44px;height:44px;animation:spin 1s linear infinite;margin:12px auto}
+    .spinner{border:4px solid #222;border-top:4px solid #cc0000;border-radius:50%;width:44px;height:44px;animation:spin 1s linear infinite;margin:12px auto}
     @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
     .fade-out{opacity:.35;filter:grayscale(.15);transition:opacity .35s ease,filter .35s ease}
     .fade-in{opacity:1;filter:none;transition:opacity .35s ease,filter .35s ease}
     .viewer-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,.35);backdrop-filter:blur(1px);z-index:5}
     .viewer-overlay .stage{color:#ccc;margin-top:8px;font-size:14px}
     .thumb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:4;display:none}
+    @media (max-width: 768px) {
+      .main-container { grid-template-columns: 1fr !important; }
+      .preview-panel { order: 2; }
+      .config-panel { order: 1; }
+      .thumbnail-row { flex-wrap: wrap; justify-content: center; }
+    }
   `; document.head.appendChild(s);
 })();
 
@@ -51,23 +57,27 @@ function normalizePreviewDOM(){
   }
 
   let thumbs=document.querySelector('.thumbnail-row');
-  if(thumbs && !thumbs.id){
+  if(thumbs){
     thumbs.id='thumbRow';
-    const thumbOverlay=document.createElement('div');
-    thumbOverlay.className='thumb-overlay';
-    thumbOverlay.id='thumbOverlay';
     thumbs.style.position='relative';
-    thumbs.appendChild(thumbOverlay);
+    let existing=document.getElementById('thumbOverlay');
+    if(!existing){
+      const thumbOverlay=document.createElement('div');
+      thumbOverlay.className='thumb-overlay';
+      thumbOverlay.id='thumbOverlay';
+      thumbs.appendChild(thumbOverlay);
+    }
   }
 }
 
 function normalizeLayoutDimensions(){
-  const mainContainers=document.querySelectorAll('.left-panel, .preview-panel');
-  if(mainContainers.length===2){
-    mainContainers[0].style.flex='1';
-    mainContainers[1].style.flex='1';
-    mainContainers[0].style.minWidth='0';
-    mainContainers[1].style.minWidth='0';
+  const configPanel=document.querySelector('.config-panel');
+  const previewPanel=document.querySelector('.preview-panel');
+  if(configPanel && previewPanel){
+    configPanel.style.flex='0 0 45%';
+    previewPanel.style.flex='0 0 55%';
+    configPanel.style.minWidth='0';
+    previewPanel.style.minWidth='0';
   }
 }
 
@@ -146,7 +156,7 @@ function toggleOverlay(show){
   const overlay=document.getElementById('viewerOverlay');
   if(overlay) overlay.style.display=show?'flex':'none';
   const thumbs=document.getElementById('thumbOverlay');
-  if(thumbs) thumbs.style.display=show?'block':'none';
+  if(thumbs) thumbs.style.display='none';
 }
 
 function generateConfig(initial){
