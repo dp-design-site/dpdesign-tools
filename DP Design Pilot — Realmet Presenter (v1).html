@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="bg" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DP Design Pilot — Презентация за Realmet</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    :root {
+      /* Light theme (Realmet-like) */
+      --bg: #ffffff;
+      --bg-2: #f6f7f9;
+      --text: #1e2329;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #d11c24; /* Realmet-ish red */
+      --accent-2: #991b1b;
+      --shadow: 0 8px 24px rgba(0,0,0,.08);
+      --radius: 14px;
+      --chip: #eef2f7;
+    }
+    [data-theme="dark"] {
+      --bg: #0f1216;
+      --bg-2: #171b21;
+      --text: #e5e7eb;
+      --muted: #a1a1aa;
+      --border: #262b33;
+      --accent: #ef4444;
+      --accent-2: #dc2626;
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --chip: #222831;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; background: var(--bg); color: var(--text); font: 16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; }
+
+    /* Header */
+    .header { position: sticky; top:0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--border); }
+    .header-inner { display:flex; align-items:center; gap:20px; padding:12px 20px; max-width: 1200px; margin: 0 auto; }
+    .logo { display:flex; align-items:center; gap:12px; font-weight: 800; }
+    .logo-mark { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display:grid; place-items:center; color:#fff; font-weight:900; }
+    .nav { display:flex; gap:16px; margin-left: 8px; }
+    .nav a { padding:8px 10px; border-radius: 10px; color: var(--muted); }
+    .nav a.active, .nav a:hover { color: var(--text); background: var(--bg-2); }
+    .grow { flex:1; }
+    .search { display:flex; align-items:center; gap:8px; padding:8px 12px; background: var(--bg-2); border-radius: 999px; border:1px solid var(--border); }
+    .search input { background: none; border: none; outline: none; color: var(--text); width: 160px; }
+    .right { display:flex; align-items:center; gap:10px; }
+    .chip { padding:6px 10px; border-radius: 999px; background: var(--chip); border:1px solid var(--border); color: var(--muted); font-size: 13px; }
+    .role { display:flex; align-items:center; gap:8px; border:1px solid var(--border); background: var(--bg-2); padding:6px 10px; border-radius: 12px; }
+    .role select { background:none; border:none; color:var(--text); }
+    .btn { padding:10px 14px; border-radius: 12px; border:1px solid var(--border); background: var(--bg-2); }
+    .btn.primary { background: var(--accent); color:#fff; border-color: var(--accent); }
+    .btn.primary:hover { background: var(--accent-2); }
+
+    /* Hero */
+    .hero { max-width: 1200px; margin: 18px auto; display: grid; grid-template-columns: 1.35fr 1fr; gap: 24px; align-items: stretch; }
+    .card { background: var(--bg); border:1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .p16 { padding: 16px; }
+    .p20 { padding: 20px; }
+    .title { font-size: 28px; font-weight: 800; margin: 6px 0 10px; }
+    .subtitle { color: var(--muted); }
+    .badges { display:flex; flex-wrap:wrap; gap:8px; margin-top: 12px; }
+
+    /* Gallery */
+    .thumbs { display:flex; gap:10px; overflow:auto; padding: 10px; border-top:1px solid var(--border); background: var(--bg-2); }
+    .thumb { width: 120px; height: 76px; flex: 0 0 auto; border-radius: 10px; border: 1px solid var(--border); background:#c7cad0; }
+
+    /* Sections */
+    .section { max-width: 1200px; margin: 22px auto; display:grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .specs ul { margin: 0; padding-left: 18px; }
+    .specs li { margin: 6px 0; }
+
+    .cta-bar { display:flex; gap: 12px; margin-top: 12px; }
+
+    /* Configurator container (mounts into #main) */
+    .config { max-width: 1200px; margin: 16px auto; display:grid; grid-template-columns: 1.25fr 1fr; gap: 20px; }
+    .sticky { position: sticky; top: 76px; }
+
+    /* Tabs */
+    .tabs { display:flex; gap: 8px; border-bottom: 1px solid var(--border); padding: 10px; }
+    .tab { padding: 10px 12px; border-radius: 10px; background: var(--bg-2); border:1px solid var(--border); color:var(--muted); }
+    .tab.active { color: var(--text); background: var(--bg); }
+    .tab.disabled { opacity: .5; pointer-events: none; }
+
+    .form-grid { display:grid; gap: 14px; grid-template-columns: repeat(2, minmax(0,1fr)); padding: 14px; }
+    .field { display:flex; flex-direction: column; gap: 6px; }
+    .field label { font-weight: 600; }
+    .input, select { padding:10px; border-radius: 10px; border:1px solid var(--border); background:var(--bg-2); color:var(--text); }
+
+    .panel { background: var(--bg); border:1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+
+    .summary { padding: 14px; border-top:1px solid var(--border); display:grid; gap: 8px; }
+    .summary .row { display:flex; justify-content: space-between; }
+
+    .fab { position: fixed; right: 16px; bottom: 16px; z-index: 51; }
+
+    /* RAL overlay */
+    .ral-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); display:none; align-items: center; justify-content: center; z-index: 60; }
+    .ral-dialog { width: min(920px, 92vw); background: var(--bg); border:1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; display:grid; grid-template-rows: auto 1fr auto; }
+    .ral-header { display:flex; align-items:center; gap:10px; padding: 14px; border-bottom:1px solid var(--border); }
+    .ral-body { padding: 12px; overflow: auto; }
+    .ral-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; }
+    .swatch { border:1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; }
+    .swatch .box { height: 54px; }
+    .swatch .cap { padding: 6px 8px; font-size: 12px; display:flex; justify-content: space-between; gap:6px; }
+
+    /* Role-gated areas */
+    .role-area { display:none; }
+
+    /* Footer */
+    .footer { margin-top: 40px; border-top: 1px solid var(--border); background: var(--bg); }
+    .footer-inner { max-width: 1200px; margin: 0 auto; padding: 20px; color: var(--muted); }
+
+    /* Responsive */
+    @media (max-width: 1199px) {
+      .hero { grid-template-columns: 1fr; }
+      .section { grid-template-columns: 1fr; }
+      .config { grid-template-columns: 1fr; }
+      .sticky { position: static; top: auto; }
+    }
+    @media (max-width: 760px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .nav { display:none; }
+      .search input { width: 100px; }
+      .title { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header (Realmet-like) -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-mark">dp</div>
+        <div>Realmet — Demo Skin</div>
+      </div>
+      <nav class="nav">
+        <a class="active" href="#">Начало</a>
+        <a href="#">Продукти</a>
+        <a href="#">Бластиране</a>
+        <a href="#">За нас</a>
+        <a href="#">Контакти</a>
+      </nav>
+      <div class="grow"></div>
+      <div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/></svg><input placeholder="Търсене (фиктивно)"/></div>
+      <span class="chip">BG</span>
+      <div class="role">
+        <span style="color:var(--muted)">Роля:</span>
+        <select id="roleSelect">
+          <option value="client">Client</option>
+          <option value="sales">Sales</option>
+          <option value="engineer">Engineer</option>
+          <option value="ceo">CEO</option>
+        </select>
+      </div>
+      <button id="themeToggle" class="btn" title="Dark / Light">Dark</button>
+      <button id="btnDashboard" class="btn primary">Dashboard</button>
+    </div>
+  </header>
+
+  <!-- Main container that will be replaced by Configurator when clicking "Конфигурирай" -->
+  <main id="main">
+    <!-- Hero / Product page (Realmet-like) -->
+    <section class="hero">
+      <div class="card">
+        <div class="p16">
+          <model-viewer id="mv-hero"
+            src="assets/tristra-sides_6000_door-AL.glb"
+            camera-controls ar shadow-intensity="0.6" exposure="0.95"
+            environment-image="https://modelviewer.dev/shared-assets/environments/neutral.hdr"
+            style="width:100%; height: 480px; border-radius: 10px; overflow: hidden; background: var(--bg-2)">
+          </model-viewer>
+          <div class="thumbs">
+            <div class="thumb"></div>
+            <div class="thumb"></div>
+            <div class="thumb"></div>
+            <div class="thumb"></div>
+            <div class="thumb"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card p20">
+        <div class="title">„Тристранна притча“ — модулен контейнер</div>
+        <div class="subtitle">Информация за продукта — подсилен корпус, опции за различни врати и покривало. Демонстрационен изглед с реална 3D визуализация.</div>
+        <div class="badges">
+          <span class="chip">EN ISO 12944</span>
+          <span class="chip">EN 1090</span>
+          <span class="chip">CE</span>
+        </div>
+        <div class="cta-bar">
+          <button id="btnConfigure" class="btn primary">Конфигурирай</button>
+          <button id="btnFakeForm" class="btn">Направете запитване</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card p20 specs">
+        <h3>Спецификации</h3>
+        <ul>
+          <li>Дължини: 5500 / 6000 / 7000 мм</li>
+          <li>Типове врати: Ал. врата / Ал. клапа / FGS рампа</li>
+          <li>Покривало: текстилно, отделна цветова схема</li>
+          <li>Рамка и панели: боядисана стомана</li>
+        </ul>
+        <h4 style="margin-top:12px">Възможни доп. опции</h4>
+        <ul>
+          <li>Подсилване за дължина 7000</li>
+          <li>Антикорозионно покритие C4</li>
+          <li>Допълнителни точки за закрепване</li>
+        </ul>
+      </div>
+      <div class="card p20">
+        <h3>Форма „Направете запитване“ (демо)</h3>
+        <p class="subtitle">Фиктивна форма за целите на презентацията. Бутонът добавя REQ в Inbox (Sales).</p>
+        <div class="field"><label>Име</label><input class="input" placeholder="Клиент (демо)" disabled></div>
+        <div class="field"><label>Имейл</label><input class="input" placeholder="client@example.com" disabled></div>
+        <div class="field"><label>Коментар</label><textarea class="input" placeholder="..." rows="3" disabled></textarea></div>
+        <div class="cta-bar">
+          <button id="btnSendReq" class="btn primary">Изпрати запитване</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card p20 role-area" data-role="sales">
+        <h3>Sales — Inbox</h3>
+        <div id="salesInbox"></div>
+      </div>
+      <div class="card p20 role-area" data-role="engineer">
+        <h3>Engineer — Задачи</h3>
+        <div id="engTasks"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Dashboard (CEO) -->
+  <section id="dashboard" class="section role-area" data-role="ceo" style="display:none">
+    <div class="card p20" style="grid-column:1/-1">
+      <h3>CEO — KPI Dashboard</h3>
+      <div id="kpi" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 10px"></div>
+    </div>
+  </section>
+
+  <!-- RAL Overlay -->
+  <div class="ral-overlay" id="ralOverlay" aria-hidden="true">
+    <div class="ral-dialog">
+      <div class="ral-header">
+        <strong style="font-size:18px">RAL Палитра</strong>
+        <span id="ralTargetChip" class="chip">Цел: Body</span>
+        <div class="grow"></div>
+        <input id="ralSearch" class="input" placeholder="Търси код/име..." style="width:220px" />
+        <button id="ralClose" class="btn">Затвори</button>
+      </div>
+      <div class="ral-body">
+        <div id="ralGrid" class="ral-grid"></div>
+      </div>
+      <div class="p16" style="border-top:1px solid var(--border); display:flex; gap:8px; justify-content:flex-end">
+        <button id="ralApply" class="btn primary">Приложи</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">© DP Design Pilot — демонстрационна страница. Тази страница имитира визията на Realmet за целите на презентацията.</div>
+  </footer>
+
+  <button id="btnRALFab" class="btn primary fab" style="display:none">RAL</button>
+
+  <script>
+    // ---------------------------
+    // Minimal demo store (in-memory + localStorage)
+    // ---------------------------
+    const Store = {
+      state: {
+        role: localStorage.getItem('role') || 'client',
+        theme: localStorage.getItem('theme') || 'light',
+        config: {
+          length: 6000,
+          door: 'AL',
+          colors: { body: '7016', tarp: '9005' }
+        },
+        requests: JSON.parse(localStorage.getItem('requests') || '[]'),
+        offers: JSON.parse(localStorage.getItem('offers') || '[]'),
+        approvals: JSON.parse(localStorage.getItem('approvals') || '[]'),
+      },
+      save() {
+        localStorage.setItem('role', this.state.role);
+        localStorage.setItem('theme', this.state.theme);
+        localStorage.setItem('requests', JSON.stringify(this.state.requests));
+        localStorage.setItem('offers', JSON.stringify(this.state.offers));
+        localStorage.setItem('approvals', JSON.stringify(this.state.approvals));
+      },
+      pushREQ(payload) {
+        const id = `REQ-${(1000 + Math.floor(Math.random()*9000)).toString()}`;
+        this.state.requests.unshift({ id, payload, ts: Date.now(), status: 'new' });
+        this.save();
+        return id;
+      },
+      toOffer(reqId, extra) {
+        const req = this.state.requests.find(r => r.id === reqId);
+        if (!req) return;
+        this.state.offers.unshift({ id: reqId.replace('REQ','OFF'), from: reqId, extra, ts: Date.now(), status: 'sent' });
+        this.save();
+      },
+      approve(reqId) {
+        this.state.approvals.unshift({ id: reqId.replace('REQ','APR'), ref: reqId, ts: Date.now(), ok: true });
+        this.save();
+      }
+    };
+
+    // ---------------------------
+    // Theme toggle
+    // ---------------------------
+    const themeToggle = document.getElementById('themeToggle');
+    const applyTheme = (t) => { document.documentElement.setAttribute('data-theme', t); themeToggle.textContent = t === 'dark' ? 'Light' : 'Dark'; };
+    applyTheme(Store.state.theme);
+    themeToggle.addEventListener('click', () => {
+      Store.state.theme = Store.state.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(Store.state.theme); Store.save();
+    });
+
+    // ---------------------------
+    // Role switcher
+    // ---------------------------
+    const roleSelect = document.getElementById('roleSelect');
+    roleSelect.value = Store.state.role;
+    function applyRoleUI() {
+      document.querySelectorAll('.role-area').forEach(el => {
+        const needed = el.getAttribute('data-role');
+        el.style.display = (needed === Store.state.role) ? '' : 'none';
+      });
+      // CEO button visible only for CEO
+      document.getElementById('btnDashboard').style.display = (Store.state.role === 'ceo') ? '' : 'none';
+      // RAL FAB on mobile when in configurator only (handled later). Here keep hidden.
+    }
+    roleSelect.addEventListener('change', () => { Store.state.role = roleSelect.value; Store.save(); applyRoleUI(); renderAll(); });
+    document.getElementById('btnDashboard').addEventListener('click', () => {
+      document.getElementById('main').style.display = 'none';
+      document.getElementById('dashboard').style.display = '';
+      renderDashboard();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+    applyRoleUI();
+
+    // ---------------------------
+    // Hero actions
+    // ---------------------------
+    document.getElementById('btnConfigure').addEventListener('click', mountConfigurator);
+    document.getElementById('btnFakeForm').addEventListener('click', () => alert('Фиктивна форма — използвайте "Изпрати запитване" по-долу.'));
+    document.getElementById('btnSendReq').addEventListener('click', () => {
+      const id = Store.pushREQ({ ...Store.state.config });
+      alert(`Създадено запитване ${id}. Превключете на роля Sales → Inbox.`);
+      renderAll();
+    });
+
+    // ---------------------------
+    // Sales / Engineer lists
+    // ---------------------------
+    function renderSales() {
+      const wrap = document.getElementById('salesInbox');
+      const items = Store.state.requests.map(r => `<div class="panel p16" style="margin:12px 0">
+        <div style="display:flex; justify-content:space-between; gap:10px">
+          <strong>${r.id}</strong>
+          <span class="chip">${new Date(r.ts).toLocaleString()}</span>
+        </div>
+        <div class="subtitle">Дължина: ${r.payload.length} • Врата: ${r.payload.door} • Body RAL ${r.payload.colors.body} • Tarp RAL ${r.payload.colors.tarp}</div>
+        <div class="cta-bar">
+          <button class="btn" onclick="markOffer('${r.id}', 3, 350)">Изпрати оферта (−3% + 350 лв транспорт)</button>
+          <button class="btn" onclick="escalateEng('${r.id}')">Ескалирай към инженер</button>
+        </div>
+      </div>`).join('');
+      wrap.innerHTML = items || '<p class="subtitle">Няма запитвания.</p>';
+    }
+    window.markOffer = (reqId, discount, transport) => {
+      Store.toOffer(reqId, { discount, transport });
+      alert(`Оферта за ${reqId} изпратена.`);
+      renderDashboard();
+    };
+    window.escalateEng = (reqId) => {
+      Store.approve(reqId); // за демо: директно одобрено от инженер след ескалация
+      alert(`Задача към инженер за ${reqId} → Одобрено (демо).`);
+      renderEngineer();
+      renderDashboard();
+    };
+
+    function renderEngineer() {
+      const wrap = document.getElementById('engTasks');
+      const tasks = Store.state.approvals.map(a => `<div class="panel p16" style="margin:12px 0">
+        <div style="display:flex; justify-content:space-between; gap:10px">
+          <strong>${a.ref}</strong>
+          <span class="chip">${new Date(a.ts).toLocaleString()}</span>
+        </div>
+        <div class="subtitle">Чеклист: тип врата, дължина, подсилване ако 7000 → <b>Одобрено</b></div>
+      </div>`).join('');
+      wrap.innerHTML = tasks || '<p class="subtitle">Няма инженерни задачи.</p>';
+    }
+
+    // ---------------------------
+    // Dashboard
+    // ---------------------------
+    function renderDashboard() {
+      const kpi = document.getElementById('kpi');
+      if (!kpi) return;
+      const inReq = Store.state.requests.length;
+      const offers = Store.state.offers.length;
+      const appr = Store.state.approvals.length;
+      const avgVal = Math.round(12000 + offers * 350 - inReq * 50);
+      const tiles = [
+        { name: 'Входящи', val: inReq },
+        { name: 'Оферирани', val: offers },
+        { name: 'Одобрени', val: appr },
+        { name: 'Средна стойност (лв)', val: avgVal }
+      ];
+      kpi.innerHTML = tiles.map(t => `<div class="panel p16" style="text-align:center">
+        <div style="font-size:13px; color:var(--muted)">${t.name}</div>
+        <div style="font-size:28px; font-weight:800">${t.val}</div>
+      </div>`).join('');
+    }
+
+    // ---------------------------
+    // Configurator mount
+    // ---------------------------
+    function mountConfigurator() {
+      document.getElementById('dashboard').style.display = 'none';
+
+      const el = document.getElementById('main');
+      el.innerHTML = `
+      <section class="config">
+        <div class="panel sticky">
+          <div class="p16" style="display:flex; align-items:center; gap:8px; justify-content:space-between">
+            <div style="display:flex; gap:8px; align-items:center">
+              <button id="btnRALBody" class="btn">Body RAL</button>
+              <button id="btnRALTarp" class="btn">Tarp RAL</button>
+              <button id="btnTarpToggle" class="btn">Покривало: вкл./изкл.</button>
+            </div>
+            <div>
+              <span class="chip">Режим: ${Store.state.role}</span>
+            </div>
+          </div>
+          <model-viewer id="mv"
+            src="${modelSrc(Store.state.config.length, Store.state.config.door)}"
+            camera-controls ar shadow-intensity="0.6" exposure="0.95"
+            environment-image="https://modelviewer.dev/shared-assets/environments/neutral.hdr"
+            style="width:100%; height: 520px; border-radius: 10px; overflow: hidden; background: var(--bg-2)">
+          </model-viewer>
+          <div class="thumbs">
+            <div class="thumb"></div>
+            <div class="thumb"></div>
+            <div class="thumb"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="tabs">
+            <button class="tab active">Основни размери</button>
+            <button class="tab disabled">Особености</button>
+            <button class="tab disabled">Доп. опции</button>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Дължина</label>
+              <select id="lengthSel" class="input">
+                <option value="5500">5500</option>
+                <option value="6000">6000</option>
+                <option value="7000">7000</option>
+                <option value="custom">Custom...</option>
+              </select>
+              <input id="lengthCustom" class="input" type="number" placeholder="Custom (мм)" style="display:none"/>
+            </div>
+            <div class="field">
+              <label>Тип врата</label>
+              <div style="display:flex; gap:8px; flex-wrap:wrap">
+                <label><input type="radio" name="door" value="AL" checked> Ал. врата</label>
+                <label><input type="radio" name="door" value="FLAP"> Ал. клапа</label>
+                <label><input type="radio" name="door" value="FGS"> FGS рампа</label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Body цвят (активен от RAL панела)</label>
+              <input class="input" value="RAL ${Store.state.config.colors.body}" disabled>
+            </div>
+            <div class="field">
+              <label>Tarp цвят (активен от RAL панела)</label>
+              <input class="input" value="RAL ${Store.state.config.colors.tarp}" disabled>
+            </div>
+          </div>
+          <div class="summary">
+            <div class="row"><span>Текуща конфигурация</span><span id="cfgSum"></span></div>
+            <div class="cta-bar">
+              <button id="cfgSend" class="btn primary">Изпрати запитване</button>
+            </div>
+          </div>
+        </div>
+      </section>`;
+
+      // FAB for mobile RAL
+      const fab = document.getElementById('btnRALFab');
+      fab.style.display = (window.innerWidth < 760) ? '' : 'none';
+
+      // Wire controls
+      const mv = document.getElementById('mv');
+      const lenSel = document.getElementById('lengthSel');
+      const lenCustom = document.getElementById('lengthCustom');
+      lenSel.value = String(Store.state.config.length);
+      lenSel.addEventListener('change', () => {
+        if (lenSel.value === 'custom') {
+          lenCustom.style.display = '';
+          lenCustom.focus();
+        } else {
+          lenCustom.style.display = 'none';
+          Store.state.config.length = Number(lenSel.value);
+          mv.setAttribute('src', modelSrc(Store.state.config.length, Store.state.config.door));
+        }
+        renderCfgSum();
+      });
+      lenCustom.addEventListener('change', () => {
+        const v = Math.max(3000, Math.min(12000, Number(lenCustom.value||0)));
+        Store.state.config.length = v;
+        // За custom в демо зареждаме най-близкия 5500/6000/7000
+        const nearest = [5500,6000,7000].reduce((a,b)=>Math.abs(b-v)<Math.abs(a-v)?b:a,5500);
+        mv.setAttribute('src', modelSrc(nearest, Store.state.config.door));
+        renderCfgSum();
+      });
+      document.querySelectorAll('input[name="door"]').forEach(r=>{
+        r.checked = (r.value === Store.state.config.door);
+        r.addEventListener('change', () => {
+          Store.state.config.door = r.value;
+          mv.setAttribute('src', modelSrc(Store.state.config.length, Store.state.config.door));
+          renderCfgSum();
+        });
+      });
+
+      document.getElementById('cfgSend').addEventListener('click', () => {
+        const id = Store.pushREQ({ ...Store.state.config });
+        alert(`Създадено запитване ${id}. Превключете на роля Sales → Inbox.`);
+        renderAll();
+      });
+
+      // RAL overlay wiring
+      let ralTarget = 'body'; // 'body' | 'tarp'
+      document.getElementById('btnRALBody').addEventListener('click', () => openRAL('body'));
+      document.getElementById('btnRALTarp').addEventListener('click', () => openRAL('tarp'));
+      document.getElementById('ralClose').addEventListener('click', closeRAL);
+      document.getElementById('ralApply').addEventListener('click', applyRALSelection);
+      document.getElementById('btnRALFab').onclick = () => openRAL('body');
+
+      // Tarp toggle (by node name)
+      const tarpState = { shown: true, savedColor: null };
+      document.getElementById('btnTarpToggle').addEventListener('click', async () => {
+        await mv.updateComplete;
+        const node = mv.model && mv.model.getNodeByName ? mv.model.getNodeByName('Tarp') : null;
+        if (node && node.visible !== undefined) {
+          tarpState.shown = !tarpState.shown;
+          node.visible = tarpState.shown;
+        } else {
+          // Fallback via material alpha
+          const mat = mv.model?.getMaterialByName?.('Tarp_Paint');
+          if (!mat) return;
+          const pbr = mat.pbrMetallicRoughness;
+          if (tarpState.shown) {
+            tarpState.savedColor = [...pbr.baseColorFactor];
+            pbr.baseColorFactor = [0,0,0,0];
+            mat.alphaMode = 'BLEND';
+          } else {
+            if (tarpState.savedColor) pbr.baseColorFactor = [...tarpState.savedColor];
+            mat.alphaMode = 'OPAQUE';
+          }
+          tarpState.shown = !tarpState.shown;
+        }
+      });
+
+      // Apply initial colors to materials
+      mv.addEventListener('load', () => applyColorsToMV(mv));
+      renderCfgSum();
+    }
+
+    function modelSrc(length, door) {
+      const len = [5500,6000,7000].includes(Number(length)) ? length : 6000;
+      return `assets/tristra-sides_${len}_door-${door}.glb`;
+    }
+
+    function renderCfgSum() {
+      const el = document.getElementById('cfgSum');
+      if (!el) return;
+      el.textContent = `${Store.state.config.length} / ${Store.state.config.door} / Body RAL ${Store.state.config.colors.body} • Tarp RAL ${Store.state.config.colors.tarp}`;
+      Store.save();
+    }
+
+    function renderAll() {
+      renderSales();
+      renderEngineer();
+      renderDashboard();
+    }
+    renderAll();
+
+    // ---------------------------
+    // RAL palette (Top 40)
+    // ---------------------------
+    const RAL = [
+      {code:'1003',name:'Signal Yellow',hex:'#F9A800'},
+      {code:'1015',name:'Light Ivory',hex:'#F2E6CE'},
+      {code:'1023',name:'Traffic Yellow',hex:'#F7B500'},
+      {code:'2004',name:'Pure Orange',hex:'#E55100'},
+      {code:'3000',name:'Flame Red',hex:'#AF2B1E'},
+      {code:'3003',name:'Ruby Red',hex:'#8A1C1C'},
+      {code:'3005',name:'Wine Red',hex:'#59191F'},
+      {code:'3020',name:'Traffic Red',hex:'#C1121C'},
+      {code:'5002',name:'Ultramarine Blue',hex:'#202A5A'},
+      {code:'5005',name:'Signal Blue',hex:'#154889'},
+      {code:'5010',name:'Gentian Blue',hex:'#13447C'},
+      {code:'5012',name:'Light Blue',hex:'#2A6F97'},
+      {code:'5015',name:'Sky Blue',hex:'#2B88D9'},
+      {code:'5017',name:'Traffic Blue',hex:'#005AA9'},
+      {code:'6001',name:'Emerald Green',hex:'#2D6E3F'},
+      {code:'6005',name:'Moss Green',hex:'#0E4438'},
+      {code:'6009',name:'Fir Green',hex:'#213631'},
+      {code:'6011',name:'Reseda Green',hex:'#6C7C59'},
+      {code:'6021',name:'Pale Green',hex:'#87A180'},
+      {code:'6029',name:'Mint Green',hex:'#007243'},
+      {code:'7001',name:'Silver Grey',hex:'#8F999F'},
+      {code:'7004',name:'Signal Grey',hex:'#9DA3A6'},
+      {code:'7012',name:'Basalt Grey',hex:'#575D5E'},
+      {code:'7015',name:'Slate Grey',hex:'#51565C'},
+      {code:'7016',name:'Anthracite Grey',hex:'#383E42'},
+      {code:'7021',name:'Black Grey',hex:'#1F2426'},
+      {code:'7022',name:'Umbra Grey',hex:'#262A2C'},
+      {code:'7024',name:'Graphite Grey',hex:'#474A50'},
+      {code:'7035',name:'Light Grey',hex:'#C5CBCF'},
+      {code:'7040',name:'Window Grey',hex:'#9DA3A6'},
+      {code:'7042',name:'Traffic Grey A',hex:'#8D9295'},
+      {code:'7047',name:'Telegrey 4',hex:'#D0D3D4'},
+      {code:'8002',name:'Signal Brown',hex:'#6F4A2F'},
+      {code:'8004',name:'Copper Brown',hex:'#7F4032'},
+      {code:'8011',name:'Nut Brown',hex:'#5B3A29'},
+      {code:'8017',name:'Chocolate Brown',hex:'#442F29'},
+      {code:'9001',name:'Cream',hex:'#EFEBDC'},
+      {code:'9002',name:'Grey White',hex:'#DDDED4'},
+      {code:'9005',name:'Jet Black',hex:'#0A0A0A'},
+      {code:'9010',name:'Pure White',hex:'#F1F1F1'}
+    ];
+
+    let ralSelection = null; // {target:'body'|'tarp', code, hex}
+
+    function openRAL(target) {
+      ralSelection = null;
+      const overlay = document.getElementById('ralOverlay');
+      overlay.style.display = 'flex';
+      document.getElementById('ralTargetChip').textContent = `Цел: ${target === 'body' ? 'Body' : 'Tarp'}`;
+      overlay.setAttribute('aria-hidden','false');
+      document.getElementById('ralSearch').value = '';
+      renderRALGrid(RAL);
+      overlay.focus();
+      // remember
+      overlay.dataset.target = target;
+    }
+    function closeRAL(){
+      const overlay = document.getElementById('ralOverlay');
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden','true');
+    }
+    function renderRALGrid(list){
+      const grid = document.getElementById('ralGrid');
+      grid.innerHTML = list.map(c => `<div class="swatch" onclick="pickRAL('${c.code}','${c.hex}')">
+        <div class="box" style="background:${c.hex}"></div>
+        <div class="cap"><span>RAL ${c.code}</span><span>${c.name}</span></div>
+      </div>`).join('');
+    }
+    window.pickRAL = (code, hex) => {
+      ralSelection = { target: document.getElementById('ralOverlay').dataset.target, code, hex };
+      document.querySelectorAll('.swatch').forEach(el => el.style.outline = '');
+      // outline last clicked (rough way)
+      event.currentTarget && (event.currentTarget.style.outline = `2px solid var(--accent)`);
+    }
+    document.getElementById('ralSearch').addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      const list = !q ? RAL : RAL.filter(c => (`${c.code} ${c.name}`.toLowerCase().includes(q)));
+      renderRALGrid(list);
+    });
+
+    function hexToRGB01(hex){
+      const h = hex.replace('#','');
+      const r = parseInt(h.substring(0,2),16)/255;
+      const g = parseInt(h.substring(2,4),16)/255;
+      const b = parseInt(h.substring(4,6),16)/255;
+      return [r,g,b];
+    }
+
+    async function applyRALSelection(){
+      if (!ralSelection) { closeRAL(); return; }
+      const mv = document.getElementById('mv') || document.getElementById('mv-hero');
+      await mv?.updateComplete;
+      const matName = ralSelection.target === 'body' ? 'Body_Paint' : 'Tarp_Paint';
+      const mat = mv?.model?.getMaterialByName?.(matName);
+      if (mat) {
+        const rgb = hexToRGB01(ralSelection.hex);
+        const base = mat.pbrMetallicRoughness;
+        base.baseColorFactor = [rgb[0], rgb[1], rgb[2], 1];
+        if (ralSelection.target === 'body') Store.state.config.colors.body = ralSelection.code; else Store.state.config.colors.tarp = ralSelection.code;
+        renderCfgSum();
+      }
+      closeRAL();
+    }
+
+    // Apply initial colors to a model-viewer instance
+    function applyColorsToMV(mv){
+      const body = RAL.find(c => c.code === Store.state.config.colors.body);
+      const tarp = RAL.find(c => c.code === Store.state.config.colors.tarp);
+      const bodyMat = mv.model?.getMaterialByName?.('Body_Paint');
+      const tarpMat = mv.model?.getMaterialByName?.('Tarp_Paint');
+      if (body && bodyMat){ const [r,g,b] = hexToRGB01(body.hex); bodyMat.pbrMetallicRoughness.baseColorFactor = [r,g,b,1]; }
+      if (tarp && tarpMat){ const [r,g,b] = hexToRGB01(tarp.hex); tarpMat.pbrMetallicRoughness.baseColorFactor = [r,g,b,1]; }
+    }
+
+    // When hero model loads, keep its GLB default colors unless we want to enforce demo default later.
+    document.getElementById('mv-hero').addEventListener('load', () => {
+      // no-op; respects GLB defaults (e.g., RAL3000 if baked in)
+    });
+
+    // Expose helpers for quick test in console
+    window.__demo = { Store };
+  </script>
+</body>
+</html>
