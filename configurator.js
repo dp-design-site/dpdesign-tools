@@ -24,8 +24,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   initTabs();
   initAutoReload();
   generateConfig(true);
-  insertTitleFromDocument();
-  injectRealmetTitle();
 });
 
 function normalizePreviewDOM(){
