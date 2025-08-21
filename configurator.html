@@ -2,172 +2,247 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
-  <title>Конфигуратор - Abroll On/Off Platform</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <title>Конфигуратор - Abroll On/Off Platform</title>
   <link rel="icon" type="image/png" href="img/favicon.png">
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
   <style>
-    :root {
-      --bg-dark: #000000;
-      --fg-light: #ffffff;
-      --accent: #00c3ff;
-      --hover-bg: rgba(255,255,255,0.05);
-    }
-
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      height: 100%;
-      background-color: var(--bg-dark);
-      color: var(--fg-light);
-      font-family: 'Segoe UI', sans-serif;
-      scroll-behavior: smooth;
-      background-image: url("img/bg-layer.jpg");
-      background-attachment: fixed;
-      background-size: cover;
+      background: #000;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      background-image: repeating-linear-gradient(45deg, #000 0px, #000 20px, #111 20px, #111 40px);
     }
 
-    .layout {
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #111;
       display: flex;
-      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    header img {
+      height: 40px;
+    }
+
+    .nav-menu {
+      display: flex;
       gap: 20px;
-      padding: 20px;
-      max-width: 1200px;
-      margin: auto;
+      align-items: center;
     }
 
-    .config-panel, .model-panel {
-      flex: 1;
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
-      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    .nav-menu a {
+      color: #eee;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
     }
 
-    .config-panel:hover, .model-panel:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+    .user-menu {
+      position: relative;
+    }
+
+    .user-icon {
+      font-size: 22px;
+      cursor: pointer;
+      color: #eee;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 30px;
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .dropdown a {
+      display: block;
+      padding: 10px;
+      color: #eee;
+      text-decoration: none;
+    }
+
+    .dropdown a:hover {
+      background: #333;
+    }
+
+    .user-menu:hover .dropdown {
+      display: block;
+    }
+
+    .main-container {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 20px;
+      padding: 120px 5% 40px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .config-panel {
+      background: #111;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+
+    .config-panel img {
+      width: 100%;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 6px #000;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 4px;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      background: #222;
+      color: #eee;
+      border: 1px solid #444;
+      border-radius: 6px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #cc0000;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ff0000;
+    }
+
+    .preview-panel {
+      background: #111;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #333;
     }
 
     model-viewer {
       width: 100%;
       height: 500px;
-      background: #111;
-      border-radius: 8px;
+      border-radius: 10px;
+      background-color: rgba(30,30,47,0.85);
+      box-shadow: 0 0 10px #000;
     }
 
-    h2 {
-      margin-top: 0;
-      color: var(--accent);
-    }
-
-    select, input, button {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border-radius: 4px;
-      border: none;
-      background: #222;
-      color: white;
-    }
-
-    button {
-      background-color: var(--accent);
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #009fcf;
-    }
-
-    .color-palette {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    .thumbnail-row {
+      display: flex;
       gap: 10px;
       margin-top: 20px;
+      overflow-x: auto;
     }
 
-    .color-swatch {
+    .thumbnail-row img {
+      width: 150px;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 0 6px #000;
+      transition: 0.3s ease;
+    }
+
+    .thumbnail-row img:hover {
+      transform: scale(1.1);
+    }
+
+    .spinner {
+      border: 4px solid #444;
+      border-top: 4px solid #00aaff;
+      border-radius: 50%;
       width: 40px;
       height: 40px;
-      border-radius: 4px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: border 0.3s;
+      animation: spin 1s linear infinite;
+      margin: 40px auto;
     }
 
-    .color-swatch:hover {
-      border: 2px solid var(--accent);
-    }
-
-    @media (max-width: 768px) {
-      .layout {
-        flex-direction: column;
-      }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <div class="layout">
-    <div class="config-panel">
-      <h2>Настройки</h2>
-      <select id="material">
-        <option value="RAL1026">RAL1026 Luminous Yellow</option>
-        <option value="RAL3000">RAL3000 Flame Red</option>
-        <option value="RAL5015">RAL5015 Sky Blue</option>
-        <option value="RAL9005">RAL9005 Jet Black</option>
-      </select>
-
-      <button onclick="applyColor()">Генерирай</button>
-
-      <div class="color-palette">
-        <div class="color-swatch" style="background-color:#FFFF00" onclick="selectColor('#FFFF00')"></div>
-        <div class="color-swatch" style="background-color:#FF0000" onclick="selectColor('#FF0000')"></div>
-        <div class="color-swatch" style="background-color:#0000FF" onclick="selectColor('#0000FF')"></div>
-        <div class="color-swatch" style="background-color:#00FF00" onclick="selectColor('#00FF00')"></div>
-        <div class="color-swatch" style="background-color:#FF00FF" onclick="selectColor('#FF00FF')"></div>
-        <!-- още цветове по желание -->
+  <header>
+    <img src="img/realmet-logo.png" alt="Realmet">
+    <div class="nav-menu">
+      <a href="#">Начало</a>
+      <a href="#">Продукти</a>
+      <div class="user-menu">
+        <span class="user-icon">👤</span>
+        <div class="dropdown">
+          <a href="#">Настройки</a>
+          <a href="login.html">Изход</a>
+        </div>
       </div>
     </div>
+  </header>
 
-    <div class="model-panel">
-      <h2>3D Визуализация</h2>
-      <model-viewer id="viewer"
-                    src="models/default.glb"
-                    ar
-                    auto-rotate
-                    camera-controls
-                    environment-image="neutral"
-                    exposure="1.1">
-      </model-viewer>
+  <div class="main-container">
+    <div class="config-panel">
+      <img src="img/platform_dimensions.png" alt="Размери">
+
+      <label for="length">Дължина (A)</label>
+      <select id="length">
+        <option value="5500">5500 mm</option>
+        <option value="6000">6000 mm</option>
+        <option value="7000" selected>7000 mm</option>
+      </select>
+
+      <label for="color">Цвят (RAL)</label>
+      <select id="color">
+        <option value="RAL1026_Luminous_yellow">RAL1026 Жълт</option>
+        <option value="RAL3000_Flame_red" selected>RAL3000 Червен</option>
+        <option value="RAL5012_Light_blue">RAL5012 Син</option>
+      </select>
+
+      <button onclick="generateConfig()">Генерирай</button>
+      <button onclick="showOrderModal()">Поръчай</button>
+    </div>
+
+    <div class="preview-panel">
+      <model-viewer id="interactiveModel" src="img/7000_RAL3000_Flame_red/model.glb" alt="3D модел" camera-controls auto-rotate ar></model-viewer>
+      <div class="thumbnail-row">
+        <img src="img/7000_RAL3000_Flame_red/view1.png" class="lightbox-trigger" data-type="image" data-src="img/7000_RAL3000_Flame_red/view1.png">
+        <img src="img/7000_RAL3000_Flame_red/view2.png" class="lightbox-trigger" data-type="image" data-src="img/7000_RAL3000_Flame_red/view2.png">
+        <img src="img/7000_RAL3000_Flame_red/preview_drawing.png" class="lightbox-trigger" data-type="pdf" data-src="img/7000_RAL3000_Flame_red/drawing.pdf">
+      </div>
     </div>
   </div>
 
-  <script>
-    let selectedColor = '#FFFF00';
+  <div id="orderModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center;">
+    <div style="background:#1a1a1a; padding:30px; border-radius:10px; text-align:center; color:#fff; max-width:400px;">
+      <h3>Благодарим за направената поръчка!</h3>
+      <p>Наш колега ще се свърже с вас за потвърждение.</p>
+      <button onclick="closeModal()">Затвори</button>
+    </div>
+  </div>
 
-    function selectColor(color) {
-      selectedColor = color;
-    }
-
-    function applyColor() {
-      const viewer = document.getElementById('viewer');
-      const materialJSON = {
-        materials: [{pbrMetallicRoughness: { baseColorFactor: hexToRGBA(selectedColor) }}]
-      };
-      viewer.updateMaterials(materialJSON);
-    }
-
-    function hexToRGBA(hex) {
-      const bigint = parseInt(hex.replace("#", ""), 16);
-      const r = (bigint >> 16) & 255;
-      const g = (bigint >> 8) & 255;
-      const b = bigint & 255;
-      return [r / 255, g / 255, b / 255, 1.0];
-    }
-  </script>
+  <script src="configurator.js"></script>
 </body>
 </html>
