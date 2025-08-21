@@ -96,27 +96,33 @@
       padding: 20px;
       border-radius: 10px;
       border: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
 
     .tab-labels {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-bottom: 10px;
+      border-left: 3px solid #333;
+      gap: 0;
     }
 
     .tab-labels button {
-      background: #222;
-      border: 1px solid #444;
+      background: transparent;
+      border: none;
       color: #eee;
-      padding: 10px;
+      padding: 12px 16px;
       text-align: left;
-      border-radius: 4px;
       cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.2s, border-left 0.2s;
     }
 
     .tab-labels button.active {
-      background: #cc0000;
+      background: #1a1a1a;
+      border-left: 3px solid #cc0000;
+      font-weight: bold;
     }
 
     .tab-content {
@@ -124,7 +130,8 @@
       padding: 15px;
       border: 1px solid #444;
       border-radius: 6px;
-      margin-bottom: 20px;
+      margin: 20px 0;
+      min-height: 220px;
     }
 
     label {
@@ -148,7 +155,7 @@
     }
 
     button.action {
-      margin-top: 10px;
+      margin-top: auto;
       width: 100%;
       padding: 12px;
       background: #cc0000;
@@ -178,11 +185,16 @@
       box-shadow: 0 0 10px #000;
     }
 
+    .thumb-wrap {
+      position: relative;
+      height: 190px;
+      margin-top: 20px;
+    }
+
     .thumbnail-row {
       display: flex;
       justify-content: center;
       gap: 10px;
-      margin-top: 20px;
       overflow-x: auto;
       padding-bottom: 10px;
     }
@@ -197,6 +209,17 @@
 
     .thumbnail-row img:hover {
       transform: scale(1.1);
+    }
+
+    .thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 10;
     }
   </style>
 </head>
@@ -232,10 +255,16 @@
 
     <div class="preview-panel">
       <model-viewer id="interactiveModel" src="img/7000_RAL3000_Flame_red/model.glb" alt="3D модел" camera-controls auto-rotate ar></model-viewer>
-      <div class="thumbnail-row">
-        <img src="img/7000_RAL3000_Flame_red/view1.png" class="lightbox-trigger" data-type="image" data-src="img/7000_RAL3000_Flame_red/view1.png">
-        <img src="img/7000_RAL3000_Flame_red/view2.png" class="lightbox-trigger" data-type="image" data-src="img/7000_RAL3000_Flame_red/view2.png">
-        <img src="img/7000_RAL3000_Flame_red/preview_drawing.png" class="lightbox-trigger" data-type="pdf" data-src="img/7000_RAL3000_Flame_red/drawing.pdf">
+      <div class="thumb-wrap">
+        <div class="thumbnail-row" id="thumbRow">
+          <img src="img/7000_RAL3000_Flame_red/view1.png" class="lightbox-trigger" data-type="image" data-src="img/7000_RAL3000_Flame_red/view1.png">
+          <img src="img/7000_RAL3000_Flame_red/view2.png" class="lightbox-trigger" data-type="image" data-src="img/7000_RAL3000_Flame_red/view2.png">
+          <img src="img/7000_RAL3000_Flame_red/preview_drawing.png" class="lightbox-trigger" data-type="pdf" data-src="img/7000_RAL3000_Flame_red/drawing.pdf">
+        </div>
+        <div class="thumb-overlay" id="thumbOverlay">
+          <div class="spinner"></div>
+          <div class="stage">Зареждане на изображения…</div>
+        </div>
       </div>
     </div>
   </div>
