@@ -1,4 +1,4 @@
-// Конфигурационен скрипт – Етап 4: фиксирани панели без подскачане + центриран overlay със staged съобщения
+// Конфигурационен скрипт – Етап 5: overlay и за тъмбнейлите + табове с фиксиран десен панел
 
 (function injectRuntimeStyles(){
   const id='runtime-styles';
@@ -11,6 +11,7 @@
     .fade-in{opacity:1;filter:none;transition:opacity .35s ease,filter .35s ease}
     .viewer-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,.35);backdrop-filter:blur(1px);z-index:5}
     .viewer-overlay .stage{color:#ccc;margin-top:8px;font-size:14px}
+    .thumb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,.6);backdrop-filter:blur(1px);z-index:4;font-size:14px;color:#ccc;display:none}
   `; document.head.appendChild(s);
 })();
 
@@ -21,14 +22,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   generateConfig(true);
 });
 
-// Подготвяме десния панел да има стабилна структура и ID-та без да пипаме HTML файла
 function normalizePreviewDOM(){
   const preview=document.querySelector('.preview-panel');
   if(!preview) return;
-  // Уверяваме се, че панелът е позициониран адекватно
   preview.style.position='relative';
 
-  // Обгръщаме model-viewer в фиксиран контейнер (без промяна на височини от HTML)
   let mv=document.getElementById('interactiveModel');
   if(!mv) return;
   if(!mv.parentElement.classList.contains('viewer-wrap')){
@@ -43,7 +41,6 @@ function normalizePreviewDOM(){
     const wrap=mv.parentElement; wrap.id='viewerWrap';
   }
 
-  // Добавяме overlay контейнер ако липсва
   const wrap=document.getElementById('viewerWrap');
   if(wrap && !document.getElementById('viewerOverlay')){
     const overlay=document.createElement('div');
@@ -52,9 +49,16 @@ function normalizePreviewDOM(){
     wrap.appendChild(overlay);
   }
 
-  // Идентификатор за реда с тъмбнейли
   let thumbs=document.querySelector('.thumbnail-row');
-  if(thumbs && !thumbs.id) thumbs.id='thumbRow';
+  if(thumbs && !thumbs.id){
+    thumbs.id='thumbRow';
+    const thumbOverlay=document.createElement('div');
+    thumbOverlay.className='thumb-overlay';
+    thumbOverlay.id='thumbOverlay';
+    thumbOverlay.innerHTML=`<div class="spinner"></div><div>Зареждане на изображения…</div>`;
+    thumbs.style.position='relative';
+    thumbs.appendChild(thumbOverlay);
+  }
 }
 
 function initTabs(){
@@ -63,7 +67,6 @@ function initTabs(){
   if(!content || !tabButtons.length) return;
 
   const tabData=[
-    // Основни параметри
     `
       <label for="length">Дължина (A)</label>
       <select id="length">
@@ -78,21 +81,18 @@ function initTabs(){
         <option value="RAL5012_Light_blue">RAL5012 Син</option>
       </select>
     `,
-    // Дъно
     `
       <label>Вид ламарина дъно</label><input type="text" class="readonly" value="Гладка S235" readonly>
       <label>Дебелина ламарина</label><input type="text" class="readonly" value="5 mm" readonly>
       <label>C-заключване</label><input type="text" class="readonly" value="Да" readonly>
       <label>Вид ролки</label><input type="text" class="readonly" value="Стоманени" readonly>
     `,
-    // Челна стена
     `
       <label>Скосена челна стена</label><input type="text" class="readonly" value="Не" readonly>
       <label>Височина</label><input type="text" class="readonly" value="1500 mm" readonly>
       <label>Дебелина ламарина CS</label><input type="text" class="readonly" value="3 mm" readonly>
       <label>Укрепване към дъното</label><input type="text" class="readonly" value="Да" readonly>
     `,
-    // Вид укрепване
     `
       <label>Вид укрепване (халки 7000 кг)</label><input type="text" class="readonly" value="Да" readonly>
       <label>Отстояние първа халка</label><input type="text" class="readonly" value="500 mm" readonly>
@@ -108,7 +108,6 @@ function initTabs(){
       if(i===0) initAutoReload();
     });
   });
-  // По подразбиране: Основни параметри
   tabButtons[0].click();
 }
 
@@ -129,8 +128,9 @@ function stageOverlay(text,delay){
 
 function toggleOverlay(show){
   const overlay=document.getElementById('viewerOverlay');
-  if(!overlay) return;
-  overlay.style.display=show?'flex':'none';
+  if(overlay) overlay.style.display=show?'flex':'none';
+  const thumbs=document.getElementById('thumbOverlay');
+  if(thumbs) thumbs.style.display=show?'flex':'none';
 }
 
 function generateConfig(initial){
@@ -139,13 +139,11 @@ function generateConfig(initial){
   const configID=`${length}_${color}`;
   const basePath=`img/${configID}`;
 
-  // Елементи
   const mv=document.getElementById('interactiveModel');
   const wrap=document.getElementById('viewerWrap') || mv?.parentElement;
   const thumbRow=document.getElementById('thumbRow') || document.querySelector('.thumbnail-row');
   if(!mv||!wrap||!thumbRow) return;
 
-  // Fade & overlay
   mv.classList.add('fade-out');
   toggleOverlay(true);
   const stage=document.getElementById('viewerStage'); if(stage) stage.textContent='Въвеждане на входните параметри…';
@@ -154,7 +152,6 @@ function generateConfig(initial){
     .then(()=>stageOverlay('Изчисляване на чертежа…',1200))
     .then(()=>stageOverlay('Зареждане…',1200))
     .then(()=>{
-      // Подмяна на източници
       mv.setAttribute('src',`${basePath}/model.glb`);
       thumbRow.innerHTML=`
         <img src="${basePath}/view1.png" class="lightbox-trigger" data-type="image" data-src="${basePath}/view1.png">
@@ -171,6 +168,7 @@ function generateConfig(initial){
     });
 }
 
+// Lightbox остава непроменен
 function enableLightbox(){
   const existing=document.getElementById('lightbox-modal');
   if(existing) existing.remove();
