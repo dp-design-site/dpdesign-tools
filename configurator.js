@@ -59,7 +59,7 @@ function normalizePreviewDOM(){
 function normalizeLayoutDimensions(){
   const mainContainer=document.querySelector('.main-container');
   if(mainContainer){
-    mainContainer.style.gridTemplateColumns='0.9fr 1.1fr';
+    mainContainer.style.gridTemplateColumns='0.75fr 1.25fr';
   }
 }
 
