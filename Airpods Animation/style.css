@@ -59,7 +59,7 @@ header nav a{
 .carousel .list{
     position: absolute;
     width: 1140px;
-    max-width: 100%;
+    max-width: 95%;
     height: 100%;
     left: 50%;
     transform: translateX(-50%);
@@ -434,3 +434,4 @@ header nav a{
     }
 
 }
+
