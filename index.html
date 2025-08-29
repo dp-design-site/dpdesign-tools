@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Избор на платформа | DP Design</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="carousel">
+    <div class="list">
+      <!-- Платформа 1 -->
+      <div class="item">
+        <img src="img/platform1.png" alt="Стандартна платформа">
+        <div class="introduce">
+          <div class="title">DP DESIGN</div>
+          <div class="topic">Стандартна платформа</div>
+          <div class="des">Най-често използваният тип за универсални приложения. Стабилна и адаптивна основа.</div>
+          <div class="buttons">
+            <button onclick="openConfigurator('standard')">Конфигуратор</button>
+          </div>
+        </div>
+      </div>
+      <!-- Платформа 2 -->
+      <div class="item">
+        <img src="img/platform2.png" alt="Скосена платформа">
+        <div class="introduce">
+          <div class="title">DP DESIGN</div>
+          <div class="topic">Скосена платформа</div>
+          <div class="des">С оптимизиран ъгъл за специфични товари и разтоварване.</div>
+          <div class="buttons">
+            <button onclick="openConfigurator('angled')">Конфигуратор</button>
+          </div>
+        </div>
+      </div>
+      <!-- Платформа 3 -->
+      <div class="item">
+        <img src="img/platform3.png" alt="С вдлъбнатини">
+        <div class="introduce">
+          <div class="title">DP DESIGN</div>
+          <div class="topic">Скосена с вдлъбнатини</div>
+          <div class="des">Подсилена структура с вдлъбвания за специализирани товари.</div>
+          <div class="buttons">
+            <button onclick="openConfigurator('angled-recess')">Конфигуратор</button>
+          </div>
+        </div>
+      </div>
+      <!-- Платформа 4 -->
+      <div class="item">
+        <img src="img/platform4.png" alt="Abroll ECCO ALU 7">
+        <div class="introduce">
+          <div class="title">DP DESIGN</div>
+          <div class="topic">Abroll с ECCO ALU 7</div>
+          <div class="des">Висок клас алуминиева конструкция с оптимално тегло и здравина.</div>
+          <div class="buttons">
+            <button onclick="openConfigurator('ecco-alu7')">Конфигуратор</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Навигация -->
+    <div class="thumbnail">
+      <div class="item"><img src="img/platform1.png" alt="Стандартна"></div>
+      <div class="item"><img src="img/platform2.png" alt="Скосена"></div>
+      <div class="item"><img src="img/platform3.png" alt="С вдлъбнатини"></div>
+      <div class="item"><img src="img/platform4.png" alt="Abroll"></div>
+    </div>
+    <div class="arrows">
+      <button id="prev">&#10094;</button>
+      <button id="next">&#10095;</button>
+    </div>
+  </div>
+  <script src="js/script.js"></script>
+  <script>
+    function openConfigurator(platform) {
+      window.location.href = `configurator.html?platform=${platform}`;
+    }
+  </script>
+</body>
+</html>
