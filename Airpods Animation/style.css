@@ -53,7 +53,9 @@ header {
       top: 0;
       left: 0;
       width: 100%;
-      background: #111;
+        height: 50px;
+      background: #11111100;
+        
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -486,6 +488,7 @@ header {
     }
 
 }
+
 
 
 
