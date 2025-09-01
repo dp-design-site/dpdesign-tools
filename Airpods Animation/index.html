@@ -7,6 +7,15 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="../img/favicon.png">
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+      model-viewer {
+        width: 100%;
+        height: 100%;
+        min-height: 400px;
+        max-height: 600px;
+        display: block;
+      }
+    </style>
 </head>
 <body>
     
@@ -36,7 +45,7 @@
             <div class="item">
                 <div class="visual">
                     <img class="preview" src="images/platform1.png" alt="Стандартна платформа">
-                    <model-viewer class="viewer" data-src="../img/7000_RAL3000_Flame_red/model.glb" camera-controls auto-rotate reveal="manual" style="background: transparent;"></model-viewer>
+                    <model-viewer class="viewer" src="../img/7000_RAL3000_Flame_red/model.glb" camera-controls auto-rotate reveal="manual" style="background: transparent;"></model-viewer>
                 </div>
                 <div class="introduce">
                     <div class="title">Платформа</div>
@@ -281,3 +290,4 @@
 </body>
 
 </html>
+
