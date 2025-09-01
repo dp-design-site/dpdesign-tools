@@ -62,6 +62,22 @@ header {
       font-size: 20px;
     }
 
+/* Добавени поправки */
+.visual {
+    height: 70%;
+}
+.visual .preview,
+.visual .viewer {
+    object-fit: contain;
+}
+.carousel.showDetail .list .item:nth-child(2).has-viewer .visual .preview {
+    opacity: 0;
+}
+.carousel.showDetail .list .item:nth-child(2).has-viewer .visual .viewer {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 .nav-menu {
       display: flex;
       gap: 20px;
