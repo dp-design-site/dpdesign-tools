@@ -40,11 +40,20 @@ seeMoreButtons.forEach((button) => {
         let activeItem = document.querySelector('.carousel .list .item:nth-child(2)');
         if(activeItem){
             let viewer = activeItem.querySelector('model-viewer');
-            if(viewer && !viewer.hasAttribute('src')){
-                let dataSrc = viewer.getAttribute('data-src');
-                if(dataSrc){
-                    viewer.setAttribute('src', dataSrc);
+            if(viewer){
+                // лениво задаване на src при първо отваряне
+                if(!viewer.hasAttribute('src')){
+                    const dataSrc = viewer.getAttribute('data-src');
+                    if(dataSrc){
+                        viewer.setAttribute('src', dataSrc);
+                    }
                 }
+                // при reveal="manual" трябва изрично да отменим постера
+                const dismiss = () => viewer.dismissPoster && viewer.dismissPoster();
+                // опитай веднага
+                dismiss();
+                // и при зареждане, ако още не е станало
+                viewer.addEventListener('load', dismiss, { once: true });
             }
         }
     }
