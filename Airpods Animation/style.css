@@ -30,7 +30,7 @@ body{
     --item5-zIndex: 7;
     --item5-opacity: 0;
 }
-header{
+/*header{
     width: 1140px;
     max-width: 90%;
     display: flex;
@@ -47,7 +47,36 @@ header nav a{
     text-decoration: none;
     color: #555;
     font-weight: 500;
-}
+}*/
+header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #111;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    header .logo-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header .logo-wrapper img {
+      height: 40px;
+    }
+
+    header .logo-wrapper span {
+      color: #cc0000;
+      font-weight: bold;
+      font-size: 20px;
+    }
 
 /* carousel */
 .carousel{
@@ -434,4 +463,5 @@ header nav a{
     }
 
 }
+
 
