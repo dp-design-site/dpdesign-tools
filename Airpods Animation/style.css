@@ -30,24 +30,7 @@ body{
     --item5-zIndex: 7;
     --item5-opacity: 0;
 }
-/*header{
-    width: 1140px;
-    max-width: 90%;
-    display: flex;
-    justify-content: space-between;
-    margin: auto;
-    height: 50px;
-    align-items: center;
-}
-header .logo{
-    font-weight: bold;
-}
-header nav a{
-    margin-left: 30px;
-    text-decoration: none;
-    color: #555;
-    font-weight: 500;
-}*/
+
 header {
       position: fixed;
       top: 0;
@@ -132,13 +115,34 @@ header {
     z-index: 10;
     transform: translateX(0);
 }
-.carousel .list .item img{
+
+/* visual container */
+.visual{
     width: 50%;
     position: absolute;
     right: 0;
     top: 50%;
     transform: translateY(-50%);
     transition: right 1.5s;
+}
+.visual .preview,
+.visual .viewer{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.5s;
+}
+.visual .viewer{
+    opacity: 0;
+    pointer-events: none;
+}
+.carousel.showDetail .list .item:nth-child(2) .visual .preview{
+    opacity: 0;
+}
+.carousel.showDetail .list .item:nth-child(2) .visual .viewer{
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .carousel .list .item .introduce{
@@ -312,7 +316,7 @@ header {
     opacity: 0;
     pointer-events: none;
 }
-.carousel.showDetail .list .item:nth-child(2) img{
+.carousel.showDetail .list .item:nth-child(2) .visual{
     right: 50%;
 }
 .carousel.showDetail .list .item:nth-child(2) .detail{
@@ -468,7 +472,7 @@ header {
         width: 50%;
     }
     
-    .carousel .list .item img{
+    .carousel .list .item .visual{
         width: 40%;
     }
     .carousel.showDetail .list .item:nth-child(2) .detail{
@@ -481,15 +485,4 @@ header {
         overflow: auto;
     }
     .carousel.showDetail .list .item:nth-child(2) .detail .checkout{
-        display: flex;
-        width: max-content;
-        float: right;
-    }
-
-}
-
-
-
-
-
-
+        display:
