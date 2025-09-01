@@ -35,6 +35,18 @@ seeMoreButtons.forEach((button) => {
     button.onclick = function(){
         carousel.classList.remove('next', 'prev');
         carousel.classList.add('showDetail');
+
+        // намери активния елемент (втори в списъка)
+        let activeItem = document.querySelector('.carousel .list .item:nth-child(2)');
+        if(activeItem){
+            let viewer = activeItem.querySelector('model-viewer');
+            if(viewer && !viewer.hasAttribute('src')){
+                let dataSrc = viewer.getAttribute('data-src');
+                if(dataSrc){
+                    viewer.setAttribute('src', dataSrc);
+                }
+            }
+        }
     }
 });
 backButton.onclick = function(){
