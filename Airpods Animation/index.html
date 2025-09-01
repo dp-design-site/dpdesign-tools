@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-    
+
 <header>
     <div class="logo-wrapper">
       <img src="../img/realmet-logo.png" alt="Realmet">
@@ -26,7 +26,7 @@
     </div>
 
 <h1 class="page-title"></h1>
-    
+
     <div class="nav-menu">
       <a href="#">Начало</a>
       <a href="#">Продукти</a>
@@ -38,30 +38,39 @@
         </div>
       </div>
     </div>
-  </header>
-    
-    <div class="carousel">
-        <div class="list">
-            <div class="item">
-                <div class="visual">
-                    <img class="preview" src="images/platform1.png" alt="Стандартна платформа">
-                    <model-viewer class="viewer" src="../img/7000_RAL3000_Flame_red/model.glb" camera-controls auto-rotate reveal="manual" style="background: transparent;"></model-viewer>
+</header>
+
+<div class="carousel">
+    <div class="list">
+        <div class="item has-viewer">
+            <div class="visual">
+                <img class="preview" src="../img/7000_RAL7016_Anthracite_gray/render.png" alt="Стандартна платформа">
+                <model-viewer class="viewer" 
+                    src="../img/7000_RAL7016_Anthracite_gray/model.glb" 
+                    camera-controls 
+                    auto-rotate 
+                    reveal="manual" 
+                    style="background: transparent;"
+                    exposure="1"
+                    shadow-intensity="1"
+                    camera-orbit="30deg 75deg 5m">
+                </model-viewer>
+            </div>
+            <div class="introduce">
+                <div class="title">Платформа</div>
+                <div class="topic">Стандартна</div>
+                <div class="des">
+                    Гъвкаво решение за вашите транспортни нужди
+                    Нашите мултилифт платформи са проектирани да удовлетворят разнообразни нужди в множество индустрии, предоставяйки надеждност и ефективност при всяко приложение.
                 </div>
-                <div class="introduce">
-                    <div class="title">Платформа</div>
-                    <div class="topic">Стандартна</div>
-                    <div class="des">
-                        Гъвкаво решение за вашите транспортни нужди
-Нашите мултилифт платформи са проектирани да удовлетворят разнообразни нужди в множество индустрии, предоставяйки надеждност и ефективност при всяко приложение.
-                    </div>
-                    <button class="seeMore">Виж още &#8599</button>
+                <button class="seeMore">Виж още &#8599</button>
+            </div>
+            <div class="detail">
+                <div class="title">Стандартна</div>
+                <div class="des">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor, reiciendis suscipit nobis nulla animi, modi explicabo quod corrupti impedit illo, accusantium in eaque nam quia adipisci aut distinctio porro eligendi. Reprehenderit nostrum consequuntur ea! Accusamus architecto dolores modi ducimus facilis quas voluptatibus! Tempora ratione accusantium magnam nulla tenetur autem beatae.
                 </div>
-                <div class="detail">
-                    <div class="title">Стандартна</div>
-                    <div class="des">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor, reiciendis suscipit nobis nulla animi, modi explicabo quod corrupti impedit illo, accusantium in eaque nam quia adipisci aut distinctio porro eligendi. Reprehenderit nostrum consequuntur ea! Accusamus architecto dolores modi ducimus facilis quas voluptatibus! Tempora ratione accusantium magnam nulla tenetur autem beatae.
-                    </div>
-                    <div class="specifications">
+                <div class="specifications">
                         <div>
                             <p>Used Time</p>
                             <p>6 hours</p>
@@ -290,4 +299,5 @@
 </body>
 
 </html>
+
 
