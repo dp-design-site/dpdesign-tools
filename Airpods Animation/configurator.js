@@ -18,6 +18,22 @@
   `; document.head.appendChild(s);
 })();
 
+// Вариант B: надеждно откриване на корена към /img на база <link rel="icon">,
+// с fallback към относителен път спрямо текущата страница
+function resolveImgRoot(){
+  try{
+    const icon = document.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
+    if(icon && icon.href){
+      // Вземи директорията на иконата (обикновено ../img/)
+      const u = new URL('.', icon.href);
+      return u.href.replace(/\/$/, ''); // без крайна наклонена
+    }
+  }catch(e){/* ignore */}
+  // Fallback: относително на страницата един каталог нагоре към img/
+  return new URL('../img/', document.baseURI).href.replace(/\/$/, '');
+}
+const IMG_ROOT = resolveImgRoot();
+
 document.addEventListener('DOMContentLoaded',()=>{
   normalizePreviewDOM();
   normalizeLayoutDimensions();
@@ -141,7 +157,7 @@ function generateConfig(initial){
   const length=document.getElementById('length')?.value||'7000';
   const color=document.getElementById('color')?.value||'RAL3000_Flame_red';
   const configID=`${length}_${color}`;
-  const basePath=`img/${configID}`;
+  const basePath=`${IMG_ROOT}/${configID}`; // <-- използваме надежден корен към /img
 
   const mv=document.getElementById('interactiveModel');
   const wrap=document.getElementById('viewerWrap') || mv?.parentElement;
