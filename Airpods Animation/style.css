@@ -519,7 +519,7 @@ h1.page-title {
     pointer-events: none;
 }
 .carousel.showDetail .list .item:nth-child(2) .visual{
-    right: 40%;
+    right: 0%;
     width: 52%;
 }
 .carousel.showDetail .list .item:nth-child(2) .detail{
