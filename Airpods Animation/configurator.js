@@ -173,17 +173,20 @@ function generateConfig(initial){
   const length=document.getElementById('length')?.value||'7000';
   const color=document.getElementById('color')?.value||'RAL3000_Flame_red';
   const configID=`${length}_${color}`;
-  const basePath=`${IMG_ROOT}/${configID}`; // коректен корен към /img
+  const basePath=`img/${configID}`;
 
-  const mv=getViewer();
-  const thumbRow=ensureThumbRow();
-  if(!mv||!thumbRow) return;
+  const mv=document.getElementById('interactiveModel');
+  const wrap=document.getElementById('viewerWrap') || mv?.parentElement;
+  const thumbRow=document.querySelector('.thumbnail-row');
+  if(!mv||!wrap||!thumbRow) return;
 
   mv.classList.add('fade-out');
   toggleOverlay(true);
-  const stage=document.getElementById('viewerStage'); if(stage) stage.textContent='Зареждане…';
+  const stage=document.getElementById('viewerStage'); if(stage) stage.textContent='Въвеждане на входните параметри…';
 
   Promise.resolve()
+    .then(()=>stageOverlay('Изчисляване на чертежа…',1200))
+    .then(()=>stageOverlay('Зареждане…',1200))
     .then(()=>{
       mv.setAttribute('src',`${basePath}/model.glb`);
       thumbRow.innerHTML=`
@@ -192,16 +195,12 @@ function generateConfig(initial){
         <img src="${basePath}/preview_drawing.png" class="lightbox-trigger" data-type="pdf" data-src="${basePath}/drawing.pdf">
       `;
       enableLightbox();
-      return stageOverlay('Финализиране…',400);
+      return stageOverlay('Финализиране…',800);
     })
     .then(()=>{
       toggleOverlay(false);
       mv.classList.remove('fade-out');
       mv.classList.add('fade-in');
-      // ако е с reveal="manual" — махни постера
-      mv.dismissPoster && mv.dismissPoster();
-      // отреагирай и при load на модела
-      mv.addEventListener('load',()=>{ try{mv.dismissPoster&&mv.dismissPoster();}catch(e){} }, {once:true});
     });
 }
 
