@@ -265,7 +265,7 @@ input.readonly {
     position: absolute;
     left: 0%;
     width: 70%;
-    height: 80%;
+    height: 100%;
     font-size: 15px;
     transition: left 0.5s, opacity 0.5s, width 0.5s;
 }
