@@ -116,7 +116,7 @@ header .logo-wrapper span {
       background: #00000000;
       padding: 10px;
       border-radius: 10px;
-      border: 1px solid #333;
+      border: 0px solid #333;
       display: flex;
       height: 290px;
       flex-direction: row;
@@ -152,7 +152,7 @@ header .logo-wrapper span {
       flex: 1;
       background-color: var(--button-hover);
       padding: 15px;
-      border: 1px solid #444444;
+      border: 0px solid #444444;
       border-radius: 6px;
       min-height: 100px;
     }
