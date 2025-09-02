@@ -61,3 +61,14 @@ seeMoreButtons.forEach((button) => {
 backButton.onclick = function(){
     carousel.classList.remove('showDetail');
 }
+
+// 🌙 Запомняне и прилагане на избрана тема
+if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark');
+}
+
+window.toggleTheme = function() {
+    document.body.classList.toggle('dark');
+    const newTheme = document.body.classList.contains('dark') ? 'dark' : 'light';
+    localStorage.setItem('theme', newTheme);
+} 
