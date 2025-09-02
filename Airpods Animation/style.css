@@ -446,10 +446,8 @@ header .logo-wrapper span {
     height: 40px;
     border-radius: 50%;
     font-family: monospace;
-    /*background-color: var(--button-bg);*/
-   color: var(--button-text);
-   border: 1px solid var(--button-border);
-   transition: background 0.3s;
+    border: 1px solid #5555;
+    color: var(--button-text);
     background-color: transparent;
     font-size: large;
     bottom: 20%;
@@ -466,10 +464,8 @@ header .logo-wrapper span {
     left: 50%;
     transform: translateX(-50%);
     border: none;
-   /* background-color: var(--button-bg);*/
-   color: var(--button-text);
-   border: 1px solid var(--button-border);
-   transition: background 0.3s
+    border-bottom: 1px solid #555;
+    color: var(--button-text);
     font-family: Poppins;
     font-weight: bold;
     letter-spacing: 3px;
@@ -547,8 +543,6 @@ header .logo-wrapper span {
     }
     .carousel.showDetail .list .item:nth-child(2) .detail .checkout{
         display:
-
-
 
 
 
