@@ -223,7 +223,8 @@ input.readonly {
       position: absolute;
       right: 0;
       top: 30px;
-      background: #222;
+      background-color: var(--button-hover);
+      
       border: 1px solid #444;
       border-radius: 6px;
       overflow: hidden;
@@ -232,11 +233,12 @@ input.readonly {
     .dropdown a {
       display: block;
       padding: 10px;
-      color: #eee;
+      color: var(--text-color);
       text-decoration: none;
     }
 
     .dropdown a:hover {
+      color: #ffffff;
       background: #333;
     }
  .user-menu:hover .dropdown {
