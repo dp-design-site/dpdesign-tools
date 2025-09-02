@@ -181,10 +181,13 @@ function generateConfig(initial){
 
   mv.classList.add('fade-out');
   toggleOverlay(true);
-  const stage=document.getElementById('viewerStage'); if(stage) stage.textContent='Зареждане…';
+  const stage=document.getElementById('viewerStage'); if(stage) stage.textContent='Въвеждане на входните параметри…';
 
   Promise.resolve()
+    .then(()=>stageOverlay('Изчисляване на чертежа…',1200))
+    .then(()=>stageOverlay('Зареждане…',1200))
     .then(()=>{
+    
       mv.setAttribute('src',`${basePath}/model.glb`);
       thumbRow.innerHTML=`
         <img src="${basePath}/view1.png" class="lightbox-trigger" data-type="image" data-src="${basePath}/view1.png">
