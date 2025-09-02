@@ -15,6 +15,22 @@
         max-height: 600px;
         display: block;
       }
+
+      body.dark {
+        background-color: #111;
+        color: #eee;
+      }
+
+      body.dark .nav-menu a,
+      body.dark .user-icon,
+      body.dark header .logo-wrapper span {
+        color: #eee;
+      }
+
+      body.dark .carousel .list .item .introduce .seeMore:hover {
+        background: #333;
+        color: #fff;
+      }
     </style>
 </head>
 <body>
@@ -25,7 +41,7 @@
       <span>REALMET</span>
     </div>
 
-<h1 class="page-title"></h1>
+    <h1 class="page-title"></h1>
 
     <div class="nav-menu">
       <a href="#">Начало</a>
@@ -37,6 +53,7 @@
           <a href="login.html">Изход</a>
         </div>
       </div>
+      <button onclick="toggleTheme()" style="margin-left: 20px; padding: 4px 12px; cursor: pointer;">Смени тема</button>
     </div>
 </header>
 
@@ -44,7 +61,7 @@
     <div class="list">
         <div class="item has-viewer">
             <div class="visual">
-                <img class="preview" src="images/platform1.png" alt="Стандартна платформа">
+                <img class="preview" src="../img/7000_RAL7016_Anthracite_gray/render.png" alt="Стандартна платформа">
                 <model-viewer class="viewer" 
                     src="../img/7000_RAL7016_Anthracite_gray/model.glb" 
                     camera-controls 
@@ -53,7 +70,7 @@
                     style="background: transparent;"
                     exposure="1"
                     shadow-intensity="1"
-                    camera-orbit="200deg 75deg 13m">
+                    camera-orbit="30deg 75deg 5m">
                 </model-viewer>
             </div>
             <div class="introduce">
@@ -71,33 +88,39 @@
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor, reiciendis suscipit nobis nulla animi, modi explicabo quod corrupti impedit illo, accusantium in eaque nam quia adipisci aut distinctio porro eligendi. Reprehenderit nostrum consequuntur ea! Accusamus architecto dolores modi ducimus facilis quas voluptatibus! Tempora ratione accusantium magnam nulla tenetur autem beatae.
                 </div>
                 <div class="specifications">
-                        <div>
-                            <p>Used Time</p>
-                            <p>6 hours</p>
-                        </div>
-                        <div>
-                            <p>Charging port</p>
-                            <p>Type-C</p>
-                        </div>
-                        <div>
-                            <p>Compatible</p>
-                            <p>Android</p>
-                        </div>
-                        <div>
-                            <p>Bluetooth</p>
-                            <p>5.3</p>
-                        </div>
-                        <div>
-                            <p>Controlled</p>
-                            <p>Touch</p>
-                        </div>
+                    <div>
+                        <p>Used Time</p>
+                        <p>6 hours</p>
                     </div>
-                    <div class="checkout">
-                        <button>ADD TO CART</button>
-                        <button>CHECKOUT</button>
+                    <div>
+                        <p>Charging port</p>
+                        <p>Type-C</p>
+                    </div>
+                    <div>
+                        <p>Compatible</p>
+                        <p>Android</p>
+                    </div>
+                    <div>
+                        <p>Bluetooth</p>
+                        <p>5.3</p>
+                    </div>
+                    <div>
+                        <p>Controlled</p>
+                        <p>Touch</p>
                     </div>
                 </div>
+                <div class="checkout">
+                    <button>ADD TO CART</button>
+                    <button>CHECKOUT</button>
+                </div>
             </div>
+        </div>
+    </div>
+    <div class="arrows">
+        <button id="prev"><</button>
+        <button id="next">></button>
+        <button id="back">Виж всички  &#8599</button>
+    </div>
 
             <div class="item">
                 <div class="visual">
@@ -293,12 +316,17 @@
             <button id="back">Виж всички  &#8599</button>
         </div>
     </div>
-
+    <script>
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+    }
+    </script>
     <script src="script.js"></script>
     <script src="../configurator.js"></script>
 </body>
 
 </html>
+
 
 
 
