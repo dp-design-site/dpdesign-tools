@@ -103,14 +103,17 @@ header .logo-wrapper span {
 
 /* Конфигуратор */
 .main-container {
-      display: grid;
+      display: flex;
       grid-template-columns: 0.9fr 1.1fr;
       gap: 20px;
-      padding: 30px 20% 80px;
-    width: 1250px;
-      max-width: 1800px;
+      padding: 20px 20% 50px;
+      width: auto;
+      max-width: 1000px;
+      min-width: 500px;
+      /* height: 1000px; */
       margin: 0 auto;
       color: var(--button-text);
+      flex-direction: column;
     }
 .config-panel {
       background: #00000000;
@@ -519,7 +522,7 @@ h1.page-title {
     width: 50%;
     position: absolute;
     right: 0;
-    top: 50%;
+    top: 65%;
     transform: translateY(-50%);
     text-align: right;
     pointer-events: auto;
