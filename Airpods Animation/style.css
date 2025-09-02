@@ -447,6 +447,7 @@ header .logo-wrapper span {
     border-radius: 50%;
     font-family: monospace;
     border: 1px solid #5555;
+    background-color: transparent;
     font-size: large;
     bottom: 20%;
     left: 10%;
@@ -540,6 +541,7 @@ header .logo-wrapper span {
     }
     .carousel.showDetail .list .item:nth-child(2) .detail .checkout{
         display:
+
 
 
 
