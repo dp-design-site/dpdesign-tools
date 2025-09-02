@@ -24,7 +24,6 @@ body.light-theme {
   --button-hover-bg: #eee;
   --accent-color: #cc0000;
 }
-}
 
 body.dark-theme {
   --bg-color: #111;
@@ -542,7 +541,9 @@ header .logo-wrapper span {
         overflow: auto;
     }
     .carousel.showDetail .list .item:nth-child(2) .detail .checkout{
-        display:
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
 .main-container {
       display: grid;
       grid-template-columns: 0.9fr 1.1fr;
