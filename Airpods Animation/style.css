@@ -313,10 +313,12 @@ h1.page-title {
 /* Превю снимки */
 /* visual container */
 .visual{
-    width: 50%;
+    width: 60%;
+    /* height: 50%; */
     position: absolute;
-    right: 0;
-    top: 50%;
+    right: 0%;
+    margin: 0px;
+    top: 60%;
     transform: translateY(-50%);
     transition: right 1.5s;
 }
@@ -350,6 +352,7 @@ h1.page-title {
     width: 400px;
     position: absolute;
     top: 50%;
+    right: 60%;
     transform:  translateY(-50%);
     transition: opacity 0.5s;
 }
@@ -515,11 +518,11 @@ h1.page-title {
     pointer-events: none;
 }
 .carousel.showDetail .list .item:nth-child(2) .visual{
-    right: 50%;
+    right: 40%;
 }
 .carousel.showDetail .list .item:nth-child(2) .detail{
     opacity: 1;
-    width: 50%;
+    width: 40%;
     position: absolute;
     right: 0;
     top: 65%;
