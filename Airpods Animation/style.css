@@ -220,7 +220,7 @@ header .logo-wrapper span {
 }
 .carousel .list .item .introduce .des{
     font-size: small;
-    color: #5559;
+    color: var(--secondary-text);
 }
 .carousel .list .item .introduce .seeMore{
     font-family: Poppins;
@@ -229,12 +229,15 @@ header .logo-wrapper span {
     border: none;
     border-bottom: 1px solid #555;
     background-color: transparent;
+    color: var(--button-text);
     font-weight: bold;
     letter-spacing: 3px;
     transition: background 0.5s;
 }
 .carousel .list .item .introduce .seeMore:hover{
     background: #eee;
+    background-color: var(--button-hover);
+    color: var(--bg-color);
 }
 .carousel .list .item:nth-child(1){
     transform: var(--item1-transform);
@@ -537,5 +540,6 @@ header .logo-wrapper span {
     }
     .carousel.showDetail .list .item:nth-child(2) .detail .checkout{
         display:
+
 
 
