@@ -95,6 +95,16 @@ header .logo-wrapper span {
   font-weight: bold;
   font-size: 20px;
 }
+/* Конфигуратор */
+.main-container {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 20px;
+      padding: 160px 5% 40px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+/* Конфигуратор */
 
 /* Добавени поправки */
 .visual {
@@ -544,3 +554,4 @@ header .logo-wrapper span {
         display: flex;
         gap: 10px;
         justify-content: flex-end;
+
