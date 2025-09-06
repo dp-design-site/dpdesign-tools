@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Специални продукти – Светлинна конзола</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Model Viewer (ако вече го имаш глобално – махни този ред) -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <!-- JSZip + FileSaver за ZIP експорта -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+  <style>
+    :root{--accent:#7c3aed;--soft:#1a1a1a;--fg:#eee;--muted:#b9b9b9}
+    html,body{margin:0;background:#0b0b0b;color:var(--fg);font-family:Poppins,system-ui}
+    header{position:sticky;top:0;z-index:50;background:#0b0b0bd9;border-bottom:1px solid #222}
+    header .wrap{max-width:1200px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+    header nav a{color:#ddd;text-decoration:none;margin-left:18px}
+
+    .hero{max-width:1200px;margin:40px auto;padding:0 20px;display:grid;grid-template-columns:1.1fr .9fr;gap:32px}
+    .viewer-card{background:#000;border:1px solid #222;border-radius:12px;position:sticky;top:80px;height:70vh}
+    model-viewer{width:100%;height:100%;background:transparent}
+
+    .panel{background:#0f0f10;border:1px solid #222;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:16px}
+    h1{font-size:42px;margin:0 0 8px}
+    p.lead{color:var(--muted);margin:0 0 8px}
+
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    label{font-size:14px;color:#ccc}
+    input[type="text"],select{width:100%;padding:10px 12px;border:1px solid #333;background:#121212;color:#eee;border-radius:8px}
+
+    .files{background:#0b0b0b;border:1px dashed #333;border-radius:12px;padding:12px}
+    .files h3{margin:0 0 8px;font-size:16px}
+    .files ul{list-style:none;margin:8px 0 0;padding:0;max-height:180px;overflow:auto}
+    .files li{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #111}
+
+    .actions{display:flex;gap:12px;align-items:center}
+    button.primary{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer}
+    button.secondary{background:#151515;color:#fff;border:1px solid #333;border-radius:10px;padding:12px 14px;cursor:pointer}
+
+    .thumbs{display:flex;gap:10px;flex-wrap:wrap}
+    .thumbs img{width:130px;height:90px;object-fit:cover;border-radius:10px;background:#111}
+
+    .small{color:#9a9a9a;font-size:12px}
+
+    @media (max-width: 980px){.hero{grid-template-columns:1fr}.viewer-card{position:relative;height:52vh;top:auto}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div><strong>REALMET</strong> · Специални продукти</div>
+      <nav>
+        <a href="../index.html">Начало</a>
+        <a href="../products.html">Продукти</a>
+        <a href="#" class="small">Светлинна конзола</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="hero">
+    <section class="viewer-card">
+      <!-- Смени пътя към модела при теб -->
+      <model-viewer id="lcViewer" src="../img/special/light-console/model.glb"
+        camera-controls auto-rotate exposure="1" shadow-intensity="1"
+        interaction-prompt-style="basic" camera-orbit="-30deg 75deg 4m"
+        ar ar-modes="webxr scene-viewer quick-look">
+      </model-viewer>
+    </section>
+
+    <section class="panel">
+      <h1>Светлинна конзола</h1>
+      <p class="lead">Елемент от серията „Специални продукти“. Страница за преглед на 3D модела и
+        експортиране на работните документи в структуриран пакет за производство/монтаж.</p>
+
+      <div class="grid">
+        <div>
+          <label for="orderId">Номер на поръчка</label>
+          <input id="orderId" type="text" value="CK1560" />
+        </div>
+        <div>
+          <label for="variant">Вариант / покритие</label>
+          <select id="variant">
+            <option value="RAL3000_Flame_red" selected>RAL3000 Червен</option>
+            <option value="RAL7016_Anthracite_gray">RAL7016 Антрацит</option>
+            <option value="Galvanized">Горещо поцинкован</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="thumbs" id="thumbs">
+        <!-- Мини превюта – посочи реалните пътища в масива FILES.images -->
+      </div>
+
+      <div class="files">
+        <h3>Работни файлове за пакетиране</h3>
+        <div class="grid">
+          <div>
+            <strong>DXF</strong>
+            <ul id="list-dxf"></ul>
+          </div>
+          <div>
+            <strong>PDF</strong>
+            <ul id="list-pdf"></ul>
+          </div>
+        </div>
+        <div class="small">Можеш да изключиш отделни файлове преди експорт.</div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="btnExport">Експорт на пакет (.zip)</button>
+        <button class="secondary" id="btnReload">Обнови превютата</button>
+      </div>
+      <div class="small" id="status"></div>
+    </section>
+  </main>
+
+  <script>
+    // === Настройки ===
+    // Ако държиш да пише „DHXF“, смени стойността по-долу
+    const FOLDER_DXF_LABEL = 'DXF'; // или 'DHXF'
+
+    // База към ресурсите за тази страница (смени спрямо твоята структура)
+    const ASSET_ROOT = new URL('../img/special/light-console/', document.baseURI).href;
+
+    // Декларативна конфигурация на файловете (относителни към ASSET_ROOT)
+    const FILES = {
+      images: [
+        'images/console_view1.jpg',
+        'images/console_view2.jpg',
+        'images/console_drawing_preview.png'
+      ],
+      dxf: [
+        'dxf/console_plate_A.dxf',
+        'dxf/console_plate_B.dxf',
+        'dxf/console_bracket.dxf'
+      ],
+      pdf: [
+        'pdf/console_assembly.pdf',
+        'pdf/console_drawing.pdf'
+      ]
+    };
+
+    const elThumbs = document.getElementById('thumbs');
+    const elListDXF = document.getElementById('list-dxf');
+    const elListPDF = document.getElementById('list-pdf');
+    const elExport = document.getElementById('btnExport');
+    const elReload = document.getElementById('btnReload');
+    const elStatus = document.getElementById('status');
+    const elViewer = document.getElementById('lcViewer');
+
+    // Рендира мини превютата
+    function renderThumbs(){
+      elThumbs.innerHTML = FILES.images.map(src => {
+        const abs = new URL(src, ASSET_ROOT).href;
+        return `<img src="${abs}" alt="preview" />`;
+      }).join('');
+    }
+
+    // Рендира списъци с чекбокси за DXF/PDF
+    function renderFileLists(){
+      const toLi = (src) => {
+        const abs = new URL(src, ASSET_ROOT).href;
+        const name = src.split('/').pop();
+        return `<li><input type="checkbox" checked data-src="${abs}" id="f-${name}"> <label for="f-${name}">${name}</label></li>`;
+      };
+      elListDXF.innerHTML = FILES.dxf.map(toLi).join('');
+      elListPDF.innerHTML = FILES.pdf.map(toLi).join('');
+    }
+
+    // Обновява 3D модела според избрания вариант (пример с RAL)
+    function updateModel(){
+      const variant = document.getElementById('variant').value;
+      const modelPath = new URL(`models/light-console_${variant}.glb`, ASSET_ROOT).href;
+      elViewer.setAttribute('src', modelPath);
+      // махни постера ако е reveal="manual"
+      elViewer.dismissPoster && elViewer.dismissPoster();
+    }
+
+    async function exportZip(){
+      const orderId = (document.getElementById('orderId').value || 'ORDER').trim().replace(/[^A-Za-z0-9_-]/g,'');
+      const zip = new JSZip();
+      const root = zip.folder(orderId);
+      const dirDXF = root.folder(FOLDER_DXF_LABEL);
+      const dirPDF = root.folder('PDF');
+
+      const chosenDXF = [...elListDXF.querySelectorAll('input[type="checkbox"]:checked')].map(i => i.dataset.src);
+      const chosenPDF = [...elListPDF.querySelectorAll('input[type="checkbox"]:checked')].map(i => i.dataset.src);
+      const all = [...chosenDXF.map(u=>({u,dir:dirDXF})), ...chosenPDF.map(u=>({u,dir:dirPDF}))];
+
+      let done = 0; elStatus.textContent = `Сваляне на файлове… 0/${all.length}`;
+
+      for (const item of all){
+        try{
+          const res = await fetch(item.u, {cache:'no-store'});
+          if(!res.ok) throw new Error(res.status + ' ' + res.statusText);
+          const blob = await res.blob();
+          const filename = decodeURIComponent(new URL(item.u).pathname.split('/').pop());
+          item.dir.file(filename, blob);
+        }catch(err){
+          console.warn('Пропуснат файл:', item.u, err);
+        }finally{
+          done++; elStatus.textContent = `Сваляне на файлове… ${done}/${all.length}`;
+        }
+      }
+
+      elStatus.textContent = 'Генериране на ZIP…';
+      const out = await zip.generateAsync({type:'blob'});
+      saveAs(out, `${orderId}.zip`);
+      elStatus.textContent = 'Готово ✓';
+    }
+
+    // Инициализация
+    renderThumbs();
+    renderFileLists();
+    updateModel();
+
+    elReload.addEventListener('click', () => { renderThumbs(); renderFileLists(); updateModel(); });
+    elExport.addEventListener('click', exportZip);
+  </script>
+</body>
+</html>
