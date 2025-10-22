@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DP Design Ltd. — Engineering & Digital Solutions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#000;                 /* pure black background */
+      --hero-blue:#00256b;       /* requested header blue */
+      --accent:#F1C40F;          /* requested yellow accent */
+      --text:#ffffff;            /* main text */
+      --muted:#a9b0bd;           /* explanatory grey */
+      --card:#0b0b0b;            /* card surface */
+      --card-border:#1a1a1a;     /* subtle border */
+      --ring:#303030;            /* focus ring */
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* ---------- Header / Hero ---------- */
+    .hero{
+      position:relative;
+      min-height:58vh;
+      display:flex;align-items:center;justify-content:center;
+      padding:96px 24px 56px;
+      background:
+        radial-gradient(1200px 600px at 80% -20%, rgba(241,196,15,.22), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,.75) 70%),
+        linear-gradient(135deg, #000 10%, var(--hero-blue) 90%);
+      overflow:hidden;
+    }
+    /* subtle tech grid */
+    .hero:before{
+      content:"";position:absolute;inset:0;opacity:.12;pointer-events:none;
+      background-image: linear-gradient(transparent 31px, rgba(255,255,255,.08) 32px),
+                        linear-gradient(90deg, transparent 31px, rgba(255,255,255,.08) 32px);
+      background-size:32px 32px;
+      mask-image: radial-gradient(80% 60% at 50% 40%, #000 60%, transparent 100%);
+    }
+    .nav{position:absolute;top:18px;left:24px;right:24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:14px;font-weight:700;letter-spacing:.02em}
+    .brand img{height:24px;filter:drop-shadow(0 0 8px rgba(241,196,15,.25))}
+    .brand small{font-weight:600;color:var(--muted)}
+    .links{display:flex;gap:22px}
+    .links a{font-weight:600;color:#dfe5ee}
+    .links a:hover{color:#fff}
+
+    .hero-inner{max-width:1080px;text-align:center;z-index:1}
+    .kicker{color:var(--accent);font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:.8rem}
+    h1{margin:.6rem 0 1rem;font-size:clamp(32px,4.2vw,58px);line-height:1.05;letter-spacing:-.02em}
+    p.lead{max-width:860px;margin:0 auto;color:#d7dbe6;font-weight:400;opacity:.92}
+    p.lead em{color:var(--muted);font-style:italic}
+    .cta{margin-top:28px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+    .btn{padding:12px 18px;border-radius:999px;border:1px solid var(--accent);color:#000;background:var(--accent);font-weight:700}
+    .btn.secondary{background:transparent;color:#fff;border-color:#404040}
+    .btn:hover{filter:brightness(1.05)}
+
+    /* ---------- Category cards (center section) ---------- */
+    .section{padding:64px 24px}
+    .container{max-width:1120px;margin:0 auto}
+    .grid{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:28px}
+    @media (max-width:880px){.grid{grid-template-columns:1fr}}
+
+    .card-wrap{perspective:1400px}
+    .card{
+      position:relative;height:320px;border:1px solid var(--card-border);background:var(--card);
+      border-radius:18px;overflow:hidden;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.2,.8,.2,1), box-shadow .4s;
+      box-shadow:0 10px 28px rgba(0,0,0,.45);
+    }
+    .card:hover{transform:rotateY(180deg);box-shadow:0 16px 54px rgba(0,0,0,.6)}
+    .card-face{position:absolute;inset:0;padding:22px 22px;display:flex;flex-direction:column;justify-content:flex-end;gap:12px;backface-visibility:hidden}
+    .card-face.front{
+      background-position:center; background-size:cover; background-repeat:no-repeat;
+      /* demo images (replace with real later) */
+      background-image:radial-gradient(600px 280px at 90% -10%, rgba(241,196,15,.2), transparent 60%),
+                       url('https://images.unsplash.com/photo-1558346490-a72e53ae2a04?q=80&w=1600&auto=format&fit=crop');
+    }
+    .card-face.back{transform:rotateY(180deg);background:linear-gradient(180deg,#0c0c0c, #0b0b12)}
+    .tag{display:inline-block;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#111;background:var(--accent);padding:6px 10px;border-radius:999px}
+    .title{font-size:1.6rem;font-weight:800;letter-spacing:.01em}
+    .subtitle{color:var(--muted);font-style:italic}
+
+    /* ---------- About & Contact ---------- */
+    .split{display:grid;grid-template-columns:1.2fr .8fr;gap:28px}
+    @media (max-width:960px){.split{grid-template-columns:1fr}}
+    .panel{border:1px solid var(--card-border);border-radius:18px;background:#0a0a0a;padding:28px}
+    .panel h3{margin:0 0 10px}
+    .contact-item{display:flex;align-items:center;gap:12px;margin:10px 0}
+    .contact-item span{color:#dfe5ee}
+
+    /* ---------- Footer ---------- */
+    footer{padding:32px 24px;color:#9aa3ad;border-top:1px solid #101010;text-align:center}
+
+    /* Focus accessibility */
+    :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav">
+      <div class="brand">
+        <span style="color: var(--accent); font-weight: 800;">dp&nbsp;|&nbsp;design</span>
+        <span>DP Design Ltd.</span>
+        <small>engineering & digital solutions</small>
+      </div>
+      <div class="links">
+        <a href="#categories">Categories</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+    <div class="hero-inner">
+      <div class="kicker">Automation • Engineering • Intelligence</div>
+      <h1>Building next‑generation tools for automated drawing and digital manufacturing</h1>
+      <p class="lead">We design and build reliable <em>Inventor</em> add‑ins and automation pipelines that turn engineering intent into production‑ready drawings, DXFs, PDFs and 3D assets — consistently and at scale.</p>
+      <div class="cta">
+        <a class="btn" href="#contact">Contact us</a>
+        <a class="btn secondary" href="#categories">Explore</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="categories" class="section">
+      <div class="container">
+        <div class="grid">
+          <!-- Card 1: DP Design Pilot -->
+          <div class="card-wrap">
+            <div class="card" aria-label="DP Design Pilot">
+              <div class="card-face front">
+                <span class="tag">Flagship</span>
+                <div class="title">DP Design Pilot</div>
+                <div class="subtitle">3D‑first configurators • automated drawings</div>
+              </div>
+              <div class="card-face back">
+                <span class="tag">Overview</span>
+                <div class="title">DP Design Pilot</div>
+                <p class="subtitle">A modular platform that connects a FastAPI backend, an Inventor Bridge (COM + iLogic), and a smart cache to deliver GLB/PDF/DXF on demand.</p>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2: Inventor Add‑ins -->
+          <div class="card-wrap">
+            <div class="card" aria-label="Inventor Add‑ins">
+              <div class="card-face front" style="background-image:radial-gradient(600px 280px at 90% -10%, rgba(241,196,15,.2), transparent 60%), url('https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1600&auto=format&fit=crop');">
+                <span class="tag">Add‑ins</span>
+                <div class="title">Inventor Add‑ons</div>
+                <div class="subtitle">Focused tools for daily engineering</div>
+              </div>
+              <div class="card-face back">
+                <span class="tag">Modules</span>
+                <div class="title">Inventor Add‑ons</div>
+                <p class="subtitle">“DP AutoSave” – intelligent save & backup for Inventor.<br/>“DP DWG Exporter” – centralized control of drawing generation and previews.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <div class="container split">
+        <div class="panel">
+          <h3>About</h3>
+          <p>DP Design is an engineering company focused on CAD automation, Autodesk Inventor add‑ins, and integrated manufacturing software. We deliver practical tools that fit real‑world shop‑floor constraints and scale with your product lines.</p>
+        </div>
+        <div class="panel">
+          <h3>Highlights</h3>
+          <ul>
+            <li>3D‑first configurators connected to Inventor</li>
+            <li>Automated GLB, PDF, DXF generation</li>
+            <li>Robust queueing, caching, and diagnostics</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <div class="container split">
+        <div class="panel">
+          <h3>Contact</h3>
+          <div class="contact-item"><strong>Email:</strong> <span>info@dpdesign.tools</span></div>
+          <div class="contact-item"><strong>Phone:</strong> <span>+359 88 888 8888</span></div>
+        </div>
+        <div class="panel">
+          <h3>Office</h3>
+          <p class="subtitle">We’re based in Bulgaria and work with partners across Europe.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2025 DP Design Ltd. · Engineering & Digital Solutions
+  </footer>
+
+  <script>
+    // (No JS needed for flip — pure CSS)
+  </script>
+</body>
+</html>
