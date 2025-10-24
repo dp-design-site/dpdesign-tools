@@ -38,7 +38,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
 
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,100);
-camera.position.set(0,0,8);
+camera.position.set(0,0,6);
 
 const controls=new OrbitControls(camera,canvas);
 controls.enableZoom=false;
@@ -55,8 +55,10 @@ scene.add(dirLight);
 // DNA double helix geometry
 const group=new THREE.Group();
 scene.add(group);
-const materialL=new THREE.MeshStandardMaterial({color:0x0066ff,emissive:0x0033aa,roughness:0.3,metalness:0.6});
-const materialR=new THREE.MeshStandardMaterial({color:0x00ccff,emissive:0x004466,roughness:0.3,metalness:0.6});
+const materialL=new THREE.MeshStandardMaterial({color:0x2b6eff,emissive:0x0a2c7a,roughness:0.2,metalness:0.7});
+const materialR=new THREE.MeshStandardMaterial({color:0x00d0ff,emissive:0x064a66,roughness:0.2,metalness:0.7});
+// по-едър вид по подразбиране
+group.scale.set(1.8,1.8,1.8);
 
 const radius=0.02;
 const steps=200;
@@ -103,17 +105,46 @@ const subtitle=document.getElementById('subtitle');
 function updateScene(){
   const scrollY=window.scrollY;
   const docH=document.body.scrollHeight-window.innerHeight;
-  const progress=scrollY/docH;
-  const sceneIndex=Math.floor(progress*sections.length);
-  const sceneT=(progress*sections.length)-sceneIndex;
+  const progress=docH>0? (scrollY/docH):0; // 0..1
+  const n=sections.length;
+  const p=progress*n;              // глобален прогрес през сцените
+  const idx=Math.floor(Math.min(p, n-1));
+  const t=p-idx;                   // локален t в [0,1)
 
-  // fade titles
-  const cur=sections[sceneIndex];
-  const next=sections[sceneIndex+1];
+  // Текст: crossfade между текуща и следваща сцена
+  const cur=sections[idx];
+  const next=sections[idx+1];
   if(cur){
-    title.textContent=cur.dataset.title;
-    subtitle.textContent=cur.dataset.sub;
+    title.textContent=cur.dataset.title || '';
+    subtitle.textContent=cur.dataset.sub || '';
   }
+  // плавен дъх на opacity в средата на сцената
+  const easeInOut=(x)=>x<0.5? 2*x*x : 1-Math.pow(-2*x+2,2)/2;
+  const vis=1-Math.abs(t-0.5)*2; // 0→1→0
+  const alpha=0.35 + 0.65*easeInOut(Math.max(0,vis));
+  title.style.opacity=alpha.toFixed(3);
+  subtitle.style.opacity=(alpha*0.9).toFixed(3);
+
+  // Камера и скала за усещане за приближение/отдалечение между сцените
+  const baseZoom=THREE.MathUtils.lerp(5.2,3.8, easeInOut((idx%2===0)?t:1-t));
+  camera.position.z=baseZoom;
+
+  const scale=THREE.MathUtils.lerp(2.1,1.5, easeInOut(t));
+  group.scale.set(scale,scale,scale);
+
+  // Леко вертикално преместване за „камерен“ дрифт
+  const yDrift=THREE.MathUtils.lerp(0.5,-0.5, t) + (idx- (n-1)/2)*0.15;
+  group.position.y=yDrift;
+
+  // Светлина обикаля около оста за илюзия за въртене
+  const angle=progress*Math.PI*2*1.2; // ~1.2 оборота по целия скрол
+  dirLight.position.set(Math.cos(angle)*4, 1.8, Math.sin(angle)*4);
+
+  // Частици — бавен паралакс
+  particles.rotation.y += 0.0015;
+  particles.position.z = THREE.MathUtils.lerp(-1.2, -2.5, progress);
+}
+
   if(next&&sceneT>0.5){
     title.style.opacity=1-(sceneT-0.5)*2;
   }else{
