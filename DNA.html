@@ -1,195 +1,138 @@
 <!doctype html>
 <html lang="bg">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>DP Helix • Phase 1 (Scroll)</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>DP DNA • Three.js Scroll Prototype</title>
 <style>
-  :root{
-    --bg:#000;
-    --fg:#fff;
-    --muted:#666A73;      /* сиво за спиралата */
-    --rungs:#3A3F45;      /* сиво за „стълбичките“ */
-    --accent:#F4D03F;     /* DP жълто */
-  }
-  html,body{height:100%;background:var(--bg);color:var(--fg);margin:0;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
-  .section{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
-  .intro,.outro{color:#aaa}
-  .intro h1{font-weight:700;letter-spacing:.02em;margin:0 0 .5rem}
-  .intro p{max-width:28rem;text-align:center;line-height:1.5}
-
-  /* Контейнерът на анимацията е 250vh за да има „писта“ за скрол. */
-  .helix-wrap{height:250vh;position:relative}
-  /* SVG-то стои залепено на екрана, докато скролваме през wrap-а */
-  .helix-stage{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}
-
-  /* Размер и поведение на самото SVG */
-  svg{width:min(92vw,900px);height:92vh;display:block}
-
-  /* Малък watermark/легенда (може да махнем по-късно) */
-  .badge{
-    position:fixed;left:1rem;bottom:1rem;font-size:.8rem;
-    color:#888;user-select:none;pointer-events:none;letter-spacing:.04em
-  }
-
-  /* Опционален hint за скрол на мобилни */
-  .scroll-hint{position:absolute;bottom:1.25rem;left:50%;transform:translateX(-50%);
-    font-size:.8rem;color:#666;letter-spacing:.08em}
+  html,body{margin:0;padding:0;height:100%;background:#000;overflow-y:scroll;scroll-snap-type:y mandatory;overscroll-behavior:none;}
+  section{height:100dvh;scroll-snap-align:start;display:flex;align-items:center;justify-content:center;color:#fff;font-family:Inter,Arial,sans-serif;}
+  canvas#scene{position:fixed;inset:0;z-index:0;display:block;width:100%;height:100%;}
+  .overlay{position:fixed;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;pointer-events:none;flex-direction:column;text-align:center;}
+  h1{font-size:3rem;margin:0.5em 0;}
+  p{max-width:30rem;color:#aaa;font-size:1rem;}
 </style>
 </head>
 <body>
-  <section class="section intro">
-    <div>
-      <h1>DP • DNA Spiral (Prototype)</h1>
-      <p>Скролвай надолу. Спиралата се „навива“ от скрола. Това е само базовата кинематика — без текстове и акценти. После ще добавим думите (Design/Precision, Productive/Digital и т.н.).</p>
-    </div>
-  </section>
+<canvas id="scene"></canvas>
 
-  <div class="helix-wrap" id="helixWrap">
-    <div class="helix-stage">
-      <!-- SVG сцената: две нишки (лява/дясна) + стъпала -->
-      <svg id="helixSvg" viewBox="0 0 1080 1920" aria-label="DP Helix">
-        <defs>
-          <filter id="softGlow">
-            <feGaussianBlur stdDeviation="1.5" result="b"/>
-            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
+<div class="overlay">
+  <h1 id="title">DP | Design</h1>
+  <p id="subtitle">Това е нашето ДНК</p>
+</div>
 
-        <!-- Ръбове (необходими за четливост на тъмен фон) -->
-        <rect x="0" y="0" width="1080" height="1920" fill="transparent" />
+<section data-title="Design" data-sub="Precision"></section>
+<section data-title="Productive" data-sub="Digital"></section>
+<section data-title="Digital" data-sub="Performance"></section>
+<section data-title="Финал" data-sub="DP Design"></section>
 
-        <!-- „Стълбички“ -->
-        <g id="rungs" stroke="var(--rungs)" stroke-width="3" stroke-linecap="round"></g>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js';
+import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/controls/OrbitControls.js';
 
-        <!-- Двете нишки -->
-        <polyline id="left"  fill="none" stroke="var(--muted)" stroke-width="5" filter="url(#softGlow)"/>
-        <polyline id="right" fill="none" stroke="var(--muted)" stroke-width="5" filter="url(#softGlow)"/>
+const canvas=document.getElementById('scene');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.setPixelRatio(devicePixelRatio);
 
-        <!-- Места за будущи надписи (в следващ етап) -->
-        <!-- <g id="labels"></g> -->
-      </svg>
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,100);
+camera.position.set(0,0,8);
 
-      <div class="scroll-hint">SCROLL</div>
-    </div>
-  </div>
+const controls=new OrbitControls(camera,canvas);
+controls.enableZoom=false;
+controls.enablePan=false;
+controls.enableRotate=false;
 
-  <section class="section outro">
-    <div>
-      <p>Тук завършва Phase 1. Следва да добавим DP/PD фразите, акцентите в жълто и „камерно“ отдалечаване → „Това е нашето ДНК“.</p>
-    </div>
-  </section>
+// Lighting
+const ambient=new THREE.AmbientLight(0x404040,1.5);
+scene.add(ambient);
+const dirLight=new THREE.PointLight(0xffdd88,1.2);
+dirLight.position.set(4,2,4);
+scene.add(dirLight);
 
-  <div class="badge">DP • prototype • Phase 1</div>
+// DNA double helix geometry
+const group=new THREE.Group();
+scene.add(group);
+const materialL=new THREE.MeshStandardMaterial({color:0x0066ff,emissive:0x0033aa,roughness:0.3,metalness:0.6});
+const materialR=new THREE.MeshStandardMaterial({color:0x00ccff,emissive:0x004466,roughness:0.3,metalness:0.6});
 
-<script>
-(function(){
-  // Геометрия на сцената (същите пропорции като viewBox-а)
-  const W = 1080, H = 1920;
-  const cx = W/2;
+const radius=0.02;
+const steps=200;
+const height=6;
+const turns=6;
+for(let i=0;i<steps;i++){
+  const t=i/steps;
+  const y=height*(t-0.5);
+  const angle=turns*Math.PI*2*t;
+  const xL=Math.sin(angle)*0.5;
+  const zL=Math.cos(angle)*0.5;
+  const xR=-xL;
+  const zR=-zL;
+  const sphereL=new THREE.Mesh(new THREE.SphereGeometry(radius,8,8),materialL);
+  sphereL.position.set(xL,y,zL);
+  const sphereR=new THREE.Mesh(new THREE.SphereGeometry(radius,8,8),materialR);
+  sphereR.position.set(xR,y,zR);
+  group.add(sphereL,sphereR);
+}
 
-  // Контроли на хеликса:
-  // - amplitude: ширина на „издуване“ ляво/дясно
-  // - turns: колко пълни оборота да се побират във височината
-  // - phase: глобално изместване (променяме го със скрола)
-  const BASE_AMPLITUDE = 220;
-  const MIN_AMP = 120;              // „перспектива“ в началото
-  const MAX_TURNS = 3.6;            // зрително приятно за мобилно
-  const STEPS = 500;                // колкото повече — по-гладко
+// Parallax particles
+const particles=new THREE.Group();
+scene.add(particles);
+const pGeo=new THREE.SphereGeometry(0.015,6,6);
+const pMat=new THREE.MeshBasicMaterial({color:0x6699ff});
+for(let i=0;i<400;i++){
+  const p=new THREE.Mesh(pGeo,pMat);
+  p.position.set((Math.random()-0.5)*8,(Math.random()-0.5)*8,(Math.random()-0.5)*8);
+  particles.add(p);
+}
 
-  // Вертикален диапазон, в който рисуваме нишките
-  const TOP = 140, BOTTOM = H - 220;
+function onResize(){
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  camera.aspect=window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize',onResize);
 
-  const svg   = document.getElementById('helixSvg');
-  const left  = document.getElementById('left');
-  const right = document.getElementById('right');
-  const rungs = document.getElementById('rungs');
-  const wrap  = document.getElementById('helixWrap');
+// Scroll sections
+const sections=document.querySelectorAll('section');
+const title=document.getElementById('title');
+const subtitle=document.getElementById('subtitle');
 
-  // Изчислява „прогрес“ от 0..1 според sticky контейнера
-  function getProgress(){
-    const rect = wrap.getBoundingClientRect();
-    const vh = window.innerHeight || document.documentElement.clientHeight;
-    const scrollable = rect.height - vh;
-    if (scrollable <= 0) return 0;
-    const passed = Math.min(Math.max(vh - rect.top, 0), scrollable);
-    return passed / scrollable; // 0 → 1
+function updateScene(){
+  const scrollY=window.scrollY;
+  const docH=document.body.scrollHeight-window.innerHeight;
+  const progress=scrollY/docH;
+  const sceneIndex=Math.floor(progress*sections.length);
+  const sceneT=(progress*sections.length)-sceneIndex;
+
+  // fade titles
+  const cur=sections[sceneIndex];
+  const next=sections[sceneIndex+1];
+  if(cur){
+    title.textContent=cur.dataset.title;
+    subtitle.textContent=cur.dataset.sub;
   }
-
-  // Линеен интерполатор
-  const lerp = (a,b,t)=>a+(b-a)*t;
-
-  // Синусоидално „навиване“ + леко дишане на амплитудата
-  function computeParams(progress){
-    // фаза: колкото по-надолу, толкова по-развита спирала
-    const phase = progress * Math.PI * 4.0;     // 2→4 оборота при нужда
-    // плавен респ. амплитуда — старт по-тясно, финал по-широко
-    const amp = lerp(MIN_AMP, BASE_AMPLITUDE, Math.pow(progress, 0.85));
-    // обороти — леко нарастват
-    const turns = lerp(2.4, MAX_TURNS, Math.pow(progress, 0.9));
-    return {phase, amp:amp, turns};
+  if(next&&sceneT>0.5){
+    title.style.opacity=1-(sceneT-0.5)*2;
+  }else{
+    title.style.opacity=1;
   }
+  // rotation light
+  const angle=progress*Math.PI*2;
+  dirLight.position.set(Math.cos(angle)*4,2,Math.sin(angle)*4);
 
-  // Генерира точки за нишките
-  function buildStrands({phase, amp, turns}){
-    const ptsL = [];
-    const ptsR = [];
-    for(let i=0;i<=STEPS;i++){
-      const t = i/STEPS;
-      const y = lerp(TOP, BOTTOM, t);
-      const ang = (Math.PI*2*turns*t) + phase;
-      const xoff = amp * Math.sin(ang);
-      ptsL.push([cx - xoff, y]);
-      ptsR.push([cx + xoff, y]);
-    }
-    return {ptsL, ptsR};
-  }
+  // small movement
+  group.rotation.y=angle*0.5;
+  particles.rotation.y+=0.001;
+}
 
-  // Помощник за polyline @points → string
-  const toPath = pts => pts.map(p=>p.map(n=>n.toFixed(1)).join(',')).join(' ');
-
-  // Рисува „стълбичките“ (равномерни по t)
-  function drawRungs(param){
-    rungs.innerHTML = '';
-    const count = 14; // брой стъпала
-    for(let i=0;i<=count;i++){
-      const t = i/count;
-      const y = lerp(TOP, BOTTOM, t);
-      const ang = (Math.PI*2*param.turns*t) + param.phase;
-      const xoff = param.amp * Math.sin(ang);
-      const xl = cx - xoff, xr = cx + xoff;
-
-      const ln = document.createElementNS('http://www.w3.org/2000/svg','line');
-      ln.setAttribute('x1', xl.toFixed(1));
-      ln.setAttribute('y1', y.toFixed(1));
-      ln.setAttribute('x2', xr.toFixed(1));
-      ln.setAttribute('y2', y.toFixed(1));
-      rungs.appendChild(ln);
-    }
-  }
-
-  function render(){
-    const p = getProgress();
-    const param = computeParams(p);
-    const {ptsL, ptsR} = buildStrands(param);
-
-    left.setAttribute('points', toPath(ptsL));
-    right.setAttribute('points', toPath(ptsR));
-    drawRungs(param);
-  }
-
-  // Рендирай на скрол/резайз (и един път на старта)
-  let ticking = false;
-  function onScroll(){
-    if(!ticking){
-      window.requestAnimationFrame(()=>{ render(); ticking=false; });
-      ticking = true;
-    }
-  }
-  window.addEventListener('scroll', onScroll, {passive:true});
-  window.addEventListener('resize', onScroll);
-  render();
-})();
+function animate(){
+  requestAnimationFrame(animate);
+  updateScene();
+  renderer.render(scene,camera);
+}
+animate();
 </script>
 </body>
 </html>
