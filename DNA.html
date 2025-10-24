@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>DP Helix • Phase 1 (Scroll)</title>
+<style>
+  :root{
+    --bg:#000;
+    --fg:#fff;
+    --muted:#666A73;      /* сиво за спиралата */
+    --rungs:#3A3F45;      /* сиво за „стълбичките“ */
+    --accent:#F4D03F;     /* DP жълто */
+  }
+  html,body{height:100%;background:var(--bg);color:var(--fg);margin:0;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
+  .section{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+  .intro,.outro{color:#aaa}
+  .intro h1{font-weight:700;letter-spacing:.02em;margin:0 0 .5rem}
+  .intro p{max-width:28rem;text-align:center;line-height:1.5}
+
+  /* Контейнерът на анимацията е 250vh за да има „писта“ за скрол. */
+  .helix-wrap{height:250vh;position:relative}
+  /* SVG-то стои залепено на екрана, докато скролваме през wrap-а */
+  .helix-stage{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}
+
+  /* Размер и поведение на самото SVG */
+  svg{width:min(92vw,900px);height:92vh;display:block}
+
+  /* Малък watermark/легенда (може да махнем по-късно) */
+  .badge{
+    position:fixed;left:1rem;bottom:1rem;font-size:.8rem;
+    color:#888;user-select:none;pointer-events:none;letter-spacing:.04em
+  }
+
+  /* Опционален hint за скрол на мобилни */
+  .scroll-hint{position:absolute;bottom:1.25rem;left:50%;transform:translateX(-50%);
+    font-size:.8rem;color:#666;letter-spacing:.08em}
+</style>
+</head>
+<body>
+  <section class="section intro">
+    <div>
+      <h1>DP • DNA Spiral (Prototype)</h1>
+      <p>Скролвай надолу. Спиралата се „навива“ от скрола. Това е само базовата кинематика — без текстове и акценти. После ще добавим думите (Design/Precision, Productive/Digital и т.н.).</p>
+    </div>
+  </section>
+
+  <div class="helix-wrap" id="helixWrap">
+    <div class="helix-stage">
+      <!-- SVG сцената: две нишки (лява/дясна) + стъпала -->
+      <svg id="helixSvg" viewBox="0 0 1080 1920" aria-label="DP Helix">
+        <defs>
+          <filter id="softGlow">
+            <feGaussianBlur stdDeviation="1.5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- Ръбове (необходими за четливост на тъмен фон) -->
+        <rect x="0" y="0" width="1080" height="1920" fill="transparent" />
+
+        <!-- „Стълбички“ -->
+        <g id="rungs" stroke="var(--rungs)" stroke-width="3" stroke-linecap="round"></g>
+
+        <!-- Двете нишки -->
+        <polyline id="left"  fill="none" stroke="var(--muted)" stroke-width="5" filter="url(#softGlow)"/>
+        <polyline id="right" fill="none" stroke="var(--muted)" stroke-width="5" filter="url(#softGlow)"/>
+
+        <!-- Места за будущи надписи (в следващ етап) -->
+        <!-- <g id="labels"></g> -->
+      </svg>
+
+      <div class="scroll-hint">SCROLL</div>
+    </div>
+  </div>
+
+  <section class="section outro">
+    <div>
+      <p>Тук завършва Phase 1. Следва да добавим DP/PD фразите, акцентите в жълто и „камерно“ отдалечаване → „Това е нашето ДНК“.</p>
+    </div>
+  </section>
+
+  <div class="badge">DP • prototype • Phase 1</div>
+
+<script>
+(function(){
+  // Геометрия на сцената (същите пропорции като viewBox-а)
+  const W = 1080, H = 1920;
+  const cx = W/2;
+
+  // Контроли на хеликса:
+  // - amplitude: ширина на „издуване“ ляво/дясно
+  // - turns: колко пълни оборота да се побират във височината
+  // - phase: глобално изместване (променяме го със скрола)
+  const BASE_AMPLITUDE = 220;
+  const MIN_AMP = 120;              // „перспектива“ в началото
+  const MAX_TURNS = 3.6;            // зрително приятно за мобилно
+  const STEPS = 500;                // колкото повече — по-гладко
+
+  // Вертикален диапазон, в който рисуваме нишките
+  const TOP = 140, BOTTOM = H - 220;
+
+  const svg   = document.getElementById('helixSvg');
+  const left  = document.getElementById('left');
+  const right = document.getElementById('right');
+  const rungs = document.getElementById('rungs');
+  const wrap  = document.getElementById('helixWrap');
+
+  // Изчислява „прогрес“ от 0..1 според sticky контейнера
+  function getProgress(){
+    const rect = wrap.getBoundingClientRect();
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const scrollable = rect.height - vh;
+    if (scrollable <= 0) return 0;
+    const passed = Math.min(Math.max(vh - rect.top, 0), scrollable);
+    return passed / scrollable; // 0 → 1
+  }
+
+  // Линеен интерполатор
+  const lerp = (a,b,t)=>a+(b-a)*t;
+
+  // Синусоидално „навиване“ + леко дишане на амплитудата
+  function computeParams(progress){
+    // фаза: колкото по-надолу, толкова по-развита спирала
+    const phase = progress * Math.PI * 4.0;     // 2→4 оборота при нужда
+    // плавен респ. амплитуда — старт по-тясно, финал по-широко
+    const amp = lerp(MIN_AMP, BASE_AMPLITUDE, Math.pow(progress, 0.85));
+    // обороти — леко нарастват
+    const turns = lerp(2.4, MAX_TURNS, Math.pow(progress, 0.9));
+    return {phase, amp:amp, turns};
+  }
+
+  // Генерира точки за нишките
+  function buildStrands({phase, amp, turns}){
+    const ptsL = [];
+    const ptsR = [];
+    for(let i=0;i<=STEPS;i++){
+      const t = i/STEPS;
+      const y = lerp(TOP, BOTTOM, t);
+      const ang = (Math.PI*2*turns*t) + phase;
+      const xoff = amp * Math.sin(ang);
+      ptsL.push([cx - xoff, y]);
+      ptsR.push([cx + xoff, y]);
+    }
+    return {ptsL, ptsR};
+  }
+
+  // Помощник за polyline @points → string
+  const toPath = pts => pts.map(p=>p.map(n=>n.toFixed(1)).join(',')).join(' ');
+
+  // Рисува „стълбичките“ (равномерни по t)
+  function drawRungs(param){
+    rungs.innerHTML = '';
+    const count = 14; // брой стъпала
+    for(let i=0;i<=count;i++){
+      const t = i/count;
+      const y = lerp(TOP, BOTTOM, t);
+      const ang = (Math.PI*2*param.turns*t) + param.phase;
+      const xoff = param.amp * Math.sin(ang);
+      const xl = cx - xoff, xr = cx + xoff;
+
+      const ln = document.createElementNS('http://www.w3.org/2000/svg','line');
+      ln.setAttribute('x1', xl.toFixed(1));
+      ln.setAttribute('y1', y.toFixed(1));
+      ln.setAttribute('x2', xr.toFixed(1));
+      ln.setAttribute('y2', y.toFixed(1));
+      rungs.appendChild(ln);
+    }
+  }
+
+  function render(){
+    const p = getProgress();
+    const param = computeParams(p);
+    const {ptsL, ptsR} = buildStrands(param);
+
+    left.setAttribute('points', toPath(ptsL));
+    right.setAttribute('points', toPath(ptsR));
+    drawRungs(param);
+  }
+
+  // Рендирай на скрол/резайз (и един път на старта)
+  let ticking = false;
+  function onScroll(){
+    if(!ticking){
+      window.requestAnimationFrame(()=>{ render(); ticking=false; });
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  render();
+})();
+</script>
+</body>
+</html>
