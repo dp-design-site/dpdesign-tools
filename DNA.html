@@ -147,7 +147,7 @@ function updateScene(){
 
   if(next&&sceneT>0.5){
     title.style.opacity=1-(sceneT-0.5)*2;
-  }else{
+  else{
     title.style.opacity=1;
   }
   // rotation light
@@ -157,7 +157,7 @@ function updateScene(){
   // small movement
   group.rotation.y=angle*0.5;
   particles.rotation.y+=0.001;
-
+}
 
 function animate(){
   requestAnimationFrame(animate);
