@@ -30,139 +30,118 @@
 import * as THREE from 'https://esm.sh/three@0.161.0';
 import { OrbitControls } from 'https://esm.sh/three@0.161.0/examples/jsm/controls/OrbitControls.js';
 
-const canvas=document.getElementById('scene');
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
-renderer.setClearColor(0x000000,1);
-renderer.setSize(window.innerWidth,window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+renderer.setClearColor(0x000000, 1);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
 
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,100);
-camera.position.set(0,0,6);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 0, 5.2);
 
-const controls=new OrbitControls(camera,canvas);
-controls.enableZoom=false;
-controls.enablePan=false;
-controls.enableRotate=false;
+// Controls disabled for production; kept to allow touch-rotate in dev if needed
+const controls = new OrbitControls(camera, canvas);
+controls.enablePan = false; controls.enableZoom = false; controls.enableRotate = false;
 
-// Lighting
-const ambient=new THREE.AmbientLight(0x404040,1.5);
-scene.add(ambient);
-const dirLight=new THREE.PointLight(0xffdd88,1.2);
-dirLight.position.set(4,2,4);
+// Lights
+scene.add(new THREE.AmbientLight(0x404040, 1.5));
+const dirLight = new THREE.PointLight(0xffdd88, 1.2);
+dirLight.position.set(4, 1.8, 4);
 scene.add(dirLight);
 
-// DNA double helix geometry
-const group=new THREE.Group();
+// DNA group
+const group = new THREE.Group();
 scene.add(group);
-const materialL=new THREE.MeshStandardMaterial({color:0x2b6eff,emissive:0x0a2c7a,roughness:0.2,metalness:0.7});
-const materialR=new THREE.MeshStandardMaterial({color:0x00d0ff,emissive:0x064a66,roughness:0.2,metalness:0.7});
-// по-едър вид по подразбиране
-group.scale.set(1.8,1.8,1.8);
+const materialL = new THREE.MeshStandardMaterial({ color: 0x2b6eff, emissive: 0x0a2c7a, roughness: 0.2, metalness: 0.7 });
+const materialR = new THREE.MeshStandardMaterial({ color: 0x00d0ff, emissive: 0x064a66, roughness: 0.2, metalness: 0.7 });
 
-const radius=0.02;
-const steps=200;
-const height=6;
-const turns=6;
-for(let i=0;i<steps;i++){
-  const t=i/steps;
-  const y=height*(t-0.5);
-  const angle=turns*Math.PI*2*t;
-  const xL=Math.sin(angle)*0.5;
-  const zL=Math.cos(angle)*0.5;
-  const xR=-xL;
-  const zR=-zL;
-  const sphereL=new THREE.Mesh(new THREE.SphereGeometry(radius,8,8),materialL);
-  sphereL.position.set(xL,y,zL);
-  const sphereR=new THREE.Mesh(new THREE.SphereGeometry(radius,8,8),materialR);
-  sphereR.position.set(xR,y,zR);
-  group.add(sphereL,sphereR);
+const radius = 0.04; // thicker dots
+const steps = 240;
+const height = 6.0;
+const turns = 7.0;
+const segGeo = new THREE.SphereGeometry(radius, 10, 10);
+for (let i = 0; i < steps; i++) {
+  const t = i / steps;
+  const y = height * (t - 0.5);
+  const ang = turns * Math.PI * 2 * t;
+  const xL = Math.sin(ang) * 0.55;
+  const zL = Math.cos(ang) * 0.55;
+  const xR = -xL;
+  const zR = -zL;
+  const a = new THREE.Mesh(segGeo, materialL); a.position.set(xL, y, zL);
+  const b = new THREE.Mesh(segGeo, materialR); b.position.set(xR, y, zR);
+  group.add(a, b);
 }
+// Scale so it overflows viewport
+group.scale.set(2.0, 2.0, 2.0);
 
-// Parallax particles
-const particles=new THREE.Group();
+// Particles (parallax)
+const particles = new THREE.Group();
 scene.add(particles);
-const pGeo=new THREE.SphereGeometry(0.015,6,6);
-const pMat=new THREE.MeshBasicMaterial({color:0x6699ff});
-for(let i=0;i<400;i++){
-  const p=new THREE.Mesh(pGeo,pMat);
-  p.position.set((Math.random()-0.5)*8,(Math.random()-0.5)*8,(Math.random()-0.5)*8);
+const pGeo = new THREE.SphereGeometry(0.02, 6, 6);
+const pMat = new THREE.MeshBasicMaterial({ color: 0x7aa7ff });
+for (let i = 0; i < 420; i++) {
+  const p = new THREE.Mesh(pGeo, pMat);
+  p.position.set((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10);
   particles.add(p);
 }
 
-function onResize(){
-  renderer.setSize(window.innerWidth,window.innerHeight);
-  camera.aspect=window.innerWidth/window.innerHeight;
+function onResize() {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 }
-window.addEventListener('resize',onResize);
+window.addEventListener('resize', onResize);
 
-// Scroll sections
-const sections=document.querySelectorAll('section');
-const title=document.getElementById('title');
-const subtitle=document.getElementById('subtitle');
+// Sections & overlay text
+const sections = document.querySelectorAll('section');
+const title = document.getElementById('title');
+const subtitle = document.getElementById('subtitle');
 
-function updateScene(){
-  const scrollY=window.scrollY;
-  const docH=document.body.scrollHeight-window.innerHeight;
-  const progress=docH>0? (scrollY/docH):0; // 0..1
-  const n=sections.length;
-  const p=progress*n;              // глобален прогрес през сцените
-  const idx=Math.floor(Math.min(p, n-1));
-  const t=p-idx;                   // локален t в [0,1)
+const clamp = (x, a, b) => Math.min(Math.max(x, a), b);
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = (x) => x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; // easeInOutQuad
 
-  // Текст: crossfade между текуща и следваща сцена
-  const cur=sections[idx];
-  const next=sections[idx+1];
-  if(cur){
-    title.textContent=cur.dataset.title || '';
-    subtitle.textContent=cur.dataset.sub || '';
+function updateScene() {
+  const docH = Math.max(1, document.body.scrollHeight - window.innerHeight);
+  const progress = window.scrollY / docH; // 0..1
+  const n = sections.length;
+  const p = progress * n;
+  const idx = Math.min(n - 1, Math.floor(p));
+  const t = p - idx; // 0..1 within scene
+
+  const cur = sections[idx];
+  if (cur) {
+    title.textContent = cur.dataset.title || '';
+    subtitle.textContent = cur.dataset.sub || '';
   }
-  // плавен дъх на opacity в средата на сцената
-  const easeInOut=(x)=>x<0.5? 2*x*x : 1-Math.pow(-2*x+2,2)/2;
-  const vis=1-Math.abs(t-0.5)*2; // 0→1→0
-  const alpha=0.35 + 0.65*easeInOut(Math.max(0,vis));
-  title.style.opacity=alpha.toFixed(3);
-  subtitle.style.opacity=(alpha*0.9).toFixed(3);
 
-  // Камера и скала за усещане за приближение/отдалечение между сцените
-  const baseZoom=THREE.MathUtils.lerp(5.2,3.8, easeInOut((idx%2===0)?t:1-t));
-  camera.position.z=baseZoom;
+  // Text crossfade peak at center
+  const vis = 1 - Math.abs(t - 0.5) * 2; // 0→1→0
+  const alpha = clamp(0.3 + 0.7 * ease(clamp(vis, 0, 1)), 0, 1);
+  title.style.opacity = alpha.toFixed(3);
+  subtitle.style.opacity = (alpha * 0.9).toFixed(3);
 
-  const scale=THREE.MathUtils.lerp(2.1,1.5, easeInOut(t));
-  group.scale.set(scale,scale,scale);
+  // Camera / scale / drift
+  const scl = lerp(2.2, 1.5, ease(t));
+  group.scale.set(scl, scl, scl);
+  camera.position.z = lerp(4.8, 3.8, ease(t));
+  group.position.y = lerp(0.6, -0.6, t) + (idx - (n - 1) / 2) * 0.15;
 
-  // Леко вертикално преместване за „камерен“ дрифт
-  const yDrift=THREE.MathUtils.lerp(0.5,-0.5, t) + (idx- (n-1)/2)*0.15;
-  group.position.y=yDrift;
+  // Light orbit → illusion of rotation
+  const angle = progress * Math.PI * 2 * 1.2;
+  dirLight.position.set(Math.cos(angle) * 4, 1.8, Math.sin(angle) * 4);
 
-  // Светлина обикаля около оста за илюзия за въртене
-  const angle=progress*Math.PI*2*1.2; // ~1.2 оборота по целия скрол
-  dirLight.position.set(Math.cos(angle)*4, 1.8, Math.sin(angle)*4);
-
-  // Частици — бавен паралакс
+  // Particles subtle parallax
   particles.rotation.y += 0.0015;
-  particles.position.z = THREE.MathUtils.lerp(-1.2, -2.5, progress);
-}
-
-  if(next&&sceneT>0.5){
-    title.style.opacity=1-(sceneT-0.5)*2;
-  else{
-    title.style.opacity=1;
-  }
-  // rotation light
-  const angle=progress*Math.PI*2;
-  dirLight.position.set(Math.cos(angle)*4,2,Math.sin(angle)*4);
-
-  // small movement
-  group.rotation.y=angle*0.5;
-  particles.rotation.y+=0.001;
+  particles.position.z = lerp(-1.2, -2.5, progress);
 }
 
 function animate(){
   requestAnimationFrame(animate);
   updateScene();
-  renderer.render(scene,camera);
+  renderer.render(scene, camera);
 }
 animate();
 </script>
