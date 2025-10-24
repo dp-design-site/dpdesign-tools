@@ -27,13 +27,14 @@
 <section data-title="Финал" data-sub="DP Design"></section>
 
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js';
-import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/controls/OrbitControls.js';
+import * as THREE from 'https://cdn.skypack.dev/three@0.161.0';
+import {OrbitControls} from 'https://cdn.skypack.dev/three@0.161.0/examples/jsm/controls/OrbitControls.js';
 
 const canvas=document.getElementById('scene');
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
+renderer.setClearColor(0x000000,1);
 renderer.setSize(window.innerWidth,window.innerHeight);
-renderer.setPixelRatio(devicePixelRatio);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
 
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,100);
