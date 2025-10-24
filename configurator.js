@@ -160,7 +160,7 @@ function generateConfig(initial){
       thumbRow.innerHTML=`
         <img src="${basePath}/view1.png" class="lightbox-trigger" data-type="image" data-src="${basePath}/view1.png">
         <img src="${basePath}/view2.png" class="lightbox-trigger" data-type="image" data-src="${basePath}/view2.png">
-        <img src="${basePath}/preview_drawing.png" class="lightbox-trigger" data-type="pdf" data-src="${basePath}/drawing.pdf">
+        <img src="${basePath}/drawing.png" class="lightbox-trigger" data-type="pdf" data-src="${basePath}/drawing.pdf">
       `;
       enableLightbox();
       return stageOverlay('Финализиране…',800);
